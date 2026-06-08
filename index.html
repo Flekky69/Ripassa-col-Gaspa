@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathCards - Liceo Scientifico</title>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    
+    <style>
+        :root {
+            --primary: #0076ff;
+            --bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --text: #333333;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .container { width: 100%; max-width: 500px; }
+        h1 { text-align: center; margin: 20px 0; color: #111; font-size: 1.5rem; }
+        h2 { font-size: 1.2rem; margin-bottom: 15px; text-align: center; }
+        .screen { display: none; }
+        .active { display: block; }
+        
+        /* Bottoni e Menu */
+        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: bold; cursor: pointer; text-align: center; transition: transform 0.1s; text-decoration: none;}
+        .btn:active { transform: scale(0.98); }
+        .btn-secondary { background: #6c757d; }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        
+        /* Card mobile style */
+        .flashcard-wrapper { perspective: 1000px; min-height: 300px; margin: 20px 0; }
+        .flashcard { width: 100%; min-height: 300px; position: relative; transform-style: preserve-3d; transition: transform 0.6s; cursor: pointer; }
+        .flashcard.flipped { transform: rotateY(180deg); }
+        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; padding: 25px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: var(--card-bg); box-shadow: 0 8px 24px rgba(0,0,0,0.08); font-size: 1.1rem; overflow-y: auto; border: 1px solid #e1e8ed; }
+        .card-back { transform: rotateY(180deg); background: #fdfdfd; border-left: 5px solid var(--primary); }
+        .card-badge { position: absolute; top: 15px; left: 15px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #888; font-weight: bold; }
+        
+        /* Controlli */
+        .controls { display: flex; gap: 10px; justify-content: space-between; margin-top: 15px; }
+        .progress-bar { text-align: center; margin: 10px 0; font-size: 0.9rem; color: #666; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📐 Liceo Scientifico - MathCards</h1>
+
+    <div id="screen-units" class="screen active">
+        <h2>Seleziona l'Unità di Studio</h2>
+        <button class="btn" onclick="selectUnit(1)">Unità 1: Funzioni e loro Proprietà</button>
+        <button class="btn btn-secondary" disabled>Unità 2: Limiti (Prossimamente)</button>
+    </div>
+
+    <div id="screen-modes" class="screen">
+        <button class="btn btn-outline" onclick="showScreen('screen-units')">← Cambia Unità</button>
+        <h2 id="selected-unit-title">Unità 1</h2>
+        <button class="btn" onclick="startSession('consultazione')">📖 Modalità Consultazione</button>
+        <button class="btn" onclick="startSession('quiz')">🧠 Modalità Quiz (Ragionamento)</button>
+        <button class="btn" onclick="startSession('esercizi')">📝 Modalità Esercizi Pratici</button>
+    </div>
+
+    <div id="screen-flashcard" class="screen">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <button class="btn btn-outline" style="width: auto; padding: 8px 15px; margin: 0;" onclick="showScreen('screen-modes')">Menu</button>
+            <div id="mode-badge" style="font-weight: bold; color: var(--primary);"></div>
+        </div>
+        
+        <div class="progress-bar" id="progress-text">Card 1 di 10</div>
+        
+        <div class="flashcard-wrapper">
+            <div class="flashcard" id="main-card" onclick="flipCard()">
+                <div class="card-face card-front">
+                    <div class="card-badge">Quesito / Input</div>
+                    <div id="card-front-content">Caricamento...</div>
+                </div>
+                <div class="card-face card-back">
+                    <div class="card-badge">Soluzione / Teoria</div>
+                    <div id="card-back-content">Caricamento...</div>
+                </div>
+            </div>
+        </div>
+
+        <p style="text-align: center; font-size: 0.85rem; color: #888; margin-bottom: 10px;">💡 Tocca la carta per girarla e vedere la soluzione</p>
+
+        <div class="controls">
+            <button class="btn btn-secondary" style="margin:0;" onclick="prevCard()">← Precedente</button>
+            <button class="btn" style="margin:0;" onclick="nextCard()">Successiva →</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// DATABASE FLASHCARDS INTERNE COMPRESI GLI ESERCIZI RICHIESTI
+const dataset = {
+    1: {
+        title: "Unità 1: Funzioni e loro Proprietà",
+        consultazione: [
+            { f: "Definizione di Funzione reale di variabile reale", b: "Dati due sottoinsiemi non vuoti $A$ e $B$ di $\mathbb{R}$, una relazione che associa a *ogni* numero reale di $A$ *uno e un solo* numero reale di $B$." },
+            { f: "Dominio di una funzione irrazionale ad indice pari:<br>$$y = \\sqrt[n]{f(x)}$$", b: "Si pone l'argomento maggiore o uguale a zero:<br>$$f(x) \\ge 0$$" },
+            { f: "Dominio delle Funzioni Logaritmiche:<br>$$y = \\log_a f(x)$$", b: "Si impone l'argomento strettamente positivo:<br>$$f(x) > 0$$" },
+            { f: "Funzione Pari (Simmetria geometrica)", b: "$$f(-x) = f(x)$$<br>Il grafico è simmetrico rispetto all'**asse $y$**." },
+            { f: "Funzione Dispari (Simmetria geometrica)", b: "$$f(-x) = -f(x)$$<br>Il grafico è simmetrico rispetto all'**origine degli assi**." }
+        ],
+        quiz: [
+            // 20 ESERCIZI DI RAGIONAMENTO (CONCETTUALI / VERO O FALSO / DIAGNOSTICI)
+            { f: "Se una funzione è strettamente monòtona su tutto il suo dominio, allora è sicuramente invertibile?", b: "Sì, perché la stretta monotonia (sempre crescente o sempre decrescente) garantisce l'iniettività della funzione." },
+            { f: "Vero o Falso?<br>Il grafico di una funzione può intersecare l'asse $y$ in due punti distinti.", b: "Falso. Per la definizione stessa di funzione, a ogni valore di $x$ (compreso $x=0$) corrisponde *al più un solo* valore di $y$." },
+            { f: "Quale simmetria possiede la funzione $f(x) = x^3 - 4x$?", b: "È una funzione **dispari**. Infatti $f(-x) = (-x)^3 - 4(-x) = -x^3 + 4x = -f(x)$. Simmetria rispetto all'origine." },
+            { f: "Se il dominio di una funzione non è simmetrico rispetto all'origine, la funzione può essere pari o dispari?", b: "No. Affinché una funzione possa classificarsi come pari o dispari, la condizione preliminare è che per ogni $x \\in D$ anche $-x \\in D$." },
+            { f: "Il prodotto di due funzioni dispari genera una funzione pari o dispari?", b: "Genera una funzione **pari**. Dimostrazione:<br>$h(-x) = f(-x) \\cdot g(-x) = [-f(x)] \\cdot [-g(x)] = f(x) \\cdot g(x) = h(x)$." },
+            { f: "Cosa rappresenta graficamente l'insieme degli zeri di una funzione?", b: "Rappresenta le ascisse dei punti in cui il grafico interseca l'asse $x$ (soluzioni dell'equazione $f(x)=0$)." },
+            { f: "Vero o Falso?<br>Una funzione periodica non può essere iniettiva.", b: "Vero. Per definizione di periodicità, i valori della funzione si ripetono ogni periodo $T$, quindi infinite $x$ diverse avranno la stessa immagine $y$." },
+            { f: "Data $f(x) = 2^x$, qual è il suo insieme immagine?", b: "$$I = ]0; +\\infty[$$ L'esponenziale puro è sempre strettamente positivo." },
+            { f: "Se componiamo $f(x) = x+2$ con $g(x) = 3x$, l'operazione $g(f(x))$ è uguale a $f(g(x))$?", b: "No, la composizione non è commutativa.<br>$g(f(x)) = 3(x+2) = 3x + 6$<br>$f(g(x)) = (3x) + 2 = 3x + 2$" },
+            { f: "Perché la funzione $f(x) = x^2$ definita su $\\mathbb{R}$ non è invertibile?", b: "Perché non è iniettiva (valori opposti di $x$ hanno la stessa immagine, es. $f(-2)=f(2)=4$). Occorre una restrizione del dominio a $[0, +\\infty[$." },
+            { f: "Qual è il dominio naturale della funzione composta $f(g(x))$ se $f(u) = \\sqrt{u}$ e $g(x) = x-5$?", b: "L'insieme delle $x$ tali per cui $g(x)$ appartiene al dominio di $f$: $x - 5 \\ge 0 \\implies x \\ge 5$." },
+            { f: "Che relazione geometrica sussiste tra il grafico di $f(x)$ e quello di $f(x) + k$?", b: "Una traslazione verticale rigida verso l'alto di $k$ unità (se $k>0$) o verso il basso (se $k<0$)." },
+            { f: "Se il grafico di una funzione è simmetrico rispetto alla bisettrice del I e III quadrante ($y=x$), cosa possiamo dedurre?", b: "La funzione coincide con la sua funzione inversa: $f(x) = f^{-1}(x)$." },
+            { f: "La funzione $f(x) = \\cos(x)$ è pari o dispari?", b: "È **pari**, in quanto $\\cos(-x) = \\cos(x)$. Il suo grafico è simmetrico rispetto all'asse delle ordinate." },
+            { f: "Che tipo di trasformazione geometrica trasforma il grafico di $y = f(x)$ in $y = f(-x)$?", b: "Una simmetria assiale rispetto all'asse delle ordinate ($y$)." },
+            { f: "Se una funzione ha codominio coincidente con l'insieme di arrivo, si definisce...", b: "**Suriettiva**." },
+            { f: "Esiste una funzione che sia contemporaneamente pari e dispari?", b: "Sì, la funzione costante nulla: $f(x) = 0$. Soddisfa sia $0 = 0$ che $0 = -0$." },
+            { f: "Qual è il periodo fondamentale della funzione $y = \\tan(x)$?", b: "$$T = \\pi$$" },
+            { f: "Se una funzione interseca l'asse $y$, in quale punto specifico lo fa?", b: "Nel punto di coordinate $(0; f(0))$, a patto che $x=0$ appartenga al dominio della funzione." },
+            { f: "Vero o Falso?<br>Una funzione strettamente decrescente conserva il verso delle disuguaglianze.", b: "Falso. Lo inverte: se $x_1 < x_2 \\implies f(x_1) > f(x_2)$." }
+        ],
+        esercizi: [
+            // 20 ESERCIZI PRATICI (CALCOLI / DETERMINAZIONE DI DOMINI / STUDIO SEGNO)
+            { f: "Trova il dominio di:<br>$$f(x) = \\frac{2x+1}{x^2 - 9}$$", b: "Denominatore non nullo:<br>$x^2 - 9 \\neq 0 \\implies x \\neq \\pm 3$<br>$$D = \\mathbb{R} \\setminus \\{-3; 3\\}$$" },
+            { f: "Determina il dominio della funzione:<br>$$f(x) = \\sqrt{3x - 6}$$", b: "Argomento della radice reale pari positivo o nullo:<br>$3x - 6 \\ge 0 \\implies 3x \\ge 6 \\implies x \\ge 2$<br>$$D = [2; +\\infty[$$" },
+            { f: "Calcola gli zeri di:<br>$$f(x) = x^2 - 5x + 6$$", b: "Risolvo $f(x) = 0$:<br>$x^2 - 5x + 6 = 0 \\implies (x-2)(x-3) = 0$<br>Gli zeri sono $x = 2$ e $x = 3$." },
+            { f: "Determina il campo di esistenza di:<br>$$f(x) = \\ln(x^2 - 1)$$", b: "Argomento del logaritmo strettamente positivo:<br>$x^2 - 1 > 0 \\implies x < -1 \\lor x > 1$<br>$$D = ]-\\infty; -1[ \\cup ]1; +\\infty[$$" },
+            { f: "Studia il segno di:<br>$$f(x) = \\frac{x-1}{x+2}$$", b: "N: $x > 1$<br>D: $x > -2$<br>Tabella dei segni:<br>$f(x) > 0$ per $x < -2 \\lor x > 1$;<br>$f(x) < 0$ per $-2 < x < 1$." },
+            { f: "Trova il dominio di:<br>$$f(x) = \\frac{1}{\\sqrt{x}}$$", b: "Contemporaneamente sotto radice (pari) e al denominatore:<br>$$x > 0 \\implies D = ]0; +\\infty[$$" },
+            { f: "Data $f(x) = 3x^2 - 1$, calcola il valore di $f(-2)$", b: "$$f(-2) = 3(-2)^2 - 1 = 3(4) - 1 = 11$$" },
+            { f: "Determina l'espressione analitica della funzione inversa di:<br>$$f(x) = 2x - 5$$", b: "Esplicito la $x$: $y = 2x - 5 \\implies 2x = y + 5 \\implies x = \\frac{y+5}{2}$<br>Scambiando le variabili:<br>$$f^{-1}(x) = \\frac{x+5}{2}$$" },
+            { f: "Trova il dominio di:<br>$$f(x) = \\sqrt[3]{\\frac{1}{x-1}}$$", b: "La radice è dispari (nessun vincolo). Il denominatore impone:<br>$x - 1 \\neq 0 \\implies x \\neq 1$<br>$$D = \\mathbb{R} \\setminus \\{1\\}$$" },
+            { f: "Date $f(x)=x^2$ e $g(x)=x+1$, scrivi la funzione composta $f(g(x))$", b: "$$f(g(x)) = (g(x))^2 = (x+1)^2 = x^2 + 2x + 1$$" },
+            { f: "Trova le intersezioni con gli assi di:<br>$$f(x) = 2x - 4$$", b: "Asse $y$ ($x=0$): $(0; -4)$<br>Asse $x$ ($y=0$): $2x - 4 = 0 \\implies x = 2 \\implies (2; 0)$" },
+            { f: "Verifica algebricamente se la funzione $f(x) = x^4 + 2x^2$ è pari", b: "$f(-x) = (-x)^4 + 2(-x)^2 = x^4 + 2x^2 = f(x)$.<br>La funzione è **pari**." },
+            { f: "Trova il dominio di:<br>$$f(x) = \\frac{1}{\\sin(x)}$$", b: "Denominatore diverso da zero:<br>$\\sin(x) \\neq 0 \\implies x \\neq k\\pi \\quad (k \\in \\mathbb{Z})$" },
+            { f: "Determina l'intervallo di positività di:<br>$$f(x) = e^x - 1$$", b: "$e^x - 1 > 0 \\implies e^x > 1 \\implies e^x > e^0 \\implies x > 0$" },
+            { f: "Trova il dominio di:<br>$$f(x) = \\arcsin(2x)$$", b: "L'argomento dell'arcoseno deve essere compreso tra -1 e 1:<br>$-1 \\le 2x \\le 1 \\implies -\\frac{1}{2} \\le x \\le \\frac{1}{2}$" },
+            { f: "Data la funzione $f(x) = \frac{1}{x}$, calcola la funzione composta $f(f(x))$", b: "$$f(f(x)) = \\frac{1}{\\frac{1}{x}} = x$$ (per $x \\neq 0$)" },
+            { f: "Trova il dominio di:<br>$$f(x) = \\sqrt{x^2 + 4}$$", b: "Radicando $x^2 + 4 \\ge 0$. Poiché un quadrato sommato a un numero positivo è sempre positivo, la condizione è sempre verificata:<br>$$D = \\mathbb{R}$$" },
+            { f: "Trova lo zero della funzione:<br>$$f(x) = \\log_10(x-3)$$", b: "Pongo $f(x)=0 \\implies \\log_10(x-3) = 0 \\implies x-3 = 1 \\implies x = 4$. Lo zero è $x=4$ (accettabile perché nel Dominio $x>3$)." },
+            { f: "Determina il dominio di:<br>$$f(x) = \\tan(2x)$$", b: "L'argomento della tangente non deve essere pari a $\\frac{\pi}{2} + k\\pi$:<br>$2x \\neq \\frac{\\pi}{2} + k\\pi \\implies x \\neq \\frac{\\pi}{4} + \\frac{k\\pi}{2}$" },
+            { f: "Trova il valore minimo assunto dalla funzione:<br>$$f(x) = x^2 - 4x + 5$$", b: "È una parabola rivolta verso l'alto. Il minimo coincide con il vertice $X_v = -b/(2a) = 4/2 = 2$. $Y_v = f(2) = 4 - 8 + 5 = 1$. Il valore minimo è 1." }
+        ]
+    }
+};
+
+let currentUnit = 1;
+let currentMode = 'consultazione';
+let currentIndex = 0;
+let currentCards = [];
+
+function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+    // Ripristina la carta non girata ad ogni cambio schermata
+    document.getElementById('main-card').classList.remove('flipped');
+}
+
+function selectUnit(unitId) {
+    currentUnit = unitId;
+    document.getElementById('selected-unit-title').innerText = dataset[unitId].title;
+    showScreen('screen-modes');
+}
+
+function startSession(mode) {
+    currentMode = mode;
+    currentCards = dataset[currentUnit][mode];
+    currentIndex = 0;
+    
+    // Testo del badge della modalità
+    const badgeText = mode === 'consultazione' ? '📖 Ripasso' : (mode === 'quiz' ? '🧠 Quiz Ragionamento' : '📝 Esercizio Pratico');
+    document.getElementById('mode-badge').innerText = badgeText;
+    
+    updateCard();
+    showScreen('screen-flashcard');
+}
+
+function updateCard() {
+    document.getElementById('main-card').classList.remove('flipped');
+    
+    // Ritardo minimo per permettere il reset della rotazione prima di cambiare i testi
+    setTimeout(() => {
+        const card = currentCards[currentIndex];
+        document.getElementById('card-front-content').innerHTML = card.f;
+        document.getElementById('card-back-content').innerHTML = card.b;
+        document.getElementById('progress-text').innerText = `Card ${currentIndex + 1} di ${currentCards.length}`;
+        
+        // Forza MathJax a rielaborare le nuove formule caricate dinamicamente
+        if (window.MathJax) {
+            MathJax.typesetPromise();
+        }
+    }, 200);
+}
+
+function flipCard() {
+    document.getElementById('main-card').classList.toggle('flipped');
+}
+
+function nextCard() {
+    if (currentIndex < currentCards.length - 1) {
+        currentIndex++;
+        updateCard();
+    } else {
+        alert("Ottimo lavoro! Hai completato questa sezione.");
+        showScreen('screen-modes');
+    }
+}
+
+function prevCard() {
+    if (currentIndex > 0) {
+        currentIndex--;
+        updateCard();
+    }
+}
+</script>
+</body>
+</html>
