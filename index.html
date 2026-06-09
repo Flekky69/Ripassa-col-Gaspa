@@ -661,7 +661,7 @@ const cards = [
   {
     cat: "ragionamento",
     q: "Se \\(f(x+T) = f(x)\\) per ogni \\(x\\), è necessario che \\(T\\) sia il periodo minimo?",
-    a: "No. Se \\(T\\) è un periodo, lo è anche \\(2T, 3T, \\ldots\\) Più in generale, ogni multiplo positivo intero di \\(T\\) è ancora un periodo. Il <em>periodo minimo</em> è il più piccolo \\(T > 0\\) che soddisfa la proprietà. Attenzione: alcune funzioni costanti soddisfano \\(f(x+T) = f(x)\\) per ogni \\(T > 0\\) e non hanno periodo minimo."
+    a: "No. Se \\(T\\) è un periodo, lo è anche \\(2T, 3T, \\ldots\\) Più in generale, ogni multiplo positivo intero di \\(T\\) è ancora un periodo. Il <em>periodo minimo</em> è il più piccolo \\(T > 0\\) che soddisfa la proprietà. Attenzione: le funzioni costanti soddisfano \\(f(x+T) = f(x)\\) per ogni \\(T > 0\\) ma non hanno periodo minimo."
   },
   {
     cat: "ragionamento",
@@ -680,13 +680,8 @@ const cards = [
   },
   {
     cat: "ragionamento",
-    q: "Perché una funzione esponenziale \\(a^x\\) cresce più velocemente di qualsiasi polinomio per \\(x \\to +\\infty\\) (con \\(a > 1\\))?",
-    a: "Intuitivamente: un polinomio di grado \\(n\\) cresce come \\(x^n\\), ma \\(a^x\\) contiene \\(x\\) nell'esponente. Formalmente: \\(\\lim_{x \\to +\\infty} \\frac{x^n}{a^x} = 0\\) per ogni \\(n \\in \\mathbb{N}\\) e ogni \\(a > 1\\). Questo si dimostra applicando L'Hôpital \\(n\\) volte o usando la disuguaglianza di Bernoulli."
-  },
-  {
-    cat: "ragionamento",
-    q: "Come mai la composizione \\(f \\circ g\\) non è in generale uguale a \\(g \\circ f\\)?",
-    a: "La composizione non è commutativa. Es: \\(f(x) = x^2\\), \\(g(x) = x + 1\\). \\((f \\circ g)(x) = (x+1)^2 = x^2 + 2x + 1\\). \\((g \\circ f)(x) = x^2 + 1\\). Risultati diversi. Inoltre i domini possono essere diversi: l'ordine in cui si applicano le trasformazioni cambia il risultato."
+    q: "Come dimostri che la composizione \\(f \\circ g\\) non è in generale uguale a \\(g \\circ f\\)?",
+    a: "La composizione non è commutativa: per dimostrarlo basta costruire un controesempio... Es: \\(f(x) = x^2\\), \\(g(x) = x + 1\\). \\((f \\circ g)(x) = (x+1)^2 = x^2 + 2x + 1\\). \\((g \\circ f)(x) = x^2 + 1\\). Risultati diversi. Inoltre i domini possono essere diversi: l'ordine in cui si applicano le trasformazioni cambia il risultato."
   },
   {
     cat: "ragionamento",
