@@ -735,7 +735,7 @@ function renderQuiz() {
   flipped = false;
 
   document.getElementById("fc-tag").textContent =
-    card.cat === "" ? "Teoria" : card.cat === "esercizio" ? "Esercizio" : "Ragionamento";
+    card.cat === "teoria" ? "Teoria" : card.cat === "esercizio" ? "Esercizio" : "Ragionamento";
   document.getElementById("fc-q").innerHTML = card.q;
   document.getElementById("fc-a").innerHTML = card.a;
 
