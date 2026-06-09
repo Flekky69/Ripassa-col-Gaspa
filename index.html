@@ -382,7 +382,7 @@
 
 <header>
   <h1>Funzioni e loro Proprietà</h1>
-  <p>Unità 1 — Analisi Matematica &nbsp;·&nbsp; 60 Flashcards</p>
+  <p>Gaspa Cards - Unità 1 &nbsp;·&nbsp; 53 Flashcards</p>
 </header>
 
 <div class="controls">
@@ -437,7 +437,7 @@
 <script>
 // ─── DATASET ───────────────────────────────────────────────────────────────
 const cards = [
-  // ── TEORIA (30) ──────────────────────────────────────────────────────────
+  // ── TEORIA (23) ──────────────────────────────────────────────────────────
   {
     cat: "teoria",
     q: "Cos'è una funzione reale di variabile reale?",
@@ -454,102 +454,102 @@ const cards = [
     a: "\\(f\\) è <strong>pari</strong> se \\(f(-x) = f(x)\\) per ogni \\(x\\) nel dominio (simmetrica rispetto all'asse \\(y\\)). \\(f\\) è <strong>dispari</strong> se \\(f(-x) = -f(x)\\) (simmetrica rispetto all'origine)."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Quando una funzione è strettamente crescente su un intervallo \\(I\\)?",
     a: "\\(f\\) è strettamente crescente su \\(I\\) se per ogni \\(x_1, x_2 \\in I\\) con \\(x_1 < x_2\\) si ha \\(f(x_1) < f(x_2)\\)."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Cos'è il grafico di una funzione?",
     a: "Il grafico è l'insieme dei punti del piano \\(\\{(x, f(x)) \\mid x \\in A\\} \\subseteq \\mathbb{R}^2\\). Ogni punto del piano \\((x_0, y_0)\\) appartiene al grafico se e solo se \\(y_0 = f(x_0)\\)."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Definizione di funzione iniettiva.",
     a: "\\(f\\) è iniettiva se \\(x_1 \\neq x_2 \\Rightarrow f(x_1) \\neq f(x_2)\\), ovvero ogni valore del codominio è assunto al più una volta. Equivalentemente (da usare per la verifica algebrica dell'iniettività): \\(f(x_1) = f(x_2) \\Rightarrow x_1 = x_2\\)."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Quali sono le funzioni elementari? Elencane alcune e disegnane il grafico.",
     a: "Funzioni elementari: costanti, potenze \\(x^n\\), esponenziali \\(a^x\\), logaritmiche \\(\\log_a x\\), trigonometriche \\(\\sin x, \\cos x, \\tan x\\), trigonometriche inverse \\(\\arcsin x, \\arccos x, \\arctan x\\), radici \\(\\sqrt[n]{x}\\), valore assoluto \\(|x|\\)."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Definizione di funzione limitata superiormente e inferiormente.",
     a: "\\(f\\) è <strong>limitata superiormente</strong> se il suo grafico non supera una certa quota, formalmente se: \\(\\exists M \\in \\mathbb{R}\\) tale che \\(f(x) \\leq M\\) per ogni \\(x \\in A\\). È <strong>limitata inferiormente</strong> se il suo grafico non scende al di sotto di una certa quota; formalmente: \\(\\exists m \\in \\mathbb{R}\\) tale che \\(f(x) \\geq m\\) per ogni \\(x \\in A\\)."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Cos'è la funzione inversa \\(f^{-1}\\) e quando esiste?",
     a: "Esiste se e solo se \\(f\\) è iniettiva. Se \\(f: A \\to B\\) è biunivoca, la funzione inversa \\(f^{-1}: B \\to A\\) è definita da \\(f^{-1}(y) = x \\iff f(x) = y\\). Il grafico di \\(f^{-1}\\) è il simmetrico di quello di \\(f\\) rispetto alla bisettrice \\(y = x\\)."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Come si compongono due funzioni? Quando è possibile?",
     a: "Data \\(f: A \\to B\\) e \\(g: C \\to D\\), la composizione \\(g \\circ f\\) è definita da \\((g \\circ f)(x) = g(f(x))\\), ed è possibile quando l'immagine di \\(f\\) è contenuta nel dominio di \\(g\\), cioè \\(f(A) \\subseteq C\\)."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Definizione di funzione periodica.",
     a: "\\(f\\) è periodica con periodo \\(T > 0\\) se \\(f(x+T) = f(x)\\) per ogni \\(x\\) nel dominio. Il periodo minimo è il più piccolo \\(T > 0\\) con questa proprietà. Esempi: \\(\\sin x\\) ha periodo \\(2\\pi\\), \\(\\tan x\\) ha periodo \\(\\pi\\)."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Elenca le proprietà principali della funzione esponenziale \\(f(x) = a^x\\) con \\(a > 0, a \\neq 1\\).",
     a: "Dominio \\(\\mathbb{R}\\), codominio \\((0, +\\infty)\\). Passante per \\((0,1)\\). Strettamente crescente se \\(a > 1\\), decrescente se \\(0 < a < 1\\). Iniettiva, mai nulla. \\(a^{x+y} = a^x \\cdot a^y\\); \\((a^x)^y = a^{xy}\\)."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Elenca le proprietà principali del logaritmo \\(f(x) = \\log_a x\\) con \\(a > 0, a \\neq 1\\).",
     a: "Dominio \\((0, +\\infty)\\), codominio \\(\\mathbb{R}\\). \\(\\log_a 1 = 0\\), \\(\\log_a a = 1\\). \\(\\log_a(xy) = \\log_a x + \\log_a y\\). Cresce se \\(a > 1\\), decresce se \\(0 < a < 1\\). È l'inversa di \\(a^x\\)."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Come si trasforma il grafico di \\(f(x)\\) nel grafico di \\(f(x + k)\\)?",
     a: "Traslazione orizzontale: il grafico si sposta di \\(k\\) unità verso destra (se \\(k < 0\\)) o verso sinistra (se \\(k > 0\\)). Il dominio si sposta di conseguenza: se \\(x_0\\) era nel dominio di \\(f\\), ora \\(x_0 + k\\) è nel dominio della nuova funzione."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Come si ottiene il grafico di \\(|f(x)|\\) da quello di \\(f(x)\\)?",
     a: "Si mantiene inalterata la parte di grafico con \\(f(x) \\geq 0\\), e si ribalta sopra l'asse \\(x\\) (simmetria rispetto all'asse delle ascisse) la parte con \\(f(x) < 0\\)."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Come si leggono le proprietà di una funzione dal suo grafico?",
     a: "Dominio: proiezione del grafico sull'asse \\(x\\). Segno: dove il grafico è sopra/sotto l'asse \\(x\\). Monotonia: dove sale/scende. Simmetria: parità (simm. rispetto \\(y\\)) o disparità (simm. rispetto all'origine). Intersezioni con gli assi."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Definizione di funzione monotona. Perché una funzione strettamente monotona è iniettiva?",
     a: "\\(f\\) è monotona su \\(I\\) se è sempre crescente o sempre decrescente. Se è strettamente crescente, \\(x_1 < x_2 \\Rightarrow f(x_1) < f(x_2)\\), quindi \\(f(x_1) \\neq f(x_2)\\): è iniettiva."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Formula per il cambio di base dei logaritmi.",
     a: "\\(\\log_a x = \\dfrac{\\log_b x}{\\log_b a}\\). In particolare, \\(\\log_a x = \\dfrac{\\ln x}{\\ln a}\\) dove \\(\\ln\\) è il logaritmo naturale (base \\(e\\))."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Quali sono le principali identità trigonometriche fondamentali?",
     a: "\\(\\sin^2 x + \\cos^2 x = 1\\). Dalla divisione per \\(\\cos^2 x\\): \\(\\tan^2 x + 1 = \\dfrac{1}{\\cos^2 x}\\). Formule di addizione: \\(\\sin(x \\pm y) = \\sin x \\cos y \\pm \\cos x \\sin y\\), \\(\\cos(x \\pm y) = \\cos x \\cos y \\mp \\sin x \\sin y\\)."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Dominio e proprietà di \\(f(x) = \\arcsin x\\).",
     a: "Dominio: \\([-1, 1]\\). Codominio: \\(\\left[-\\dfrac{\\pi}{2}, \\dfrac{\\pi}{2}\\right]\\). È la funzione inversa di \\(\\sin x\\) ristretta a \\(\\left[-\\frac{\\pi}{2}, \\frac{\\pi}{2}\\right]\\). È strettamente crescente e dispari: \\(\\arcsin(-x) = -\\arcsin x\\)."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Come si studia il segno di una funzione?",
     a: "Si risolve la disequazione \\(f(x) > 0\\) (o \\(< 0\\)). Per funzioni razionali si fattorizzano numeratore e denominatore, si determinano gli zeri di ciascun fattore e si analizza il segno con una tabella dei segni, considerando le molteplicità."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Cosa si intende per funzione razionale intera e razionale fratta?",
     a: "Una funzione <strong>razionale intera</strong> (o polinomio) è \\(p(x) = a_n x^n + \\cdots + a_0\\). Una <strong>razionale fratta</strong> è \\(\\frac{p(x)}{q(x)}\\) con \\(q(x) \\not\\equiv 0\\); il dominio naturale esclude gli zeri di \\(q(x)\\)."
   },
   {
-    cat: "teoria",
+    cat: "",
     q: "Come si determina se una funzione è pari, dispari, o nessuna delle due?",
     a: "Si calcola \\(f(-x)\\) e si confronta con \\(f(x)\\) e \\(-f(x)\\). Occorre prima verificare che il dominio sia simmetrico rispetto all'origine (condizione necessaria). Se \\(f(-x) = f(x)\\): pari. Se \\(f(-x) = -f(x)\\): dispari. Altrimenti: né pari né dispari."
   },
@@ -749,7 +749,7 @@ function renderQuiz() {
   flipped = false;
 
   document.getElementById("fc-tag").textContent =
-    card.cat === "teoria" ? "Teoria" : card.cat === "esercizio" ? "Esercizio" : "Ragionamento";
+    card.cat === "" ? "Teoria" : card.cat === "esercizio" ? "Esercizio" : "Ragionamento";
   document.getElementById("fc-q").innerHTML = card.q;
   document.getElementById("fc-a").innerHTML = card.a;
 
