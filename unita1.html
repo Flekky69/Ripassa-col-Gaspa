@@ -376,6 +376,19 @@
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: var(--paper-dark); }
   ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+   .home-link {
+    display: inline-block;
+    margin-bottom: .8rem;
+    font-size: .8rem;
+    color: #8a7458;
+    text-decoration: none;
+    letter-spacing: .06em;
+    border: 1px solid rgba(200,150,62,.35);
+    padding: .28rem .7rem;
+    border-radius: 4px;
+    transition: all .18s;
+  }
+  .home-link:hover { color: var(--gold); border-color: var(--gold); background: rgba(200,150,62,.07); }
 </style>
 </head>
 <body>
@@ -396,7 +409,7 @@
     <button class="mode-btn active" data-mode="quiz">Quiz</button>
     <button class="mode-btn" data-mode="browse">Consultazione</button>
   </div>
-  <span class="stat-pill" id="stat-pill">60 carte</span>
+  <span class="stat-pill" id="stat-pill">50 carte</span>
 </div>
 
 <main>
@@ -427,7 +440,7 @@
     </div>
     <div class="score-panel" id="score-panel">
       <div class="score-title">Sessione completata!</div>
-      <div class="score-num" id="score-num">60</div>
+      <div class="score-num" id="score-num">50</div>
       <div class="score-sub">carte studiate</div>
       <button class="nav-btn primary" onclick="restart()">Ricomincia</button>
     </div>
@@ -554,7 +567,7 @@ const cards = [
     a: "Si calcola \\(f(-x)\\) e si confronta con \\(f(x)\\) e \\(-f(x)\\). Occorre prima verificare che il dominio sia simmetrico rispetto all'origine (condizione necessaria). Se \\(f(-x) = f(x)\\): pari. Se \\(f(-x) = -f(x)\\): dispari. Altrimenti: né pari né dispari."
   },
 
-  // ── ESERCIZI (15) ──────────────────────────────────────────────────────────
+  // ── ESERCIZI (14) ──────────────────────────────────────────────────────────
   {
     cat: "esercizio",
     q: "Trova il dominio di \\(f(x) = \\sqrt{x^2 - 4x + 3}\\).",
@@ -626,7 +639,7 @@ const cards = [
     a: "Il logaritmo con base \\(\\frac{1}{2} < 1\\) è decrescente. La funzione interna \\(h(x) = x^2 + 1\\) è decrescente per \\(x < 0\\) e crescente per \\(x > 0\\). Per composizione: \\(f\\) è crescente per \\(x < 0\\) e decrescente per \\(x > 0\\) (funzione pari con massimo in \\(x = 0\\))."
   },
 
-  // ── RAGIONAMENTO (15) ────────────────────────────────────────────────────
+  // ── RAGIONAMENTO (13) ────────────────────────────────────────────────────
   {
     cat: "ragionamento",
     q: "Perché \\(f(x) = x^2\\) non è invertibile su \\(\\mathbb{R}\\), ma lo è su \\([0, +\\infty)\\)?",
