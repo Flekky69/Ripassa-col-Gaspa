@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gaspa Flashcards</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1008;
+    --paper: #f5f0e8;
+    --paper-dark: #ebe4d4;
+    --gold: #c8963e;
+    --gold-light: #e8b55a;
+    --shadow: rgba(26,16,8,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 15% 20%, rgba(200,150,62,0.07) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 75%, rgba(26,58,92,0.05) 0%, transparent 55%);
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    text-align: center;
+    padding: 3.5rem 1rem 2.5rem;
+    border-bottom: 2px solid var(--gold);
+    background: linear-gradient(180deg, rgba(200,150,62,0.08) 0%, transparent 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '∫';
+    position: absolute; right: 8%; top: 0;
+    font-size: 14rem; opacity: .03;
+    font-family: 'Playfair Display', serif;
+    pointer-events: none; user-select: none;
+    line-height: 1;
+    color: var(--gold);
+  }
+  header::after {
+    content: 'f(x)';
+    position: absolute; left: 6%; top: 10%;
+    font-size: 7rem; opacity: .03;
+    font-family: 'Playfair Display', serif;
+    pointer-events: none; user-select: none;
+    color: var(--ink);
+    font-style: italic;
+  }
+
+  .header-badge {
+    display: inline-block;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1.5px solid rgba(200,150,62,.4);
+    padding: .3rem .85rem;
+    border-radius: 20px;
+    margin-bottom: 1.1rem;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.9rem, 5vw, 3rem);
+    font-weight: 700;
+    letter-spacing: .02em;
+    color: var(--ink);
+    line-height: 1.15;
+  }
+
+  header p {
+    margin-top: .7rem;
+    font-size: clamp(.88rem, 2vw, 1rem);
+    color: #6b5a3e;
+    font-style: italic;
+    letter-spacing: .04em;
+  }
+
+  /* ─── MAIN ─── */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2.5rem 1.2rem 4rem;
+  }
+
+  .section-label {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: #8a7458;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(200,150,62,.25);
+  }
+
+  /* ─── GRID ─── */
+  .units-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+    gap: 1.2rem;
+  }
+
+  /* ─── UNIT CARD ─── */
+  .unit-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px var(--shadow);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: transform .2s, box-shadow .2s;
+    border: 1.5px solid transparent;
+    position: relative;
+  }
+  .unit-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 28px var(--shadow);
+    border-color: var(--gold);
+  }
+  .unit-card.locked {
+    opacity: .55;
+    pointer-events: none;
+    cursor: default;
+  }
+
+  .card-stripe {
+    height: 5px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  }
+  .unit-card.locked .card-stripe {
+    background: linear-gradient(90deg, #bbb, #ddd);
+  }
+
+  .card-body {
+    padding: 1.3rem 1.4rem 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  }
+
+  .card-unit-num {
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .unit-card.locked .card-unit-num { color: #999; }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+
+  .card-desc {
+    font-size: .82rem;
+    line-height: 1.55;
+    color: #5a4a30;
+    font-style: italic;
+    flex: 1;
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .75rem 1.4rem .9rem;
+    border-top: 1px solid rgba(200,150,62,.15);
+    gap: .5rem;
+  }
+
+  .card-stats {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+  }
+  .stat-chip {
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .05em;
+    padding: .22rem .55rem;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .chip-t { background: rgba(200,150,62,.13); color: #8a6020; }
+  .chip-e { background: rgba(139,32,32,.1); color: #7a1a1a; }
+  .chip-r { background: rgba(26,74,46,.1); color: #1a4a2e; }
+
+  .card-cta {
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+  .unit-card:hover .card-cta::after { content: ' →'; }
+
+  .lock-badge {
+    position: absolute;
+    top: .9rem; right: .9rem;
+    font-size: .75rem;
+    background: rgba(26,16,8,.07);
+    border-radius: 4px;
+    padding: .18rem .45rem;
+    color: #888;
+    letter-spacing: .04em;
+  }
+
+  /* ─── COMING SOON SECTION ─── */
+  .coming-section { margin-top: 2.5rem; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    text-align: center;
+    padding: 1.5rem 1rem 2rem;
+    font-size: .78rem;
+    color: #9a8060;
+    font-style: italic;
+    letter-spacing: .04em;
+    border-top: 1px solid rgba(200,150,62,.2);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (min-width: 600px) {
+    .units-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--paper-dark); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-badge">Matematica · Ripassa col Gaspa</div>
+  <h1>Flashcards di Ripasso</h1>
+  <p>Scegli un'unità per iniziare &nbsp;·&nbsp; Teoria, esercizi e ragionamento</p>
+</header>
+
+<main>
+
+  <!-- AVAILABLE UNITS -->
+  <div class="section-label">Unità disponibili</div>
+  <div class="units-grid" id="available-units">
+
+    <a href="unita1.html" class="unit-card">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-unit-num">Unità 1</div>
+        <div class="card-title">Funzioni e loro Proprietà</div>
+        <div class="card-desc">Dominio, codominio, monotonia, parità, funzioni elementari, composizione, funzione inversa.</div>
+      </div>
+      <div class="card-footer">
+        <div class="card-stats">
+          <span class="stat-chip chip-t">23 Teoria</span>
+          <span class="stat-chip chip-e">14 Esercizi</span>
+          <span class="stat-chip chip-r">13 Ragionamento</span>
+        </div>
+        <span class="card-cta">Studia</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- COMING SOON -->
+  <div class="coming-section">
+    <div class="section-label">Prossimamente</div>
+    <div class="units-grid">
+
+      <div class="unit-card locked">
+        <div class="lock-badge">in arrivo</div>
+        <div class="card-stripe"></div>
+        <div class="card-body">
+          <div class="card-unit-num">Unità 2</div>
+          <div class="card-title">Limiti</div>
+          <div class="card-desc">Definizione di limite, limite destro e sinistro, limiti notevoli, continuità, teoremi fondamentali.</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-stats">
+            <span class="stat-chip chip-t">Teoria</span>
+            <span class="stat-chip chip-e">Esercizi</span>
+            <span class="stat-chip chip-r">Ragionamento</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="unit-card locked">
+        <div class="lock-badge">in arrivo</div>
+        <div class="card-stripe"></div>
+        <div class="card-body">
+          <div class="card-unit-num">Unità 3</div>
+          <div class="card-title">Calcolo dei limiti e continuità</div>
+          <div class="card-desc">Forme indeterminate, limiti notevoli, Punti di discontinuità.</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-stats">
+            <span class="stat-chip chip-t">Teoria</span>
+            <span class="stat-chip chip-e">Esercizi</span>
+            <span class="stat-chip chip-r">Ragionamento</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="unit-card locked">
+        <div class="lock-badge">in arrivo</div>
+        <div class="card-stripe"></div>
+        <div class="card-body">
+          <div class="card-unit-num">Unità 4</div>
+          <div class="card-title">Derivate</div>
+          <div class="card-desc">Derivata di una funzione, Derivate fondamentali, Derivate di ordine superiore al primo, differenziale di una funzione.</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-stats">
+            <span class="stat-chip chip-t">Teoria</span>
+            <span class="stat-chip chip-e">Esercizi</span>
+            <span class="stat-chip chip-r">Ragionamento</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="unit-card locked">
+        <div class="lock-badge">in arrivo</div>
+        <div class="card-stripe"></div>
+        <div class="card-body">
+          <div class="card-unit-num">Unità 5</div>
+          <div class="card-title">Derivabilità e teoremi del calcolo differenziale</div>
+          <div class="card-desc">Punti di non derivabilità, Teorema di Rolle, Teorema di Lagrange, Teorema di De L’Hospital.</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-stats">
+            <span class="stat-chip chip-t">Teoria</span>
+            <span class="stat-chip chip-e">Esercizi</span>
+            <span class="stat-chip chip-r">Ragionamento</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="unit-card locked">
+        <div class="lock-badge">in arrivo</div>
+        <div class="card-stripe"></div>
+        <div class="card-body">
+          <div class="card-unit-num">Unità 6</div>
+          <div class="card-title">Massimi Minimi e flessi</div>
+          <div class="card-desc">Massimi, minimi, flessi orizzontali e derivata prima.</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-stats">
+            <span class="stat-chip chip-t">Teoria</span>
+            <span class="stat-chip chip-e">Esercizi</span>
+            <span class="stat-chip chip-r">Ragionamento</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="unit-card locked">
+        <div class="lock-badge">in arrivo</div>
+        <div class="card-stripe"></div>
+        <div class="card-body">
+          <div class="card-unit-num">Unità 7</div>
+          <div class="card-title">Studio delle funzioni</div>
+          <div class="card-desc">Dominio, simmetrie rispetto agli assi, studio del segno, Ricerca degli asintoti, Intervalli di monotonia, punti stazionari, studio della concavit, ricerca dei punti di flesso.</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-stats">
+            <span class="stat-chip chip-t">Teoria</span>
+            <span class="stat-chip chip-e">Esercizi</span>
+            <span class="stat-chip chip-r">Ragionamento</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="unit-card locked">
+        <div class="lock-badge">in arrivo</div>
+        <div class="card-stripe"></div>
+        <div class="card-body">
+          <div class="card-unit-num">Unità 8</div>
+          <div class="card-title">Integrali indefiniti</div>
+          <div class="card-desc">integrale indefinito, integrali di funzioni elementari e composte, integrazione per parti, integrazione di funzioni razionali fratte.</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-stats">
+            <span class="stat-chip chip-t">Teoria</span>
+            <span class="stat-chip chip-e">Esercizi</span>
+            <span class="stat-chip chip-r">Ragionamento</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="unit-card locked">
+        <div class="lock-badge">in arrivo</div>
+        <div class="card-stripe"></div>
+        <div class="card-body">
+          <div class="card-unit-num">Unità 9</div>
+          <div class="card-title">Integrali definiti</div>
+          <div class="card-desc">Integrale definito, Teorema della media, Teorema fondamentale del calcolo integrale, calcolo delle aree, calcolo dei volumi, integrali impropri.</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-stats">
+            <span class="stat-chip chip-t">Teoria</span>
+            <span class="stat-chip chip-e">Esercizi</span>
+            <span class="stat-chip chip-r">Ragionamento</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="unit-card locked">
+        <div class="lock-badge">in arrivo</div>
+        <div class="card-stripe"></div>
+        <div class="card-body">
+          <div class="card-unit-num">Unità 10</div>
+          <div class="card-title">Equazioni differenziali</div>
+          <div class="card-desc">Equazione differenziale, problema di Cauchy, equazioni del tipo y’=f(x), equazioni a variabili separabili, Equazioni lineari del primo ordine, Equazioni lineari del secondo ordine a coefficienti costanti omogenee.</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-stats">
+            <span class="stat-chip chip-t">Teoria</span>
+            <span class="stat-chip chip-e">Esercizi</span>
+            <span class="stat-chip chip-r">Ragionamento</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Flashcards di ripasso Matematica &nbsp;·&nbsp; Aggiornato automaticamente con ogni nuova unità
+</footer>
+
+</body>
+</html>
