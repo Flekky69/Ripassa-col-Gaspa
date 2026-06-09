@@ -515,21 +515,6 @@ const cards = [
   },
   {
     cat: "teoria",
-    q: "Cosa sono massimo e minimo assoluti di una funzione?",
-    a: "\\(M\\) è il <strong>massimo assoluto</strong> se \\(f(x) \\leq M = f(x_M)\\) per ogni \\(x\\) nel dominio. \\(m\\) è il <strong>minimo assoluto</strong> se \\(f(x) \\geq m = f(x_m)\\) per ogni \\(x\\). Non sempre esistono (es. \\(f(x) = x\\) su \\(\\mathbb{R}\\))."
-  },
-  {
-    cat: "teoria",
-    q: "Differenza tra massimo/minimo assoluto e massimo/minimo relativo.",
-    a: "Un massimo <strong>relativo</strong> (o locale) in \\(x_0\\) soddisfa \\(f(x) \\leq f(x_0)\\) solo in un intorno di \\(x_0\\), non necessariamente su tutto il dominio. Ogni massimo assoluto è anche relativo, ma non viceversa."
-  },
-  {
-    cat: "teoria",
-    q: "Cosa afferma il Teorema di Weierstrass?",
-    a: "Se \\(f\\) è continua su un intervallo chiuso e limitato \\([a, b]\\), allora \\(f\\) ammette massimo assoluto e minimo assoluto in \\([a, b]\\)."
-  },
-  {
-    cat: "teoria",
     q: "Come si leggono le proprietà di una funzione dal suo grafico?",
     a: "Dominio: proiezione del grafico sull'asse \\(x\\). Segno: dove il grafico è sopra/sotto l'asse \\(x\\). Monotonia: dove sale/scende. Simmetria: parità (simm. rispetto \\(y\\)) o disparità (simm. rispetto all'origine). Intersezioni con gli assi."
   },
@@ -565,28 +550,8 @@ const cards = [
   },
   {
     cat: "teoria",
-    q: "Cosa sono le asintote? Definisci asintoto verticale, orizzontale e obliquo.",
-    a: "<strong>Verticale</strong> \\(x = a\\): \\(\\lim_{x \\to a} f(x) = \\pm\\infty\\). <strong>Orizzontale</strong> \\(y = L\\): \\(\\lim_{x \\to \\pm\\infty} f(x) = L\\). <strong>Obliquo</strong> \\(y = mx + q\\): \\(m = \\lim_{x \\to \\infty} \\frac{f(x)}{x}\\), \\(q = \\lim_{x \\to \\infty}(f(x) - mx)\\)."
-  },
-  {
-    cat: "teoria",
-    q: "Definizione di funzione convessa (o concava verso il basso) e concava.",
-    a: "\\(f\\) è <strong>convessa</strong> su \\(I\\) se per ogni \\(x_1, x_2 \\in I\\) e \\(\\lambda \\in [0,1]\\): \\(f(\\lambda x_1 + (1-\\lambda)x_2) \\leq \\lambda f(x_1) + (1-\\lambda)f(x_2)\\). Il segmento che unisce due punti del grafico sta sopra la curva. È <strong>concava</strong> se vale la disuguaglianza opposta."
-  },
-  {
-    cat: "teoria",
     q: "Come si determina se una funzione è pari, dispari, o nessuna delle due?",
     a: "Si calcola \\(f(-x)\\) e si confronta con \\(f(x)\\) e \\(-f(x)\\). Occorre prima verificare che il dominio sia simmetrico rispetto all'origine (condizione necessaria). Se \\(f(-x) = f(x)\\): pari. Se \\(f(-x) = -f(x)\\): dispari. Altrimenti: né pari né dispari."
-  },
-  {
-    cat: "teoria",
-    q: "Quando una funzione razionale fratta \\(\\frac{p(x)}{q(x)}\\) ha asintoto obliquo?",
-    a: "Quando il grado di \\(p(x)\\) è esattamente uguale al grado di \\(q(x)\\) più uno, cioè \\(\\deg p = \\deg q + 1\\). In tal caso si divide \\(p(x)\\) per \\(q(x)\\) ottenendo \\(f(x) = mx + q + r(x)/q(x)\\) dove \\(r(x)/q(x) \\to 0\\) per \\(x \\to \\infty\\)."
-  },
-  {
-    cat: "teoria",
-    q: "Cosa sono le funzioni iperboliche \\(\\sinh x\\) e \\(\\cosh x\\)?",
-    a: "\\(\\sinh x = \\dfrac{e^x - e^{-x}}{2}\\) (dispari, crescente su \\(\\mathbb{R}\\)). \\(\\cosh x = \\dfrac{e^x + e^{-x}}{2}\\) (pari, \\(\\geq 1\\)). Identità: \\(\\cosh^2 x - \\sinh^2 x = 1\\). Sono le coordinate di un'iperbola equilatera."
   },
 
   // ── ESERCIZI (15) ──────────────────────────────────────────────────────────
