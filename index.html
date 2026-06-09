@@ -630,7 +630,7 @@ const cards = [
   {
     cat: "ragionamento",
     q: "Perché \\(f(x) = x^2\\) non è invertibile su \\(\\mathbb{R}\\), ma lo è su \\([0, +\\infty)\\)?",
-    a: "Su \\(\\mathbb{R}\\) non è iniettiva: \\(f(2) = f(-2) = 4\\). Restringendo a \\([0, +\\infty)\\), la funzione diventa strettamente crescente (dunque iniettiva) e l'inversa è \\(f^{-1}(x) = \\sqrt{x}\\) su \\([0, +\\infty)\\). La restrizione del dominio 'rompe' la simmetria che impediva l'invertibilità."
+    a: "Su \\(\\mathbb{R}\\) non è iniettiva: \\(f(2) = f(-2) = 4\\). Restringendo a \\([0, +\\infty)\\), la funzione diventa strettamente crescente (dunque iniettiva) e l'inversa è \\(f^{-1}(x) = \\sqrt{x}\\) su \\([0, +\\infty)\\)."
   },
   {
     cat: "ragionamento",
@@ -647,11 +647,7 @@ const cards = [
     q: "Se \\(f\\) e \\(g\\) sono entrambe crescenti, la composizione \\(g \\circ f\\) è crescente o decrescente?",
     a: "Crescente. Dimostrazione: se \\(x_1 < x_2\\), allora \\(f(x_1) < f(x_2)\\) (\\(f\\) crescente). Applicando \\(g\\) crescente: \\(g(f(x_1)) < g(f(x_2))\\). Quindi \\((g \\circ f)(x_1) < (g \\circ f)(x_2)\\). Analogamente, se una è crescente e l'altra decrescente, la composizione è decrescente."
   },
-  {
-    cat: "ragionamento",
-    q: "Una funzione continua su \\((a,b)\\) aperto ammette sempre massimo assoluto?",
-    a: "No. Contro-esempi: \\(f(x) = x\\) su \\((0,1)\\) non ha né massimo né minimo assoluti, perché non li raggiunge sugli estremi aperti. Il Teorema di Weierstrass richiede intervallo <strong>chiuso e limitato</strong>. Su un intervallo aperto non è garantita l'esistenza degli estremi assoluti."
-  },
+
   {
     cat: "ragionamento",
     q: "Perché \\(\\ln(x^2)\\) e \\(2\\ln x\\) non sono la stessa funzione, pur avendo la stessa formula algebrica?",
@@ -659,7 +655,7 @@ const cards = [
   },
   {
     cat: "ragionamento",
-    q: "Perché la funzione \\(f(x) = \\tan x\\) non è globalmente invertibile su \\((-\\frac{\\pi}{2}, \\frac{\\pi}{2})\\)? (Correzione: perché lo è?)",
+    q: "Perché la funzione \\(f(x) = \\tan x\\) non è globalmente invertibile ma lo è su \\((-\\frac{\\pi}{2}, \\frac{\\pi}{2})\\)?",
     a: "Su \\(\\left(-\\frac{\\pi}{2}, \\frac{\\pi}{2}\\right)\\) la tangente è <strong>strettamente crescente</strong> (quindi iniettiva) e assume tutti i valori in \\(\\mathbb{R}\\) (suriettiva su \\(\\mathbb{R}\\)). Quindi è biunivoca e ammette inversa: \\(\\arctan x\\). L'inversione globale fallisce perché \\(\\tan\\) è periodica, ma sulla restrizione funziona perfettamente."
   },
   {
