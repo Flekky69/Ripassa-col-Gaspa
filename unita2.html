@@ -455,21 +455,6 @@ const cards = [
   // ── TEORIA (30) ──────────────────────────────────────────────────────────
   {
     cat: "teoria",
-    q: "Cos'è una successione numerica?",
-    a: "Una successione è una funzione \\(a: \\mathbb{N} \\to \\mathbb{R}\\), che associa ad ogni numero naturale \\(n\\) un numero reale \\(a_n\\), detto <em>termine</em> di indice \\(n\\). Si scrive \\(\\{a_n\\}_{n \\in \\mathbb{N}}\\) oppure \\((a_n)\\)."
-  },
-  {
-    cat: "teoria",
-    q: "Definizione di limite di una successione: \\(\\lim_{n \\to +\\infty} a_n = L\\).",
-    a: "\\(\\lim_{n \\to +\\infty} a_n = L \\in \\mathbb{R}\\) significa: per ogni \\(\\varepsilon > 0\\) esiste \\(N \\in \\mathbb{N}\\) tale che per ogni \\(n > N\\) si ha \\(|a_n - L| < \\varepsilon\\). La successione <em>converge</em> a \\(L\\)."
-  },
-  {
-    cat: "teoria",
-    q: "Quando una successione è divergente? Distingui i due casi.",
-    a: "\\(\\lim_{n \\to +\\infty} a_n = +\\infty\\): per ogni \\(M > 0\\) esiste \\(N\\) tale che \\(n > N \\Rightarrow a_n > M\\). \\(\\lim_{n \\to +\\infty} a_n = -\\infty\\): per ogni \\(M > 0\\) esiste \\(N\\) tale che \\(n > N \\Rightarrow a_n < -M\\)."
-  },
-  {
-    cat: "teoria",
     q: "Definizione di limite finito di una funzione in un punto: \\(\\lim_{x \\to x_0} f(x) = L\\).",
     a: "Per ogni \\(\\varepsilon > 0\\) esiste \\(\\delta > 0\\) tale che per ogni \\(x\\) con \\(0 < |x - x_0| < \\delta\\) si ha \\(|f(x) - L| < \\varepsilon\\). Notare: \\(x \\neq x_0\\) (il punto stesso non conta)."
   },
@@ -560,11 +545,6 @@ const cards = [
   },
   {
     cat: "teoria",
-    q: "Limite notevole: \\(\\lim_{x \\to 0} \\frac{(1+x)^\\alpha - 1}{x}\\) per \\(\\alpha \\in \\mathbb{R}\\).",
-    a: "\\[\\lim_{x \\to 0} \\frac{(1+x)^\\alpha - 1}{x} = \\alpha\\] Caso \\(\\alpha = 1/2\\): \\(\\lim_{x \\to 0} \\frac{\\sqrt{1+x}-1}{x} = \\frac{1}{2}\\). È l'equivalente infinitesimale: \\((1+x)^\\alpha - 1 \\sim \\alpha x\\) per \\(x \\to 0\\)."
-  },
-  {
-    cat: "teoria",
     q: "Cosa sono gli infinitesimi e gli infiniti? Come si confrontano?",
     a: "\\(f\\) è un <strong>infinitesimo</strong> per \\(x \\to x_0\\) se \\(\\lim f(x) = 0\\). \\(f\\) è un <strong>infinito</strong> se \\(\\lim f(x) = \\pm\\infty\\). Due infinitesimi \\(f, g\\) si confrontano con \\(\\lim \\frac{f}{g}\\): se il limite è \\(L \\neq 0\\) sono <em>dello stesso ordine</em>; se è \\(0\\) allora \\(f\\) è di ordine superiore."
   },
@@ -592,11 +572,6 @@ const cards = [
     cat: "teoria",
     q: "Definizione di limite per \\(x \\to +\\infty\\) e \\(x \\to -\\infty\\).",
     a: "\\(\\lim_{x \\to +\\infty} f(x) = L\\): per ogni \\(\\varepsilon > 0\\) esiste \\(X\\) tale che \\(x > X \\Rightarrow |f(x) - L| < \\varepsilon\\). Analogamente per \\(x \\to -\\infty\\) con \\(x < -X\\). Se \\(L\\) è finito, la retta \\(y = L\\) è un <em>asintoto orizzontale</em>."
-  },
-  {
-    cat: "teoria",
-    q: "Cosa sono le successioni monotone? Qual è il teorema di convergenza?",
-    a: "Una successione è <strong>monotona crescente</strong> se \\(a_{n+1} \\geq a_n\\) per ogni \\(n\\), <strong>decrescente</strong> se \\(a_{n+1} \\leq a_n\\). Teorema: ogni successione monotona e limitata converge. Ogni successione crescente non limitata diverge a \\(+\\infty\\)."
   },
   {
     cat: "teoria",
