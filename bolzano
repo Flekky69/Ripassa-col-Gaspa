@@ -515,8 +515,8 @@ const cards = [
   },
   {
     cat: "teoria",
-    q: "Enunciare il Teorema degli Zeri (di Bolzano).",
-    a: "Se \\(f\\) è continua su \\([a, b]\\) e \\(f(a) \\cdot f(b) < 0\\) (cioè \\(f\\) assume valori di segno opposto agli estremi), allora esiste almeno un punto \\(c \\in (a, b)\\) tale che \\(f(c) = 0\\)."
+    q: "Enunciare il Teorema di esistenza degli Zeri (di Bolzano).",
+    a: "Intuitivamente: se una funzione continua in un intervallo chiuso e limitato assume valori di segno opposto agli estremi, sicuramente ci sarà ALMENO un punto all'interno dell'intervallo in cui si annulla. Formalmente: Se \\(f\\) è continua su \\([a, b]\\) e \\(f(a) \\cdot f(b) < 0\\) (cioè \\(f\\) assume valori di segno opposto agli estremi), allora esiste almeno un punto \\(c \\in (a, b)\\) tale che \\(f(c) = 0\\)."
   },
   {
     cat: "teoria",
