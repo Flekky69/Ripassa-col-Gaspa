@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calcolo dei Limiti e Continuità — Flashcards</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1008;
+    --paper: #f5f0e8;
+    --paper-dark: #ebe4d4;
+    --gold: #c8963e;
+    --gold-light: #e8b55a;
+    --red: #8b2020;
+    --blue: #1a3a5c;
+    --green: #1a4a2e;
+    --shadow: rgba(26,16,8,0.18);
+    --card-w: min(560px, 94vw);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(200,150,62,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 80%, rgba(26,58,92,0.06) 0%, transparent 60%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23f5f0e8'/%3E%3Cpath d='M0 0h1v1H0z' fill='%23e8e0cc' opacity='.4'/%3E%3C/svg%3E");
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    text-align: center;
+    padding: 2.5rem 1rem 1.5rem;
+    border-bottom: 2px solid var(--gold);
+    background: linear-gradient(180deg, rgba(200,150,62,0.08) 0%, transparent 100%);
+    position: relative;
+  }
+  header::before {
+    content: 'lim';
+    position: absolute; left: 50%; top: .6rem;
+    transform: translateX(-50%);
+    font-size: 5rem; opacity: .04; font-family: 'Playfair Display', serif;
+    pointer-events: none; user-select: none;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: .04em;
+    color: var(--ink);
+  }
+  header p {
+    margin-top: .4rem;
+    font-size: .9rem;
+    color: #6b5a3e;
+    font-style: italic;
+    letter-spacing: .06em;
+  }
+
+  /* ─── CONTROLS ─── */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+    justify-content: center;
+    padding: 1.2rem 1rem .8rem;
+    border-bottom: 1px solid rgba(200,150,62,.3);
+    background: rgba(245,240,232,.8);
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(6px);
+  }
+
+  .tab-group { display: flex; gap: 0; border: 1.5px solid var(--gold); border-radius: 6px; overflow: hidden; }
+  .tab-btn {
+    padding: .42rem .9rem;
+    font-family: 'Source Serif 4', serif;
+    font-size: .82rem;
+    border: none; background: transparent; cursor: pointer;
+    color: #6b5a3e; transition: all .2s;
+    letter-spacing: .03em;
+  }
+  .tab-btn.active { background: var(--gold); color: #fff; font-weight: 600; }
+  .tab-btn:not(.active):hover { background: rgba(200,150,62,.15); }
+
+  .mode-group { display: flex; gap: 0; border: 1.5px solid var(--blue); border-radius: 6px; overflow: hidden; }
+  .mode-btn {
+    padding: .42rem .9rem;
+    font-family: 'Source Serif 4', serif;
+    font-size: .82rem;
+    border: none; background: transparent; cursor: pointer;
+    color: var(--blue); transition: all .2s;
+    letter-spacing: .03em;
+  }
+  .mode-btn.active { background: var(--blue); color: #fff; font-weight: 600; }
+  .mode-btn:not(.active):hover { background: rgba(26,58,92,.1); }
+
+  .stat-pill {
+    padding: .38rem .75rem;
+    background: rgba(26,16,8,.06);
+    border-radius: 20px;
+    font-size: .78rem;
+    color: #6b5a3e;
+    letter-spacing: .04em;
+    align-self: center;
+  }
+
+  /* ─── MAIN ─── */
+  main { padding: 1.5rem 1rem 3rem; }
+
+  /* ─── BROWSE MODE ─── */
+  #browse-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(340px,94vw), 1fr));
+    gap: 1.2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .browse-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    box-shadow: 0 2px 8px var(--shadow);
+    border-left: 4px solid var(--gold);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .browse-card:hover { transform: translateY(-2px); box-shadow: 0 5px 16px var(--shadow); }
+  .browse-card[data-cat="esercizio"] { border-left-color: var(--red); }
+  .browse-card[data-cat="ragionamento"] { border-left-color: var(--green); }
+
+  .bc-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: .7rem;
+  }
+  .bc-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem; font-weight: 700;
+    color: var(--gold);
+  }
+  .browse-card[data-cat="esercizio"] .bc-num { color: var(--red); }
+  .browse-card[data-cat="ragionamento"] .bc-num { color: var(--green); }
+
+  .bc-tag {
+    font-size: .67rem; font-weight: 600; letter-spacing: .07em;
+    text-transform: uppercase; padding: .2rem .5rem;
+    border-radius: 3px;
+  }
+  .tag-teoria { background: rgba(200,150,62,.15); color: var(--gold); }
+  .tag-esercizio { background: rgba(139,32,32,.12); color: var(--red); }
+  .tag-ragionamento { background: rgba(26,74,46,.12); color: var(--green); }
+
+  .bc-q {
+    font-size: .92rem; line-height: 1.55;
+    color: #2a1f0d;
+    font-weight: 600;
+    margin-bottom: .6rem;
+  }
+  .bc-divider {
+    height: 1px; background: rgba(200,150,62,.25);
+    margin: .6rem 0;
+  }
+  .bc-a {
+    font-size: .88rem; line-height: 1.6;
+    color: #3a2f1d;
+    font-style: italic;
+  }
+  .bc-a-label {
+    font-size: .7rem; font-weight: 600; letter-spacing: .08em;
+    text-transform: uppercase; color: #8a7458;
+    margin-bottom: .3rem; font-style: normal;
+  }
+
+  /* ─── QUIZ MODE ─── */
+  #quiz-view {
+    display: flex; flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  .quiz-progress-bar {
+    width: var(--card-w);
+    height: 4px;
+    background: rgba(200,150,62,.2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .quiz-progress-fill {
+    height: 100%; background: var(--gold);
+    border-radius: 2px;
+    transition: width .4s ease;
+  }
+
+  .quiz-counter {
+    font-size: .82rem; color: #6b5a3e;
+    letter-spacing: .05em; font-style: italic;
+    width: var(--card-w); text-align: right;
+  }
+
+  /* FLIP CARD */
+  .flip-scene {
+    width: var(--card-w);
+    height: min(340px, 60vw);
+    cursor: pointer;
+    position: relative;
+  }
+
+  .flip-card {
+    width: 100%; height: 100%;
+    position: relative;
+  }
+
+  .flip-face {
+    position: absolute; inset: 0;
+    border-radius: 14px;
+    padding: 1.8rem;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center;
+    box-shadow: 0 6px 24px var(--shadow);
+    overflow: auto;
+    transition: opacity .35s ease, transform .35s ease;
+  }
+
+  .flip-front {
+    background: #fff;
+    border: 2px solid var(--gold);
+    opacity: 1;
+    transform: scale(1);
+    z-index: 2;
+  }
+  .flip-front::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 30%, rgba(200,150,62,.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .flip-back {
+    background: linear-gradient(135deg, #1a3a5c 0%, #0f2236 100%);
+    color: #e8d9c0;
+    opacity: 0;
+    transform: scale(.96);
+    z-index: 1;
+  }
+
+  /* flipped state */
+  .flip-card.flipped .flip-front {
+    opacity: 0;
+    transform: scale(.96);
+    z-index: 1;
+    pointer-events: none;
+  }
+  .flip-card.flipped .flip-back {
+    opacity: 1;
+    transform: scale(1);
+    z-index: 2;
+  }
+
+  .flip-card[data-cat="esercizio"] .flip-front { border-color: var(--red); }
+  .flip-card[data-cat="esercizio"] .flip-back {
+    background: linear-gradient(135deg, #5c1a1a 0%, #380f0f 100%);
+  }
+  .flip-card[data-cat="ragionamento"] .flip-front { border-color: var(--green); }
+  .flip-card[data-cat="ragionamento"] .flip-back {
+    background: linear-gradient(135deg, #1a4a2e 0%, #0f2e1c 100%);
+  }
+
+  .face-label {
+    font-size: .68rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; opacity: .5;
+    margin-bottom: .8rem;
+    font-style: normal;
+  }
+  .flip-back .face-label { color: #e8d9c0; }
+
+  .face-q {
+    font-size: clamp(.9rem, 2.5vw, 1.05rem);
+    line-height: 1.55;
+    font-weight: 600;
+    color: var(--ink);
+    z-index: 1;
+  }
+  .flip-back .face-a {
+    font-size: clamp(.82rem, 2.3vw, .97rem);
+    line-height: 1.65;
+    color: #e8d9c0;
+    font-style: italic;
+  }
+
+  .face-hint {
+    position: absolute; bottom: .8rem;
+    font-size: .68rem; opacity: .35; letter-spacing: .05em;
+    font-style: italic;
+  }
+
+  /* ─── QUIZ CONTROLS ─── */
+  .quiz-nav {
+    display: flex; gap: .8rem; align-items: center;
+    flex-wrap: wrap; justify-content: center;
+  }
+
+  .nav-btn {
+    font-family: 'Source Serif 4', serif;
+    font-size: .88rem;
+    padding: .55rem 1.4rem;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all .18s;
+    letter-spacing: .03em;
+  }
+  .nav-btn.primary {
+    background: var(--gold); color: #fff; border-color: var(--gold);
+  }
+  .nav-btn.primary:hover { background: var(--gold-light); }
+  .nav-btn.secondary {
+    background: transparent; color: var(--ink);
+    border-color: rgba(26,16,8,.25);
+  }
+  .nav-btn.secondary:hover { background: rgba(26,16,8,.06); }
+  .nav-btn:disabled { opacity: .35; cursor: default; }
+
+  .shuffle-btn {
+    padding: .5rem; border: none; background: none;
+    cursor: pointer; color: #8a7458; font-size: 1.1rem;
+    transition: transform .2s;
+    line-height: 1;
+  }
+  .shuffle-btn:hover { transform: rotate(180deg); color: var(--gold); }
+
+  /* ─── SCORE PANEL ─── */
+  .score-panel {
+    display: none;
+    flex-direction: column; align-items: center;
+    gap: .8rem;
+    width: var(--card-w);
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.8rem;
+    box-shadow: 0 4px 20px var(--shadow);
+    text-align: center;
+  }
+  .score-panel.visible { display: flex; }
+  .score-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; color: var(--ink);
+  }
+  .score-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem; color: var(--gold); font-weight: 700;
+    line-height: 1;
+  }
+  .score-sub { font-size: .88rem; color: #6b5a3e; font-style: italic; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 480px) {
+    .flip-scene { height: min(280px, 72vw); }
+    .flip-face { padding: 1.2rem; }
+    .face-q, .flip-back .face-a { font-size: .88rem; }
+  }
+  @media (min-width: 900px) {
+    #browse-view { grid-template-columns: repeat(auto-fill, minmax(340px,1fr)); }
+  }
+
+  /* MathJax overrides */
+  .MJX-TEX { font-size: 1em !important; }
+  mjx-container { margin: .15em 0; max-width: 100%; overflow-x: auto; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--paper-dark); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+  .home-link {
+    display: inline-block;
+    margin-bottom: .8rem;
+    font-size: .8rem;
+    color: #8a7458;
+    text-decoration: none;
+    letter-spacing: .06em;
+    border: 1px solid rgba(200,150,62,.35);
+    padding: .28rem .7rem;
+    border-radius: 4px;
+    transition: all .18s;
+  }
+  .home-link:hover { color: var(--gold); border-color: var(--gold); background: rgba(200,150,62,.07); }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="home-link">← Tutte le unità</a>
+  <h1>Calcolo dei Limiti e Continuità</h1>
+  <p>Unità 3 — Analisi Matematica &nbsp;·&nbsp; 60 Flashcards</p>
+</header>
+
+<div class="controls">
+  <div class="tab-group">
+    <button class="tab-btn active" data-filter="all">Tutte</button>
+    <button class="tab-btn" data-filter="teoria">Teoria</button>
+    <button class="tab-btn" data-filter="esercizio">Esercizi</button>
+    <button class="tab-btn" data-filter="ragionamento">Ragionamento</button>
+  </div>
+  <div class="mode-group">
+    <button class="mode-btn active" data-mode="quiz">Quiz</button>
+    <button class="mode-btn" data-mode="browse">Consultazione</button>
+  </div>
+  <span class="stat-pill" id="stat-pill">60 carte</span>
+</div>
+
+<main>
+  <!-- BROWSE VIEW -->
+  <div id="browse-view" style="display:none"></div>
+
+  <!-- QUIZ VIEW -->
+  <div id="quiz-view">
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="qpf" style="width:0%"></div></div>
+    <div class="quiz-counter" id="qcounter">1 / 60</div>
+    <div class="flip-scene" id="flip-scene" onclick="flipCard()">
+      <div class="flip-card" id="flip-card">
+        <div class="flip-face flip-front">
+          <div class="face-label" id="fc-tag">Teoria</div>
+          <div class="face-q" id="fc-q"></div>
+          <span class="face-hint">tocca per vedere la risposta</span>
+        </div>
+        <div class="flip-face flip-back">
+          <div class="face-label">Risposta</div>
+          <div id="fc-a" style="font-style:italic;font-size:clamp(.82rem,2.3vw,.97rem);line-height:1.65;color:#e8d9c0;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="quiz-nav">
+      <button class="nav-btn secondary" id="btn-prev" onclick="prevCard()" disabled>← Indietro</button>
+      <button class="nav-btn primary" id="btn-next" onclick="nextCard()">Avanti →</button>
+      <button class="shuffle-btn" title="Mischia le carte" onclick="shuffle()">⇄</button>
+    </div>
+    <div class="score-panel" id="score-panel">
+      <div class="score-title">Sessione completata!</div>
+      <div class="score-num" id="score-num">60</div>
+      <div class="score-sub">carte studiate</div>
+      <button class="nav-btn primary" onclick="restart()">Ricomincia</button>
+    </div>
+  </div>
+</main>
+
+<script>
+// ─── DATASET ───────────────────────────────────────────────────────────────
+const cards = [
+  // ── TEORIA (30) ──────────────────────────────────────────────────────────
+  {
+    cat: "teoria",
+    q: "Cosa si intende per <em>forma indeterminata</em> in un limite?",
+    a: "Una forma indeterminata è un'espressione del tipo \\(\\frac{0}{0}\\), \\(\\frac{\\infty}{\\infty}\\), \\(\\infty - \\infty\\), \\(0 \\cdot \\infty\\), \\(1^\\infty\\), \\(0^0\\), \\(\\infty^0\\) in cui il risultato del limite <em>non è determinabile</em> dalle sole informazioni sul tipo di indeterminazione: dipende da come numeratore e denominatore (o i fattori) tendono ai propri valori."
+  },
+  {
+    cat: "teoria",
+    q: "Quante e quali sono le forme indeterminate? Elencale tutte.",
+    a: "Sono sette: \\[\\frac{0}{0},\\quad \\frac{\\infty}{\\infty},\\quad \\infty - \\infty,\\quad 0 \\cdot \\infty,\\quad 1^\\infty,\\quad 0^0,\\quad \\infty^0\\] Le prime due sono le più frequenti nei calcoli razionali; le ultime tre riguardano esponenti variabili e si risolvono spesso con la riscrittura \\(a^b = e^{b\\ln a}\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Come si risolve la forma indeterminata \\(\\frac{0}{0}\\) per funzioni razionali?",
+    a: "Si <strong>fattorizzano</strong> numeratore e denominatore e si semplifica il fattore comune che si annulla. Esempio: \\(\\lim_{x\\to2}\\frac{x^2-4}{x-2} = \\lim_{x\\to2}\\frac{(x-2)(x+2)}{x-2} = \\lim_{x\\to2}(x+2) = 4\\). La semplificazione è lecita perché \\(x \\neq x_0\\) nella definizione di limite."
+  },
+  {
+    cat: "teoria",
+    q: "Come si risolve la forma \\(\\frac{\\infty}{\\infty}\\) per funzioni razionali (polinomi)?",
+    a: "Si divide numeratore e denominatore per la <strong>potenza massima</strong> di \\(x\\) presente. Per \\(x \\to \\infty\\): il limite dipende solo dai termini di grado massimo. Se \\(\\deg p = \\deg q\\): limite = rapporto dei coefficienti direttori. Se \\(\\deg p > \\deg q\\): \\(\\pm\\infty\\). Se \\(\\deg p < \\deg q\\): 0."
+  },
+  {
+    cat: "teoria",
+    q: "Come si risolve la forma indeterminata \\(\\infty - \\infty\\)?",
+    a: "Si riconduce a un rapporto. Tecniche principali: (1) <strong>raccoglimento</strong> del termine dominante; (2) <strong>moltiplicazione per il coniugato</strong> (per espressioni con radici); (3) riduzione a frazione comune (per differenze di frazioni). Esempio: \\(\\sqrt{x^2+x}-x = \\frac{x}{\\sqrt{x^2+x}+x} \\to \\frac{1}{2}\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Come si risolve la forma \\(0 \\cdot \\infty\\)?",
+    a: "Si trasforma in un rapporto \\(\\frac{0}{0}\\) o \\(\\frac{\\infty}{\\infty}\\): \\[f \\cdot g = \\frac{f}{1/g} \\quad \\text{oppure} \\quad \\frac{g}{1/f}\\] Si sceglie la forma che porta al rapporto più semplice. Esempio: \\(x \\ln x\\) per \\(x\\to 0^+\\) diventa \\(\\frac{\\ln x}{1/x}\\to\\frac{-\\infty}{+\\infty}\\), risolvibile con De L'Hôpital."
+  },
+  {
+    cat: "teoria",
+    q: "Come si risolvono le forme \\(1^\\infty\\), \\(0^0\\), \\(\\infty^0\\)?",
+    a: "Si sfrutta la continuità dell'esponenziale: \\[a^b = e^{b\\ln a}\\] Si riscrive il limite come \\(e^{\\lim b\\ln a}\\) e si calcola l'esponente (che di solito è una forma \\(0\\cdot\\infty\\) o \\(\\frac{0}{0}\\)). Esempio: \\(\\lim(1+x)^{1/x} = e^{\\lim \\frac{\\ln(1+x)}{x}} = e^1 = e\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Primo limite notevole trigonometrico fondamentale.",
+    a: "\\[\\lim_{x \\to 0} \\frac{\\sin x}{x} = 1\\] Da questo derivano: \\(\\lim_{x\\to0}\\frac{\\tan x}{x}=1\\), \\(\\lim_{x\\to0}\\frac{\\arcsin x}{x}=1\\), \\(\\lim_{x\\to0}\\frac{\\arctan x}{x}=1\\), \\(\\lim_{x\\to0}\\frac{1-\\cos x}{x^2}=\\frac{1}{2}\\). Tutti si ricavano da questo tramite identità trigonometriche."
+  },
+  {
+    cat: "teoria",
+    q: "Limite notevole esponenziale: \\(\\lim_{x\\to 0}\\frac{e^x-1}{x}\\).",
+    a: "\\[\\lim_{x \\to 0} \\frac{e^x - 1}{x} = 1\\] Generalizzazione: \\(\\lim_{x\\to0}\\frac{a^x-1}{x}=\\ln a\\) per \\(a>0\\). Equivalente asintotico: \\(e^x - 1 \\sim x\\) per \\(x\\to 0\\). Corollario: \\(\\lim_{x\\to0}\\frac{\\ln(1+x)}{x}=1\\), cioè \\(\\ln(1+x)\\sim x\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Limite notevole del numero \\(e\\): definizione come limite.",
+    a: "\\[\\lim_{n \\to +\\infty}\\left(1+\\frac{1}{n}\\right)^n = e\\] Forma continua: \\(\\lim_{x\\to 0}(1+x)^{1/x}=e\\). Equivalente: \\(\\lim_{x\\to\\infty}\\left(1+\\frac{k}{x}\\right)^x = e^k\\) per ogni costante \\(k\\). È la base della crescita esponenziale naturale."
+  },
+  {
+    cat: "teoria",
+    q: "Limite notevole logaritmico: \\(\\lim_{x\\to 0}\\frac{\\ln(1+x)}{x}\\).",
+    a: "\\[\\lim_{x \\to 0} \\frac{\\ln(1+x)}{x} = 1\\] Equivalente asintotico: \\(\\ln(1+x)\\sim x\\) per \\(x\\to 0\\). Generalizzazione: \\(\\lim_{x\\to0}\\frac{\\log_a(1+x)}{x} = \\frac{1}{\\ln a}\\). Si dimostra dal limite di \\(e\\) oppure con De L'Hôpital."
+  },
+  {
+    cat: "teoria",
+    q: "Limite notevole delle potenze: \\(\\lim_{x\\to 0}\\frac{(1+x)^\\alpha - 1}{x}\\).",
+    a: "\\[\\lim_{x \\to 0} \\frac{(1+x)^\\alpha - 1}{x} = \\alpha\\] per ogni \\(\\alpha \\in \\mathbb{R}\\). Equivalente: \\((1+x)^\\alpha - 1 \\sim \\alpha x\\) per \\(x\\to 0\\). Caso \\(\\alpha=1/2\\): \\(\\sqrt{1+x}-1\\sim\\frac{x}{2}\\). Si usa per le radici nelle forme indeterminate."
+  },
+  {
+    cat: "teoria",
+    q: "Cosa sono gli <em>infinitesimi</em>? Come si confrontano due infinitesimi?",
+    a: "\\(f\\) è un <strong>infinitesimo</strong> per \\(x\\to x_0\\) se \\(\\lim_{x\\to x_0}f(x)=0\\). Due infinitesimi \\(f\\) e \\(g\\) si confrontano tramite \\(L=\\lim\\frac{f}{g}\\): se \\(L=0\\) allora \\(f\\) è di <em>ordine superiore</em> rispetto a \\(g\\) (\\(f=o(g)\\)); se \\(L\\neq0,\\infty\\) sono dello <em>stesso ordine</em>; se \\(L=\\infty\\), \\(g\\) è di ordine superiore."
+  },
+  {
+    cat: "teoria",
+    q: "Cosa significa \\(f(x) = o(g(x))\\) per \\(x\\to x_0\\) (o-piccolo)?",
+    a: "\\(f = o(g)\\) per \\(x\\to x_0\\) significa \\(\\lim_{x\\to x_0}\\frac{f(x)}{g(x)} = 0\\): \\(f\\) è trascurabile rispetto a \\(g\\). Esempi fondamentali: \\(x^2 = o(x)\\), \\(\\ln x = o(x^\\alpha)\\) per \\(x\\to+\\infty\\), \\(x^n = o(e^x)\\) per \\(x\\to+\\infty\\). Usato per semplificare limiti con sviluppi di Taylor."
+  },
+  {
+    cat: "teoria",
+    q: "Cosa significa \\(f(x) \\sim g(x)\\) per \\(x\\to x_0\\) (equivalenza asintotica)?",
+    a: "\\(f\\sim g\\) per \\(x\\to x_0\\) significa \\(\\lim_{x\\to x_0}\\frac{f(x)}{g(x)}=1\\). Gli equivalenti si possono usare in <strong>prodotti e quozienti</strong> ma <strong>non</strong> in somme e differenze. Tabella utile per \\(x\\to 0\\): \\(\\sin x\\sim x\\), \\(\\tan x\\sim x\\), \\(1-\\cos x\\sim\\frac{x^2}{2}\\), \\(\\ln(1+x)\\sim x\\), \\(e^x-1\\sim x\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Gerarchia degli infiniti per \\(x\\to+\\infty\\). Qual è l'ordine?",
+    a: "In ordine crescente di rapidità di divergenza: \\[\\ln x \\ll x^\\alpha \\ll a^x \\ll x! \\ll x^x\\] per \\(\\alpha>0\\), \\(a>1\\). Formalmente: \\(\\lim_{x\\to+\\infty}\\frac{\\ln x}{x^\\alpha}=0\\), \\(\\lim_{x\\to+\\infty}\\frac{x^\\alpha}{a^x}=0\\). Il logaritmo è il più lento, l'esponenziale domina su qualsiasi potenza."
+  },
+  {
+    cat: "teoria",
+    q: "Gerarchia degli infinitesimi per \\(x\\to 0^+\\). Come si ordinano?",
+    a: "Per \\(x\\to 0^+\\): \\(x^\\alpha\\to 0\\) più lentamente quanto più \\(\\alpha\\) è piccolo. Ordine: \\(x^{1/2}\\gg x\\gg x^2\\gg x^3\\gg\\cdots\\) (le potenze più alte tendono a 0 più velocemente). \\(|\\ln x|\\) tende a \\(+\\infty\\) ma \\(x|\\ln x|\\to 0\\), quindi \\(x\\) batte il logaritmo."
+  },
+  {
+    cat: "teoria",
+    q: "Enunciare il Teorema del Confronto (dei Carabinieri) per i limiti.",
+    a: "Se in un intorno (bucato) di \\(x_0\\) vale \\(g(x)\\leq f(x)\\leq h(x)\\) e \\[\\lim_{x\\to x_0}g(x) = \\lim_{x\\to x_0}h(x) = L\\] allora \\(\\lim_{x\\to x_0}f(x)=L\\). Usato tipicamente per dimostrare \\(\\lim_{x\\to0}x\\sin(1/x)=0\\) con \\(g=-|x|\\), \\(h=|x|\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Definizione di continuità di \\(f\\) in \\(x_0\\). Tre condizioni equivalenti.",
+    a: "\\(f\\) è continua in \\(x_0\\) se: (1) \\(f(x_0)\\) è definita; (2) esiste \\(\\lim_{x\\to x_0}f(x)\\); (3) \\(\\lim_{x\\to x_0}f(x)=f(x_0)\\). Equivalente con \\(\\varepsilon\\text{-}\\delta\\): \\(\\forall\\varepsilon>0\\;\\exists\\delta>0:\\;|x-x_0|<\\delta\\Rightarrow|f(x)-f(x_0)|<\\varepsilon\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Discontinuità eliminabile: definizione ed esempio.",
+    a: "In \\(x_0\\) c'è una <strong>discontinuità eliminabile</strong> se esiste il limite finito \\(L=\\lim_{x\\to x_0}f(x)\\) ma \\(f(x_0)\\neq L\\) (o \\(f\\) non è definita in \\(x_0\\)). Si <em>elimina</em> ridefinendo \\(f(x_0):=L\\). Esempio: \\(f(x)=\\frac{\\sin x}{x}\\) in \\(x=0\\): il limite è 1, basta porre \\(f(0)=1\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Discontinuità di prima specie (o a salto): definizione.",
+    a: "In \\(x_0\\) c'è una <strong>discontinuità di prima specie</strong> se esistono entrambi i limiti laterali finiti ma sono diversi: \\[\\lim_{x\\to x_0^-}f(x) \\neq \\lim_{x\\to x_0^+}f(x)\\] Il <em>salto</em> è la differenza tra i due limiti. Esempio: \\(f(x)=\\text{sgn}(x)\\) in \\(x=0\\): limite sinistro \\(-1\\), destro \\(+1\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Discontinuità di seconda specie: definizione.",
+    a: "In \\(x_0\\) c'è una <strong>discontinuità di seconda specie</strong> se almeno uno dei limiti laterali è infinito o non esiste. Esempi: \\(f(x)=\\frac{1}{x}\\) in \\(x=0\\) (limiti \\(\\pm\\infty\\)); \\(f(x)=\\sin(1/x)\\) in \\(x=0\\) (il limite non esiste per oscillazione). È il tipo di discontinuità più 'grave'."
+  },
+  {
+    cat: "teoria",
+    q: "Cosa sono gli asintoti verticali? Come si trovano?",
+    a: "La retta \\(x=a\\) è un <strong>asintoto verticale</strong> se almeno uno dei limiti laterali è infinito: \\(\\lim_{x\\to a^\\pm}f(x)=\\pm\\infty\\). Si cercano nei punti esclusi dal dominio (zeri del denominatore, punti di frontiera per logaritmi o radici). Corrispondono a discontinuità di seconda specie."
+  },
+  {
+    cat: "teoria",
+    q: "Come si trova l'asintoto orizzontale di una funzione?",
+    a: "La retta \\(y=L\\) è un <strong>asintoto orizzontale</strong> per \\(x\\to+\\infty\\) se \\(\\lim_{x\\to+\\infty}f(x)=L\\) (finito). Analogamente per \\(x\\to-\\infty\\). Una funzione può avere asintoti orizzontali diversi a destra e a sinistra. Se il limite è \\(\\pm\\infty\\), non c'è asintoto orizzontale (ma potrebbe esserci uno obliquo)."
+  },
+  {
+    cat: "teoria",
+    q: "Come si trova l'asintoto obliquo \\(y=mx+q\\)?",
+    a: "\\[m = \\lim_{x\\to\\pm\\infty}\\frac{f(x)}{x}, \\qquad q = \\lim_{x\\to\\pm\\infty}\\bigl(f(x)-mx\\bigr)\\] Se \\(m=0\\) si ricade nell'asintoto orizzontale. L'asintoto obliquo esiste (finito) solo se entrambi i limiti sono finiti. Per le fratte: esiste quando \\(\\deg\\text{num}=\\deg\\text{den}+1\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Enunciare il Teorema degli Zeri di Bolzano.",
+    a: "Se \\(f\\) è continua su \\([a,b]\\) e \\(f(a)\\cdot f(b)<0\\) (segni opposti agli estremi), allora esiste almeno un \\(c\\in(a,b)\\) tale che \\(f(c)=0\\). È un caso particolare del Teorema dei Valori Intermedi e garantisce l'esistenza (non l'unicità) di uno zero."
+  },
+  {
+    cat: "teoria",
+    q: "Perché la continuità si conserva per operazioni algebriche e composizione?",
+    a: "Se \\(f\\) e \\(g\\) sono continue in \\(x_0\\), allora \\(f\\pm g\\), \\(f\\cdot g\\), \\(f/g\\) (se \\(g(x_0)\\neq0\\)) sono continue in \\(x_0\\). Inoltre se \\(f\\) è continua in \\(x_0\\) e \\(g\\) è continua in \\(f(x_0)\\), allora \\(g\\circ f\\) è continua in \\(x_0\\). Questo permette di concludere immediatamente la continuità di funzioni composte da funzioni elementari."
+  },
+  {
+    cat: "teoria",
+    q: "Cosa afferma il Teorema di Weierstrass? Perché è importante?",
+    a: "Ogni funzione continua su un intervallo <strong>chiuso e limitato</strong> \\([a,b]\\) ammette massimo e minimo assoluti. È importante perché garantisce l'esistenza degli estremi senza doverli calcolare esplicitamente. L'ipotesi di compattezza è essenziale: su \\((a,b)\\) o su \\(\\mathbb{R}\\) il teorema può fallire."
+  },
+  {
+    cat: "teoria",
+    q: "Cosa afferma il Teorema dei Valori Intermedi?",
+    a: "Se \\(f\\) è continua su \\([a,b]\\) e \\(k\\) è un valore compreso tra \\(f(a)\\) e \\(f(b)\\), allora esiste almeno un \\(c\\in[a,b]\\) con \\(f(c)=k\\). Intuitivamente: una funzione continua non può 'saltare' da un valore a un altro senza passare per tutti i valori intermedi."
+  },
+  {
+    cat: "teoria",
+    q: "Definizione di limite destro e sinistro. Quando esiste il limite bilatero?",
+    a: "\\(\\lim_{x\\to x_0^+}f(x)=L^+\\): limite per \\(x\\to x_0\\) con \\(x>x_0\\). \\(\\lim_{x\\to x_0^-}f(x)=L^-\\): con \\(x<x_0\\). Il limite bilatero \\(\\lim_{x\\to x_0}f(x)\\) esiste e vale \\(L\\) se e solo se \\(L^+=L^-=L\\). Se \\(L^+\\neq L^-\\) si ha una discontinuità di prima specie."
+  },
+  {
+    cat: "teoria",
+    q: "Come si usa la regola di De L'Hôpital per le forme \\(\\frac{0}{0}\\) e \\(\\frac{\\infty}{\\infty}\\)?",
+    a: "Se \\(\\lim f=\\lim g=0\\) (o \\(\\pm\\infty\\)) e \\(g'\\neq0\\) intorno a \\(x_0\\): \\[\\lim_{x\\to x_0}\\frac{f(x)}{g(x)}=\\lim_{x\\to x_0}\\frac{f'(x)}{g'(x)}\\] purché quest'ultimo limite esista. Si può applicare più volte. Attenzione: verificare sempre le ipotesi prima di applicarla, e non usarla se le derivate complicano il calcolo."
+  },
+
+  // ── ESERCIZI (15) ─────────────────────────────────────────────────────────
+  {
+    cat: "esercizio",
+    q: "Calcola \\(\\lim_{x\\to 2}\\frac{x^2-4}{x^2-3x+2}\\).",
+    a: "Forma \\(\\frac{0}{0}\\). Fattorizzo: \\(x^2-4=(x-2)(x+2)\\) e \\(x^2-3x+2=(x-2)(x-1)\\). \\[\\lim_{x\\to2}\\frac{(x-2)(x+2)}{(x-2)(x-1)}=\\lim_{x\\to2}\\frac{x+2}{x-1}=\\frac{4}{1}=4\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcola \\(\\lim_{x\\to+\\infty}\\frac{3x^3-2x+1}{5x^3+x^2}\\).",
+    a: "Forma \\(\\frac{\\infty}{\\infty}\\). Divido per \\(x^3\\) (grado massimo): \\[\\lim_{x\\to+\\infty}\\frac{3-\\frac{2}{x^2}+\\frac{1}{x^3}}{5+\\frac{1}{x}}=\\frac{3-0+0}{5+0}=\\frac{3}{5}\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcola \\(\\lim_{x\\to 0}\\frac{\\sin(5x)}{\\tan(3x)}\\).",
+    a: "Uso gli equivalenti per \\(x\\to0\\): \\(\\sin(5x)\\sim 5x\\) e \\(\\tan(3x)\\sim 3x\\). \\[\\lim_{x\\to0}\\frac{\\sin(5x)}{\\tan(3x)}\\sim\\frac{5x}{3x}=\\frac{5}{3}\\] Oppure: moltiplico e divido per gli argomenti e uso i limiti notevoli."
+  },
+  {
+    cat: "esercizio",
+    q: "Calcola \\(\\lim_{x\\to+\\infty}\\left(\\sqrt{x^2+3x}-x\\right)\\).",
+    a: "Forma \\(\\infty-\\infty\\). Moltiplico per il coniugato: \\[\\frac{(\\sqrt{x^2+3x}-x)(\\sqrt{x^2+3x}+x)}{\\sqrt{x^2+3x}+x}=\\frac{3x}{\\sqrt{x^2+3x}+x}\\] Divido per \\(x\\): \\(\\frac{3}{\\sqrt{1+3/x}+1}\\to\\frac{3}{2}\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Calcola \\(\\lim_{x\\to 0}\\frac{1-\\cos(2x)}{x^2}\\).",
+    a: "Uso l'equivalente \\(1-\\cos(2x)\\sim\\frac{(2x)^2}{2}=2x^2\\) per \\(x\\to0\\): \\[\\lim_{x\\to0}\\frac{1-\\cos(2x)}{x^2}\\sim\\frac{2x^2}{x^2}=2\\] Oppure con De L'Hôpital: \\(\\frac{2\\sin(2x)}{2x}=\\frac{\\sin(2x)}{x}\\to2\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Calcola \\(\\lim_{x\\to 0}\\frac{e^{3x}-1}{\\ln(1+2x)}\\).",
+    a: "Uso gli equivalenti: \\(e^{3x}-1\\sim 3x\\) e \\(\\ln(1+2x)\\sim 2x\\) per \\(x\\to0\\): \\[\\lim_{x\\to0}\\frac{e^{3x}-1}{\\ln(1+2x)}\\sim\\frac{3x}{2x}=\\frac{3}{2}\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcola \\(\\lim_{x\\to+\\infty}x\\left(e^{1/x}-1\\right)\\).",
+    a: "Forma \\(\\infty\\cdot0\\). Pongo \\(t=1/x\\to0^+\\): \\[\\lim_{t\\to0^+}\\frac{e^t-1}{t}=1\\] usando il limite notevole \\(\\frac{e^t-1}{t}\\to1\\). Quindi il limite vale \\(1\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Classifica la discontinuità di \\(f(x)=\\frac{|x|}{x}\\) in \\(x=0\\).",
+    a: "\\(\\lim_{x\\to0^+}\\frac{x}{x}=1\\) e \\(\\lim_{x\\to0^-}\\frac{-x}{x}=-1\\). I due limiti laterali esistono finiti ma sono diversi: <strong>discontinuità di prima specie (salto)</strong>, con salto pari a \\(1-(-1)=2\\). Questa è la funzione segno \\(\\text{sgn}(x)\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Trova gli asintoti di \\(f(x)=\\frac{x^2+1}{x-1}\\).",
+    a: "<strong>Verticale</strong>: \\(x=1\\) (zero del denominatore; \\(\\lim_{x\\to1^\\pm}f=\\pm\\infty\\)). <strong>Obliquo</strong>: \\(m=\\lim\\frac{f}{x}=1\\); \\(q=\\lim(f-x)=\\lim\\frac{x^2+1-(x^2-x)}{x-1}=\\lim\\frac{x+1}{x-1}=1\\). Asintoto obliquo: \\(y=x+1\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Calcola \\(\\lim_{x\\to0^+}x^x\\).",
+    a: "Forma \\(0^0\\). Scrivo \\(x^x=e^{x\\ln x}\\). Calcolo l'esponente: \\(\\lim_{x\\to0^+}x\\ln x=\\lim_{x\\to0^+}\\frac{\\ln x}{1/x}\\overset{H}{=}\\lim_{x\\to0^+}\\frac{1/x}{-1/x^2}=-\\lim_{x\\to0^+}x=0\\). Quindi \\(\\lim_{x\\to0^+}x^x=e^0=1\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Determina \\(a\\) e \\(b\\) affinché \\(f(x)=\\begin{cases}ax+b & x<1\\\\ 3 & x=1\\\\ x^2+1 & x>1\\end{cases}\\) sia continua in \\(x=1\\).",
+    a: "\\(\\lim_{x\\to1^+}(x^2+1)=2\\neq3=f(1)\\): impossibile eliminare questa discontinuità mantenendo \\(f(1)=3\\). Riformulazione corretta: se \\(f(1)\\) non è vincolato, occorre \\(\\lim^-=\\lim^+=f(1)\\). Con \\(f(1)=2\\): \\(a+b=2\\). Il sistema ha infinite soluzioni (es. \\(a=1,b=1\\))."
+  },
+  {
+    cat: "esercizio",
+    q: "Calcola \\(\\lim_{x\\to+\\infty}\\left(1+\\frac{2}{x}\\right)^{3x}\\).",
+    a: "Forma \\(1^\\infty\\). Scrivo: \\[\\left(1+\\frac{2}{x}\\right)^{3x}=\\left[\\left(1+\\frac{2}{x}\\right)^{x/2}\\right]^6\\] Poiché \\(\\left(1+\\frac{2}{x}\\right)^{x/2}\\to e\\), il limite è \\(e^6\\). Oppure: \\(e^{3x\\ln(1+2/x)}\\sim e^{3x\\cdot(2/x)}=e^6\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Calcola \\(\\lim_{x\\to0}\\frac{\\ln(1+x^2)}{1-\\cos x}\\).",
+    a: "Uso gli equivalenti per \\(x\\to0\\): \\(\\ln(1+x^2)\\sim x^2\\) e \\(1-\\cos x\\sim\\frac{x^2}{2}\\): \\[\\lim_{x\\to0}\\frac{x^2}{x^2/2}=2\\] Verifica con De L'Hôpital: \\(\\frac{2x/(1+x^2)}{\\sin x}\\to\\frac{2}{1}=2\\). ✓"
+  },
+  {
+    cat: "esercizio",
+    q: "Classifica la discontinuità di \\(f(x)=\\sin\\!\\left(\\frac{1}{x}\\right)\\) in \\(x=0\\).",
+    a: "Per \\(x\\to0\\), \\(1/x\\to\\pm\\infty\\) e \\(\\sin(1/x)\\) oscilla indefinitamente tra \\(-1\\) e \\(+1\\) senza avvicinarsi a nessun valore. Nessuno dei due limiti laterali esiste: <strong>discontinuità di seconda specie</strong>."
+  },
+  {
+    cat: "esercizio",
+    q: "Trova l'asintoto orizzontale di \\(f(x)=\\arctan x\\).",
+    a: "\\(\\lim_{x\\to+\\infty}\\arctan x=\\frac{\\pi}{2}\\) e \\(\\lim_{x\\to-\\infty}\\arctan x=-\\frac{\\pi}{2}\\). La funzione ha <strong>due asintoti orizzontali distinti</strong>: \\(y=\\frac{\\pi}{2}\\) per \\(x\\to+\\infty\\) e \\(y=-\\frac{\\pi}{2}\\) per \\(x\\to-\\infty\\). Nessun asintoto verticale."
+  },
+
+  // ── RAGIONAMENTO (15) ────────────────────────────────────────────────────
+  {
+    cat: "ragionamento",
+    q: "Perché \\(\\frac{0}{0}\\) è indeterminata? Costruisci tre esempi con tre risultati diversi.",
+    a: "L'indeterminazione indica che il risultato dipende dalla <em>velocità relativa</em> con cui numeratore e denominatore tendono a zero. Esempi: \\(\\lim_{x\\to0}\\frac{x}{x}=1\\), \\(\\lim_{x\\to0}\\frac{x^2}{x}=0\\), \\(\\lim_{x\\to0}\\frac{x}{x^2}=\\pm\\infty\\). Stessa forma, tre esiti completamente diversi."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché non si possono usare gli equivalenti asintotici nelle somme e differenze?",
+    a: "Perché sostituendo si possono cancellare termini che portano contributi significativi. Esempio errato: \\(\\lim_{x\\to0}\\frac{e^x-1-x}{x^2}\\). Sostituendo \\(e^x-1\\sim x\\) si otterrebbe \\(\\frac{x-x}{x^2}=0\\), mentre il limite corretto è \\(\\frac{1}{2}\\). Gli equivalenti vanno usati solo dove la funzione appare come fattore in un prodotto o quoziente."
+  },
+  {
+    cat: "ragionamento",
+    q: "Una funzione con una discontinuità eliminabile può essere resa continua?",
+    a: "Sì, esattamente: si ridefinisce (o si definisce) \\(f(x_0):=\\lim_{x\\to x_0}f(x)\\). La discontinuità è 'eliminabile' proprio perché esiste questo unico valore che la 'ripara'. Esempio: \\(f(x)=\\frac{\\sin x}{x}\\) in \\(x=0\\) diventa continua ponendo \\(f(0)=1\\). Questa estensione è unica."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché \\(\\lim_{x\\to0}\\sin(1/x)\\) non esiste, ma \\(\\lim_{x\\to0}x\\sin(1/x)=0\\)?",
+    a: "Nel primo caso \\(\\sin(1/x)\\) oscilla tra \\(-1\\) e \\(+1\\) senza stabilizzarsi. Nel secondo il fattore \\(x\\to0\\) 'schiaccia' l'oscillazione: \\(|x\\sin(1/x)|\\leq|x|\\to0\\), quindi per il Teorema del Confronto (con \\(-|x|\\leq x\\sin(1/x)\\leq|x|\\)) il limite è 0. La moltiplicazione per un infinitesimo può 'domare' un'oscillazione."
+  },
+  {
+    cat: "ragionamento",
+    q: "Qual è la differenza concettuale tra discontinuità di prima e seconda specie?",
+    a: "Nella <strong>prima specie</strong> entrambi i limiti laterali esistono finiti: la funzione ha un 'salto' controllato. Nella <strong>seconda specie</strong> almeno un limite laterale è infinito o non esiste: la funzione ha un comportamento 'esplosivo' o 'caotico'. Le discontinuità di seconda specie sono in generale non riparabili con una semplice ridefinizione."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché la gerarchia \\(\\ln x \\ll x^\\alpha \\ll a^x\\) vale per \\(x\\to+\\infty\\)?",
+    a: "Intuitivamente: \\(\\ln x\\) cresce 'quasi piatta', le potenze \\(x^\\alpha\\) crescono in modo polinomiale, gli esponenziali \\(a^x\\) raddoppiano a ogni passo costante. Formalmente si dimostra con De L'Hôpital: \\(\\lim_{x\\to+\\infty}\\frac{\\ln x}{x^\\alpha}=\\lim\\frac{1/x}{\\alpha x^{\\alpha-1}}=\\lim\\frac{1}{\\alpha x^\\alpha}=0\\)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché De L'Hôpital può essere inapplicabile anche quando la forma è \\(0/0\\)?",
+    a: "De L'Hôpital richiede che il limite del rapporto \\(f'/g'\\) <em>esista</em> (finito o infinito). Se non esiste, non si può concludere nulla (il limite originale potrebbe comunque esistere). Esempio: \\(\\lim_{x\\to\\infty}\\frac{x+\\sin x}{x}=1\\), ma \\(\\frac{(x+\\sin x)'}{x'}=1+\\cos x\\) non ha limite. De L'Hôpital fallisce, ma il limite esiste comunque."
+  },
+  {
+    cat: "ragionamento",
+    q: "Il Teorema degli Zeri garantisce che la soluzione sia unica?",
+    a: "No: garantisce solo l'<em>esistenza</em> di almeno uno zero. Potrebbero essercene molti: \\(f(x)=\\sin x\\) su \\([0,2\\pi]\\) con \\(f(0)=0\\) e \\(f(2\\pi)=0\\) ha infiniti zeri interni. Per l'unicità servono ipotesi aggiuntive come la stretta monotonia (garantita, ad esempio, da \\(f'>0\\) su tutto l'intervallo)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché la forma \\(1^\\infty\\) è indeterminata? Non è ovvio che \\(1^{\\text{qualsiasi cosa}} = 1\\)?",
+    a: "No: \\(1^\\infty\\) è indeterminata perché la base <em>non è esattamente</em> 1, ma tende a 1. Scrivendo \\((1+\\alpha)^{1/\\alpha}\\to e\\) con \\(\\alpha\\to0\\), anche un piccolo scostamento dalla base moltiplicato per un esponente che cresce all'infinito produce un risultato non banale. La regola \\(1^n=1\\) vale solo per la base esattamente uguale a 1."
+  },
+  {
+    cat: "ragionamento",
+    q: "Se \\(\\lim_{x\\to x_0}f(x)=+\\infty\\), in che tipo di discontinuità si trova \\(f\\)?",
+    a: "Sicuramente una <strong>discontinuità di seconda specie</strong>: il limite è infinito, quindi non può essere uguale a \\(f(x_0)\\) (che è un numero reale finito, se esiste) né può esistere in senso proprio come numero reale. La funzione tende all'infinito nell'intorno di \\(x_0\\), che è quindi un asintoto verticale."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché il Teorema di Weierstrass richiede che l'intervallo sia chiuso <em>e</em> limitato?",
+    a: "Entrambe le condizioni sono necessarie: su \\((0,1]\\) (aperto a sinistra) la funzione \\(f(x)=1/x\\) è continua ma illimitata superiormente. Su \\([0,+\\infty)\\) (illimitato) \\(f(x)=x\\) è continua ma non ha massimo. Solo la combinazione di chiuso + limitato (compatto) garantisce che la funzione non possa 'sfuggire' agli estremi."
+  },
+  {
+    cat: "ragionamento",
+    q: "Cosa significa geometricamente che \\(x=a\\) è un asintoto verticale?",
+    a: "Il grafico di \\(f\\) si avvicina indefinitamente alla retta verticale \\(x=a\\) senza mai toccarla (o toccandola al più in punti isolati). La funzione 'esplode' in prossimità di \\(x=a\\). Corrisponde a una discontinuità di seconda specie: la funzione non è definita o non è limitata in un intorno di \\(a\\)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché \\(\\lim_{x\\to0^+}\\ln x = -\\infty\\) e non \\(+\\infty\\)?",
+    a: "Per \\(x\\to0^+\\), \\(x\\) è un numero piccolo positivo che tende a zero. Il logaritmo di un numero molto piccolo (ma positivo) è un numero molto negativo: \\(\\ln(0.001)\\approx-6.9\\), \\(\\ln(0.000001)\\approx-13.8\\), ecc. Più \\(x\\) si avvicina a 0, più \\(\\ln x\\) tende a \\(-\\infty\\). In \\(x=0\\) il logaritmo non è definito."
+  },
+  {
+    cat: "ragionamento",
+    q: "Come si distingue un asintoto orizzontale da un asintoto obliquo nella pratica?",
+    a: "Si calcola \\(m=\\lim_{x\\to\\pm\\infty}\\frac{f(x)}{x}\\). Se \\(m=0\\): possibile asintoto orizzontale (verificare che \\(\\lim f(x)=L\\) finito). Se \\(m\\neq0\\) (finito): possibile asintoto obliquo (verificare che \\(q=\\lim(f-mx)\\) sia finito). Se \\(m=\\pm\\infty\\): nessun asintoto né orizzontale né obliquo."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché la continuità di una funzione composta \\(g\\circ f\\) richiede che \\(g\\) sia continua in \\(f(x_0)\\) e non solo in \\(x_0\\)?",
+    a: "Perché nell'espressione \\((g\\circ f)(x)=g(f(x))\\), il punto in cui \\(g\\) viene valutata è \\(f(x)\\), che si avvicina a \\(f(x_0)\\) (per continuità di \\(f\\)) quando \\(x\\to x_0\\). Quindi la continuità di \\(g\\) deve essere garantita nel punto \\(f(x_0)\\), che è il 'punto di arrivo' di \\(f\\), non nel punto di partenza \\(x_0\\)."
+  }
+];
+
+// ─── STATE ─────────────────────────────────────────────────────────────────
+let mode = "quiz";
+let filter = "all";
+let deck = [];
+let idx = 0;
+let flipped = false;
+
+function filteredCards() {
+  return filter === "all" ? [...cards] : cards.filter(c => c.cat === filter);
+}
+
+function shuffle() {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  idx = 0;
+  flipped = false;
+  document.getElementById("score-panel").classList.remove("visible");
+  renderQuiz();
+}
+
+function restart() {
+  deck = filteredCards();
+  shuffle();
+}
+
+// ─── QUIZ ───────────────────────────────────────────────────────────────────
+function renderQuiz() {
+  const total = deck.length;
+  const card = deck[idx];
+  document.getElementById("qcounter").textContent = `${idx + 1} / ${total}`;
+  document.getElementById("qpf").style.width = `${((idx) / total) * 100}%`;
+
+  const fc = document.getElementById("flip-card");
+  fc.dataset.cat = card.cat;
+  fc.classList.remove("flipped");
+  flipped = false;
+
+  document.getElementById("fc-tag").textContent =
+    card.cat === "teoria" ? "Teoria" : card.cat === "esercizio" ? "Esercizio" : "Ragionamento";
+  document.getElementById("fc-q").innerHTML = card.q;
+  document.getElementById("fc-a").innerHTML = card.a;
+
+  document.getElementById("btn-prev").disabled = idx === 0;
+  document.getElementById("btn-next").textContent = idx === total - 1 ? "Fine ✓" : "Avanti →";
+
+  document.getElementById("score-panel").classList.remove("visible");
+  document.getElementById("flip-scene").style.display = "block";
+
+  // Re-run MathJax
+  if (window.MathJax) MathJax.typesetPromise([document.getElementById("flip-card")]);
+}
+
+function flipCard() {
+  flipped = !flipped;
+  document.getElementById("flip-card").classList.toggle("flipped", flipped);
+  if (flipped && window.MathJax)
+    MathJax.typesetPromise([document.getElementById("fc-a")]);
+}
+
+function nextCard() {
+  if (idx < deck.length - 1) {
+    idx++;
+    renderQuiz();
+  } else {
+    // End
+    document.getElementById("flip-scene").style.display = "none";
+    document.getElementById("quiz-counter-area")?.hide?.();
+    document.getElementById("score-num").textContent = deck.length;
+    document.getElementById("score-panel").classList.add("visible");
+    document.getElementById("qpf").style.width = "100%";
+  }
+}
+
+function prevCard() {
+  if (idx > 0) { idx--; renderQuiz(); }
+}
+
+// ─── BROWSE ─────────────────────────────────────────────────────────────────
+function renderBrowse() {
+  const view = document.getElementById("browse-view");
+  view.innerHTML = "";
+  const shown = filteredCards();
+  shown.forEach((card, i) => {
+    const div = document.createElement("div");
+    div.className = "browse-card";
+    div.dataset.cat = card.cat;
+    const tagClass = `tag-${card.cat}`;
+    const tagLabel = card.cat === "teoria" ? "Teoria" : card.cat === "esercizio" ? "Esercizio" : "Ragionamento";
+    const globalIdx = cards.indexOf(card) + 1;
+    div.innerHTML = `
+      <div class="bc-header">
+        <span class="bc-num">#${globalIdx}</span>
+        <span class="bc-tag ${tagClass}">${tagLabel}</span>
+      </div>
+      <div class="bc-q">${card.q}</div>
+      <div class="bc-divider"></div>
+      <div class="bc-a-label">Risposta</div>
+      <div class="bc-a">${card.a}</div>
+    `;
+    view.appendChild(div);
+  });
+  if (window.MathJax) MathJax.typesetPromise([view]);
+}
+
+// ─── SWITCHES ───────────────────────────────────────────────────────────────
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll(".mode-btn").forEach(b => b.classList.toggle("active", b.dataset.mode === m));
+  document.getElementById("quiz-view").style.display = m === "quiz" ? "flex" : "none";
+  document.getElementById("browse-view").style.display = m === "browse" ? "grid" : "none";
+  if (m === "browse") renderBrowse();
+  if (m === "quiz") { deck = filteredCards(); idx = 0; flipped = false; renderQuiz(); }
+}
+
+function setFilter(f) {
+  filter = f;
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b.dataset.filter === f));
+  const count = filteredCards().length;
+  document.getElementById("stat-pill").textContent = `${count} carte`;
+  if (mode === "quiz") {
+    deck = filteredCards();
+    idx = 0; flipped = false;
+    document.getElementById("score-panel").classList.remove("visible");
+    document.getElementById("flip-scene").style.display = "block";
+    renderQuiz();
+  } else {
+    renderBrowse();
+  }
+}
+
+// ─── EVENTS ─────────────────────────────────────────────────────────────────
+document.querySelectorAll(".tab-btn").forEach(b => b.addEventListener("click", () => setFilter(b.dataset.filter)));
+document.querySelectorAll(".mode-btn").forEach(b => b.addEventListener("click", () => setMode(b.dataset.mode)));
+
+// Keyboard navigation
+document.addEventListener("keydown", e => {
+  if (mode !== "quiz") return;
+  if (e.key === "ArrowRight" || e.key === "ArrowDown") nextCard();
+  if (e.key === "ArrowLeft" || e.key === "ArrowUp") prevCard();
+  if (e.key === " " || e.key === "Enter") { e.preventDefault(); flipCard(); }
+});
+
+// ─── INIT ───────────────────────────────────────────────────────────────────
+window.addEventListener("load", () => {
+  deck = filteredCards();
+  renderQuiz();
+});
+</script>
+</body>
+</html>
