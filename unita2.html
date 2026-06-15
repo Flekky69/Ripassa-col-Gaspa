@@ -651,17 +651,17 @@ const cards = [
   {
     cat: "ragionamento",
     q: "Una funzione con una discontinuità eliminabile è davvero discontinua? Cosa significa 'eliminabile'?",
-    a: "Sì, tecnicamente è discontinua nel punto (la definizione non è soddisfatta). Ma la discontinuità è 'eliminabile' nel senso che esiste un modo unico di ridefinire (o definire) \\(f\\) in quel punto da renderla continua: basta porre \\(f(x_0) := \\lim_{x \\to x_0} f(x)\\). La 'rottura' è superficiale, non strutturale."
+    a: "Sì, tecnicamente è discontinua nel punto (la definizione non è soddisfatta). Ma la discontinuità è 'eliminabile' nel senso che esiste un modo unico di ridefinire (o definire) \\(f\\) in quel punto da renderla continua: basta porre \\(f(x_0) := \\lim_{x \\to x_0} f(x)\\)."
   },
   {
     cat: "ragionamento",
     q: "Il teorema degli zeri garantisce l'unicità dello zero? Perché sì o perché no?",
-    a: "No, garantisce solo l'<em>esistenza</em> di almeno uno zero. Potrebbero esserci più zeri: es. \\(f(x) = \\sin x\\) su \\([0, 2\\pi]\\) ha \\(f(0) = f(2\\pi) = 0\\) e due zeri interni. Per garantire l'unicità servono ipotesi aggiuntive come la stretta monotonia (o la stretta convessità) di \\(f\\)."
+    a: "No, garantisce solo l'<em>esistenza</em> di almeno uno zero. Potrebbero esserci più zeri: es. \\(f(x) = \\sin x\\) su \\([0, 2\\pi]\\) ha \\(f(0) = f(2\\pi) = 0\\) e due zeri interni. Per garantire l'unicità servono ipotesi aggiuntive come la monotonia stretta (quindi con lo studio del segno della derivata prima) di \\(f\\)."
   },
   {
     cat: "ragionamento",
     q: "Perché \\(\\lim_{x \\to 0} \\sin(1/x)\\) non esiste?",
-    a: "Al variare di \\(x \\to 0\\), l'argomento \\(1/x \\to \\infty\\) e \\(\\sin(1/x)\\) oscilla infinitamente tra \\(-1\\) e \\(+1\\). Costruttivamente: lungo \\(x_n = \\frac{1}{n\\pi}\\) si ha \\(\\sin(n\\pi) = 0\\); lungo \\(x_n = \\frac{2}{(4n+1)\\pi}\\) si ha \\(\\sin = 1\\). Poiché le sottosuccessioni danno valori diversi, il limite non esiste."
+    a: "Al variare di \\(x \\to 0\\), l'argomento \\(1/x \\to \\infty\\) e \\(\\sin(1/x)\\) oscilla infinitamente tra \\(-1\\) e \\(+1\\). "
   },
   {
     cat: "ragionamento",
@@ -675,18 +675,13 @@ const cards = [
   },
   {
     cat: "ragionamento",
-    q: "Se \\(a_n\\) è una successione convergente, è necessariamente limitata?",
-    a: "Sì. Se \\(a_n \\to L\\), per \\(\\varepsilon = 1\\) esiste \\(N\\) tale che \\(|a_n - L| < 1\\) per \\(n > N\\), quindi \\(|a_n| < |L| + 1\\) per \\(n > N\\). I primi \\(N\\) termini sono finiti, quindi basta prendere \\(M = \\max(|a_1|, \\ldots, |a_N|, |L|+1)\\). La limitatezza è condizione necessaria (ma non sufficiente) per la convergenza."
-  },
-  {
-    cat: "ragionamento",
     q: "Perché \\(\\lim_{x \\to +\\infty} \\sin x\\) non esiste?",
     a: "Per ogni \\(X > 0\\) esistono \\(x_1, x_2 > X\\) con \\(\\sin x_1 = 1\\) e \\(\\sin x_2 = -1\\). Quindi non esiste nessun \\(L\\) tale che \\(|\\sin x - L| < 1/2\\) definitivamente. La funzione oscilla indefinitamente e non si stabilizza su nessun valore. Diverso da \\(\\lim_{x \\to +\\infty} \\frac{\\sin x}{x} = 0\\) dove l'ampiezza viene schiacciata."
   },
   {
     cat: "ragionamento",
     q: "Perché il Teorema di Weierstrass fallisce se l'intervallo è aperto?",
-    a: "Su un intervallo aperto la funzione può 'sfuggire' agli estremi senza raggiungerli. Esempio: \\(f(x) = 1/x\\) su \\((0, 1]\\) è continua ma non ha massimo (tende a \\(+\\infty\\) per \\(x \\to 0^+\\)). Oppure \\(f(x) = x\\) su \\((0,1)\\) non raggiunge né 0 né 1. La compattezza (chiuso e limitato) impedisce questa 'fuga'."
+    a: "Su un intervallo aperto la funzione può divergere (ovvero tendere all'infinito) agli estremi. Esempio: \\(f(x) = 1/x\\) su \\((0, 1]\\) è continua ma non ha massimo (tende a \\(+\\infty\\) per \\(x \\to 0^+\\)). Oppure \\(f(x) = x\\) su \\((0,1)\\) non raggiunge né 0 né 1. La compattezza (chiuso e limitato) impedisce questa 'fuga'."
   },
   {
     cat: "ragionamento",
@@ -696,13 +691,8 @@ const cards = [
   {
     cat: "ragionamento",
     q: "Se \\(f\\) è continua e \\(f(a) = f(b)\\), è garantito che \\(f\\) sia costante su \\([a,b]\\)?",
-    a: "No. Basta un qualunque esempio non costante: \\(f(x) = \\sin x\\) su \\([0, 2\\pi]\\) con \\(f(0) = f(2\\pi) = 0\\). Il fatto che due valori agli estremi coincidano non implica costanza. Serve invece il Teorema di Rolle (che richiede derivabilità) per garantire l'esistenza di un punto con derivata nulla, non la costanza."
+    a: "No. Basta un qualunque esempio non costante: \\(f(x) = \\sin x\\) su \\([0, 2\\pi]\\) con \\(f(0) = f(2\\pi) = 0\\). Il fatto che due valori agli estremi coincidano non implica costanza. Se la funzione è anche derivabile, il Teorema di Rolle garantisce l'esistenza di un punto con derivata nulla, non la costanza."
   },
-  {
-    cat: "ragionamento",
-    q: "Perché il numero \\(e\\) è definito proprio come \\(\\lim_{n \\to \\infty}(1+1/n)^n\\) e non in altro modo?",
-    a: "Questa definizione cattura la <em>crescita esponenziale naturale</em>: se una quantità cresce proporzionalmente a se stessa (come interessi composti, popolazioni, decadimento), il fattore di crescita tende a \\(e\\) nel limite continuo. Matematicamente, è la base dell'unica funzione \\(f(x) = e^x\\) che è uguale alla propria derivata. Definizioni equivalenti: \\(\\ln e = 1\\), oppure \\(e = \\sum_{n=0}^\\infty \\frac{1}{n!}\\)."
-  }
 ];
 
 // ─── STATE ─────────────────────────────────────────────────────────────────
