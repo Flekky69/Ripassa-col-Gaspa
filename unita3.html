@@ -690,7 +690,7 @@ const cards = [
   {
     cat: "ragionamento",
     q: "Perché \\(\\frac{0}{0}\\) è indeterminata? Costruisci tre esempi con tre risultati diversi.",
-    a: "L'indeterminazione indica che il risultato dipende dalla <em>velocità relativa</em> con cui numeratore e denominatore tendono a zero. Esempi: \\(\\lim_{x\\to0}\\frac{x}{x}=1\\), \\(\\lim_{x\\to0}\\frac{x^2}{x}=0\\), \\(\\lim_{x\\to0}\\frac{x}{x^2}=\\pm\\infty\\). Stessa forma, tre esiti completamente diversi."
+    a: "L'indeterminazione indica che il risultato dipende dalla <em>velocità relativa</em> con cui numeratore e denominatore tendono a zero. Esempi: \\(\\lim_{x\\to0}\\frac{x}{x}=1\\), \\(\\lim_{x\\to0}\\frac{x^2}{x}=0\\), \\(\\lim_{x\\to0}\\frac{x}{x^2}=\\pm\\infty\\). Stessa forma indeterminata, tre esiti completamente diversi."
   },
   {
     cat: "ragionamento",
@@ -700,7 +700,7 @@ const cards = [
   {
     cat: "ragionamento",
     q: "Una funzione con una discontinuità eliminabile può essere resa continua?",
-    a: "Sì, esattamente: si ridefinisce (o si definisce) \\(f(x_0):=\\lim_{x\\to x_0}f(x)\\). La discontinuità è 'eliminabile' proprio perché esiste questo unico valore che la 'ripara'. Esempio: \\(f(x)=\\frac{\\sin x}{x}\\) in \\(x=0\\) diventa continua ponendo \\(f(0)=1\\). Questa estensione è unica."
+    a: "Sì, esattamente: si ridefinisce (o si definisce) \\(f(x_0):=\\lim_{x\\to x_0}f(x)\\). La discontinuità è 'eliminabile' proprio perché esiste questo unico valore che la  rende continua. Esempio: \\(f(x)=\\frac{\\sin x}{x}\\) in \\(x=0\\) diventa continua ponendo \\(f(0)=1\\). Questa estensione è unica."
   },
   {
     cat: "ragionamento",
@@ -710,7 +710,7 @@ const cards = [
   {
     cat: "ragionamento",
     q: "Qual è la differenza concettuale tra discontinuità di prima e seconda specie?",
-    a: "Nella <strong>prima specie</strong> entrambi i limiti laterali esistono finiti: la funzione ha un 'salto' controllato. Nella <strong>seconda specie</strong> almeno un limite laterale è infinito o non esiste: la funzione ha un comportamento 'esplosivo' o 'caotico'. Le discontinuità di seconda specie sono in generale non riparabili con una semplice ridefinizione."
+    a: "Nella <strong>prima specie</strong> entrambi i limiti laterali esistono finiti: la funzione ha un 'salto' controllato. Nella <strong>seconda specie</strong> almeno un limite laterale è infinito o non esiste: la funzione ha un comportamento 'esplosivo'. Le discontinuità di seconda specie sono in generale non eliminabili con una semplice ridefinizione."
   },
   {
     cat: "ragionamento",
@@ -740,7 +740,7 @@ const cards = [
   {
     cat: "ragionamento",
     q: "Perché il Teorema di Weierstrass richiede che l'intervallo sia chiuso <em>e</em> limitato?",
-    a: "Entrambe le condizioni sono necessarie: su \\((0,1]\\) (aperto a sinistra) la funzione \\(f(x)=1/x\\) è continua ma illimitata superiormente. Su \\([0,+\\infty)\\) (illimitato) \\(f(x)=x\\) è continua ma non ha massimo. Solo la combinazione di chiuso + limitato (compatto) garantisce che la funzione non possa 'sfuggire' agli estremi."
+    a: "Entrambe le condizioni sono necessarie: su \\((0,1]\\) (aperto a sinistra) la funzione \\(f(x)=1/x\\) è continua ma illimitata superiormente. Su \\([0,+\\infty)\\) (illimitato) \\(f(x)=x\\) è continua ma non ha massimo. Solo la combinazione di chiuso + limitato (compatto) garantisce che la funzione non possa divergere' agli estremi."
   },
   {
     cat: "ragionamento",
@@ -760,7 +760,7 @@ const cards = [
   {
     cat: "ragionamento",
     q: "Perché la continuità di una funzione composta \\(g\\circ f\\) richiede che \\(g\\) sia continua in \\(f(x_0)\\) e non solo in \\(x_0\\)?",
-    a: "Perché nell'espressione \\((g\\circ f)(x)=g(f(x))\\), il punto in cui \\(g\\) viene valutata è \\(f(x)\\), che si avvicina a \\(f(x_0)\\) (per continuità di \\(f\\)) quando \\(x\\to x_0\\). Quindi la continuità di \\(g\\) deve essere garantita nel punto \\(f(x_0)\\), che è il 'punto di arrivo' di \\(f\\), non nel punto di partenza \\(x_0\\)."
+    a: "Perché nell'espressione \\((g\\circ f)(x)=g(f(x))\\), il punto in cui \\(g\\) viene valutata è \\(f(x)\\), che si avvicina a \\(f(x_0)\\) (per continuità di \\(f\\)) quando \\(x\\to x_0\\). Quindi la continuità di \\(g\\) deve essere garantita nel punto \\(f(x_0)\\), che è il 'punto di arrivo' di \\(f\\)"
   }
 ];
 
