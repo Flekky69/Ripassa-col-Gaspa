@@ -456,7 +456,7 @@ const cards = [
   {
     cat: "teoria",
     q: "Cosa si intende per <em>forma indeterminata</em> in un limite?",
-    a: "Una forma indeterminata è un'espressione del tipo \\(\\frac{0}{0}\\), \\(\\frac{\\infty}{\\infty}\\), \\(\\infty - \\infty\\), \\(0 \\cdot \\infty\\), \\(1^\\infty\\), \\(0^0\\), \\(\\infty^0\\) in cui il risultato del limite <em>non è determinabile</em> dalle sole informazioni sul tipo di indeterminazione: dipende da come numeratore e denominatore (o i fattori) tendono ai propri valori."
+    a: "Una forma indeterminata è un'espressione del tipo \\(\\frac{0}{0}\\), \\(\\frac{\\infty}{\\infty}\\), \\(\\infty - \\infty\\), \\(0 \\cdot \\infty\\), \\(1^\\infty\\), \\(0^0\\), \\(\\infty^0\\) in cui il risultato del limite <em>non è determinabile</em> immediatamente: dipende dalla velocità con cui numeratore e denominatore (o i fattori) tendono ai propri valori."
   },
   {
     cat: "teoria",
@@ -471,7 +471,7 @@ const cards = [
   {
     cat: "teoria",
     q: "Come si risolve la forma \\(\\frac{\\infty}{\\infty}\\) per funzioni razionali (polinomi)?",
-    a: "Si divide numeratore e denominatore per la <strong>potenza massima</strong> di \\(x\\) presente. Per \\(x \\to \\infty\\): il limite dipende solo dai termini di grado massimo. Se \\(\\deg p = \\deg q\\): limite = rapporto dei coefficienti direttori. Se \\(\\deg p > \\deg q\\): \\(\\pm\\infty\\). Se \\(\\deg p < \\deg q\\): 0."
+    a: "Si divide numeratore e denominatore per la <strong>potenza massima</strong> di \\(x\\) presente. Per \\(x \\to \\infty\\): il limite dipende solo dai termini di grado massimo. Se \\(\\deg p = \\deg q\\): limite = rapporto dei coefficienti di grado massimo. Se \\(\\deg p > \\deg q\\): \\(\\pm\\infty\\). Se \\(\\deg p < \\deg q\\): 0."
   },
   {
     cat: "teoria",
@@ -496,12 +496,12 @@ const cards = [
   {
     cat: "teoria",
     q: "Limite notevole esponenziale: \\(\\lim_{x\\to 0}\\frac{e^x-1}{x}\\).",
-    a: "\\[\\lim_{x \\to 0} \\frac{e^x - 1}{x} = 1\\] Generalizzazione: \\(\\lim_{x\\to0}\\frac{a^x-1}{x}=\\ln a\\) per \\(a>0\\). Equivalente asintotico: \\(e^x - 1 \\sim x\\) per \\(x\\to 0\\). Corollario: \\(\\lim_{x\\to0}\\frac{\\ln(1+x)}{x}=1\\), cioè \\(\\ln(1+x)\\sim x\\)."
+    a: "\\[\\lim_{x \\to 0} \\frac{e^x - 1}{x} = 1\\] Generalizzazione: \\(\\lim_{x\\to0}\\frac{a^x-1}{x}=\\ln a\\) per \\(a>0\\). Equivalenza asintotica: \\(e^x - 1 \\sim x\\) per \\(x\\to 0\\). Segue: \\(\\lim_{x\\to0}\\frac{\\ln(1+x)}{x}=1\\), cioè \\(\\ln(1+x)\\sim x\\)."
   },
   {
     cat: "teoria",
     q: "Limite notevole del numero \\(e\\): definizione come limite.",
-    a: "\\[\\lim_{n \\to +\\infty}\\left(1+\\frac{1}{n}\\right)^n = e\\] Forma continua: \\(\\lim_{x\\to 0}(1+x)^{1/x}=e\\). Equivalente: \\(\\lim_{x\\to\\infty}\\left(1+\\frac{k}{x}\\right)^x = e^k\\) per ogni costante \\(k\\). È la base della crescita esponenziale naturale."
+    a: "\\[\\lim_{n \\to +\\infty}\\left(1+\\frac{1}{n}\\right)^n = e\\] anche nella forma: \\(\\lim_{x\\to 0}(1+x)^{1/x}=e\\). Segue: \\(\\lim_{x\\to\\infty}\\left(1+\\frac{k}{x}\\right)^x = e^k\\) per ogni costante \\(k\\)."
   },
   {
     cat: "teoria",
@@ -511,7 +511,7 @@ const cards = [
   {
     cat: "teoria",
     q: "Limite notevole delle potenze: \\(\\lim_{x\\to 0}\\frac{(1+x)^\\alpha - 1}{x}\\).",
-    a: "\\[\\lim_{x \\to 0} \\frac{(1+x)^\\alpha - 1}{x} = \\alpha\\] per ogni \\(\\alpha \\in \\mathbb{R}\\). Equivalente: \\((1+x)^\\alpha - 1 \\sim \\alpha x\\) per \\(x\\to 0\\). Caso \\(\\alpha=1/2\\): \\(\\sqrt{1+x}-1\\sim\\frac{x}{2}\\). Si usa per le radici nelle forme indeterminate."
+    a: "\\[\\lim_{x \\to 0} \\frac{(1+x)^\\alpha - 1}{x} = \\alpha\\] per ogni \\(\\alpha \\in \\mathbb{R}\\). Equivalente: \\((1+x)^\\alpha - 1 \\sim \\alpha x\\) per \\(x\\to 0\\). Caso \\(\\alpha=1/2\\): \\(\\sqrt{1+x}-1\\sim\\frac{x}{2}\\). Si può usare per le radici nelle forme indeterminate."
   },
   {
     cat: "teoria",
@@ -541,27 +541,27 @@ const cards = [
   {
     cat: "teoria",
     q: "Enunciare il Teorema del Confronto (dei Carabinieri) per i limiti.",
-    a: "Se in un intorno (bucato) di \\(x_0\\) vale \\(g(x)\\leq f(x)\\leq h(x)\\) e \\[\\lim_{x\\to x_0}g(x) = \\lim_{x\\to x_0}h(x) = L\\] allora \\(\\lim_{x\\to x_0}f(x)=L\\). Usato tipicamente per dimostrare \\(\\lim_{x\\to0}x\\sin(1/x)=0\\) con \\(g=-|x|\\), \\(h=|x|\\)."
+    a: "Se in un intorno di \\(x_0\\) vale \\(g(x)\\leq f(x)\\leq h(x)\\) e \\[\\lim_{x\\to x_0}g(x) = \\lim_{x\\to x_0}h(x) = L\\] allora \\(\\lim_{x\\to x_0}f(x)=L\\). Usato tipicamente per dimostrare \\(\\lim_{x\\to0}x\\sin(1/x)=0\\) con \\(g=-|x|\\), \\(h=|x|\\)."
   },
   {
     cat: "teoria",
-    q: "Definizione di continuità di \\(f\\) in \\(x_0\\). Tre condizioni equivalenti.",
-    a: "\\(f\\) è continua in \\(x_0\\) se: (1) \\(f(x_0)\\) è definita; (2) esiste \\(\\lim_{x\\to x_0}f(x)\\); (3) \\(\\lim_{x\\to x_0}f(x)=f(x_0)\\). Equivalente con \\(\\varepsilon\\text{-}\\delta\\): \\(\\forall\\varepsilon>0\\;\\exists\\delta>0:\\;|x-x_0|<\\delta\\Rightarrow|f(x)-f(x_0)|<\\varepsilon\\)."
+    q: "Definizione di continuità di \\(f\\) in \\(x_0\\).",
+    a: "\\(f\\) è continua in \\(x_0\\) se: (1) \\(f(x)\\) è definita in \\(x_0\\); (2) esiste \\(\\lim_{x\\to x_0}f(x)\\); (3) \\(\\lim_{x\\to x_0}f(x)=f(x_0)\\). Formalmente:f è continua in \\(x_0\\) se \\(\\varepsilon\\text{-}\\delta\\): \\(\\forall\\varepsilon>0\\;\\exists\\delta>0:\\;|x-x_0|<\\delta\\Rightarrow|f(x)-f(x_0)|<\\varepsilon\\)."
   },
   {
     cat: "teoria",
     q: "Discontinuità eliminabile: definizione ed esempio.",
-    a: "In \\(x_0\\) c'è una <strong>discontinuità eliminabile</strong> se esiste il limite finito \\(L=\\lim_{x\\to x_0}f(x)\\) ma \\(f(x_0)\\neq L\\) (o \\(f\\) non è definita in \\(x_0\\)). Si <em>elimina</em> ridefinendo \\(f(x_0):=L\\). Esempio: \\(f(x)=\\frac{\\sin x}{x}\\) in \\(x=0\\): il limite è 1, basta porre \\(f(0)=1\\)."
+    a: "In \\(x_0\\) c'è una <strong>discontinuità eliminabile</strong> se esiste il limite finito \\(L=\\lim_{x\\to x_0}f(x)\\) ma \\(f(x_0)\\neq L\\) (o \\(f\\) non è definita in \\(x_0\\)). Analogamente: se esistono finiti limite destro e sinistro e sono uguali ma non coincidono con il valore della funzione in \\(x_0\\). La discontinuità si <em>elimina</em> ridefinendo \\(f(x_0):=L\\). Esempio: \\(f(x)=\\frac{\\sin x}{x}\\) in \\(x=0\\): il limite è 1, basta porre \\(f(0)=1\\)."
   },
   {
     cat: "teoria",
     q: "Discontinuità di prima specie (o a salto): definizione.",
-    a: "In \\(x_0\\) c'è una <strong>discontinuità di prima specie</strong> se esistono entrambi i limiti laterali finiti ma sono diversi: \\[\\lim_{x\\to x_0^-}f(x) \\neq \\lim_{x\\to x_0^+}f(x)\\] Il <em>salto</em> è la differenza tra i due limiti. Esempio: \\(f(x)=\\text{sgn}(x)\\) in \\(x=0\\): limite sinistro \\(-1\\), destro \\(+1\\)."
+    a: "In \\(x_0\\) c'è una <strong>discontinuità di prima specie</strong> se esistono finiti entrambi i limiti destro e sinistro ma sono diversi: \\[\\lim_{x\\to x_0^-}f(x) \\neq \\lim_{x\\to x_0^+}f(x)\\] Il <em>salto</em> è la differenza tra i due limiti. Esempio: \\(f(x)=\\text{sgn}(x)\\) in \\(x=0\\): limite sinistro \\(-1\\), destro \\(+1\\)."
   },
   {
     cat: "teoria",
     q: "Discontinuità di seconda specie: definizione.",
-    a: "In \\(x_0\\) c'è una <strong>discontinuità di seconda specie</strong> se almeno uno dei limiti laterali è infinito o non esiste. Esempi: \\(f(x)=\\frac{1}{x}\\) in \\(x=0\\) (limiti \\(\\pm\\infty\\)); \\(f(x)=\\sin(1/x)\\) in \\(x=0\\) (il limite non esiste per oscillazione). È il tipo di discontinuità più 'grave'."
+    a: "In \\(x_0\\) c'è una <strong>discontinuità di seconda specie</strong> se almeno uno dei limiti laterali è infinito o non esiste. Esempi: \\(f(x)=\\frac{1}{x}\\) in \\(x=0\\) (limiti \\(\\pm\\infty\\)); \\(f(x)=\\sin(1/x)\\) in \\(x=0\\) (il limite non esiste per oscillazione)."
   },
   {
     cat: "teoria",
@@ -601,12 +601,12 @@ const cards = [
   {
     cat: "teoria",
     q: "Definizione di limite destro e sinistro. Quando esiste il limite bilatero?",
-    a: "\\(\\lim_{x\\to x_0^+}f(x)=L^+\\): limite per \\(x\\to x_0\\) con \\(x>x_0\\). \\(\\lim_{x\\to x_0^-}f(x)=L^-\\): con \\(x<x_0\\). Il limite bilatero \\(\\lim_{x\\to x_0}f(x)\\) esiste e vale \\(L\\) se e solo se \\(L^+=L^-=L\\). Se \\(L^+\\neq L^-\\) si ha una discontinuità di prima specie."
+    a: "\\(\\lim_{x\\to x_0^+}f(x)=L^+\\): limite per \\(x\\to x_0\\) con \\(x>x_0\\). \\(\\lim_{x\\to x_0^-}f(x)=L^-\\): con \\(x<x_0\\). Il limite \\(\\lim_{x\\to x_0}f(x)\\) esiste e vale \\(L\\) se e solo se \\(L^+=L^-=L\\). Se \\(L^+\\neq L^-\\) si ha una discontinuità di prima specie."
   },
   {
     cat: "teoria",
     q: "Come si usa la regola di De L'Hôpital per le forme \\(\\frac{0}{0}\\) e \\(\\frac{\\infty}{\\infty}\\)?",
-    a: "Se \\(\\lim f=\\lim g=0\\) (o \\(\\pm\\infty\\)) e \\(g'\\neq0\\) intorno a \\(x_0\\): \\[\\lim_{x\\to x_0}\\frac{f(x)}{g(x)}=\\lim_{x\\to x_0}\\frac{f'(x)}{g'(x)}\\] purché quest'ultimo limite esista. Si può applicare più volte. Attenzione: verificare sempre le ipotesi prima di applicarla, e non usarla se le derivate complicano il calcolo."
+    a: "Se \\(\\lim f=\\lim g=0\\) (o \\(\\pm\\infty\\)) e \\(g'\\neq0\\) in un intorno di \\(x_0\\), allora: \\[\\lim_{x\\to x_0}\\frac{f(x)}{g(x)}=\\lim_{x\\to x_0}\\frac{f'(x)}{g'(x)}\\] purché quest'ultimo limite esista. Si può applicare più volte. Attenzione: verificare sempre le ipotesi prima di applicarla, e non usarla se le derivate complicano il calcolo."
   },
 
   // ── ESERCIZI (15) ─────────────────────────────────────────────────────────
