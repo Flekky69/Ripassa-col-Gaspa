@@ -525,7 +525,7 @@ const cards = [
   },
   {
     cat: "teoria",
-    q: "Regola della catena (derivata della funzione composta).",
+    q: "Regola di derivazione della funzione composta:",
     a: "Se \\(g\\) è derivabile in \\(x_0\\) e \\(f\\) è derivabile in \\(g(x_0)\\): \\[(f\\circ g)'(x_0)=f'(g(x_0))\\cdot g'(x_0)\\] Si deriva l'esterna valutata nell'interna, per la derivata dell'interna. Esempio: \\((\\sin(x^2))'=\\cos(x^2)\\cdot 2x\\)."
   },
   {
@@ -608,22 +608,22 @@ const cards = [
   {
     cat: "esercizio",
     q: "Calcola la derivata di \\(f(x)=\\sin(3x^2+1)\\).",
-    a: "Regola della catena: esterna \\(\\sin(u)\\), interna \\(u=3x^2+1\\): \\[f'(x)=\\cos(3x^2+1)\\cdot 6x=6x\\cos(3x^2+1)\\]"
+    a: "Regola di derivazione di una funzione compostaa: esterna \\(\\sin(u)\\), interna \\(u=3x^2+1\\): \\[f'(x)=\\cos(3x^2+1)\\cdot 6x=6x\\cos(3x^2+1)\\]"
   },
   {
     cat: "esercizio",
     q: "Calcola la derivata di \\(f(x)=e^{\\sin x}\\).",
-    a: "Regola della catena: esterna \\(e^u\\), interna \\(u=\\sin x\\): \\[f'(x)=e^{\\sin x}\\cdot\\cos x\\]"
+    a: "Regola di derivazione di una funzione composta: esterna \\(e^u\\), interna \\(u=\\sin x\\): \\[f'(x)=e^{\\sin x}\\cdot\\cos x\\]"
   },
   {
     cat: "esercizio",
     q: "Calcola la derivata di \\(f(x)=\\arctan(\\ln x)\\).",
-    a: "Regola della catena a due livelli: esterna \\(\\arctan(u)\\), interna \\(u=\\ln x\\): \\[f'(x)=\\frac{1}{1+(\\ln x)^2}\\cdot\\frac{1}{x}=\\frac{1}{x(1+\\ln^2 x)}\\]"
+    a: "Regola di derivazione di una funzione composta: esterna \\(\\arctan(u)\\), interna \\(u=\\ln x\\): \\[f'(x)=\\frac{1}{1+(\\ln x)^2}\\cdot\\frac{1}{x}=\\frac{1}{x(1+\\ln^2 x)}\\]"
   },
   {
     cat: "esercizio",
     q: "Calcola la derivata di \\(f(x)=\\left(\\frac{x+1}{x-1}\\right)^3\\).",
-    a: "Regola della catena: esterna \\(u^3\\), interna \\(u=\\frac{x+1}{x-1}\\). Derivata dell'interna (quoziente): \\(u'=\\frac{(x-1)-(x+1)}{(x-1)^2}=\\frac{-2}{(x-1)^2}\\). Quindi: \\[f'(x)=3\\left(\\frac{x+1}{x-1}\\right)^2\\cdot\\frac{-2}{(x-1)^2}=\\frac{-6(x+1)^2}{(x-1)^4}\\]"
+    a: "Regola di derivazione di una funzione compostaF: esterna \\(u^3\\), interna \\(u=\\frac{x+1}{x-1}\\). Derivata dell'interna (quoziente): \\(u'=\\frac{(x-1)-(x+1)}{(x-1)^2}=\\frac{-2}{(x-1)^2}\\). Quindi: \\[f'(x)=3\\left(\\frac{x+1}{x-1}\\right)^2\\cdot\\frac{-2}{(x-1)^2}=\\frac{-6(x+1)^2}{(x-1)^4}\\]"
   },
   {
     cat: "esercizio",
@@ -638,7 +638,7 @@ const cards = [
   {
     cat: "esercizio",
     q: "Calcola la derivata di \\(f(x)=\\sqrt{\\dfrac{1-x}{1+x}}\\).",
-    a: "Scrivo \\(f=\\left(\\frac{1-x}{1+x}\\right)^{1/2}\\). Catena: \\(f'=\\frac{1}{2}\\left(\\frac{1-x}{1+x}\\right)^{-1/2}\\cdot\\left(\\frac{1-x}{1+x}\\right)'\\). Quoziente interno: \\(\\frac{-(1+x)-(1-x)}{(1+x)^2}=\\frac{-2}{(1+x)^2}\\). Quindi: \\[f'(x)=\\frac{1}{2}\\sqrt{\\frac{1+x}{1-x}}\\cdot\\frac{-2}{(1+x)^2}=\\frac{-1}{(1+x)^{3/2}(1-x)^{1/2}}\\]"
+    a: "Scrivo \\(f=\\left(\\frac{1-x}{1+x}\\right)^{1/2}\\). Funzione composta: \\(f'=\\frac{1}{2}\\left(\\frac{1-x}{1+x}\\right)^{-1/2}\\cdot\\left(\\frac{1-x}{1+x}\\right)'\\). Quoziente interno: \\(\\frac{-(1+x)-(1-x)}{(1+x)^2}=\\frac{-2}{(1+x)^2}\\). Quindi: \\[f'(x)=\\frac{1}{2}\\sqrt{\\frac{1+x}{1-x}}\\cdot\\frac{-2}{(1+x)^2}=\\frac{-1}{(1+x)^{3/2}(1-x)^{1/2}}\\]"
   },
   {
     cat: "esercizio",
@@ -653,7 +653,7 @@ const cards = [
   {
     cat: "esercizio",
     q: "Calcola la derivata di \\(f(x)=\\ln|\\cos x|\\).",
-    a: "Regola della catena con \\(u=\\cos x\\): \\[f'(x)=\\frac{1}{\\cos x}\\cdot(-\\sin x)=-\\frac{\\sin x}{\\cos x}=-\\tan x\\] Definita dove \\(\\cos x\\neq0\\), cioè \\(x\\neq\\frac{\\pi}{2}+k\\pi\\)."
+    a: "Regola di derivazione di una funzione compostacon \\(u=\\cos x\\): \\[f'(x)=\\frac{1}{\\cos x}\\cdot(-\\sin x)=-\\frac{\\sin x}{\\cos x}=-\\tan x\\] Definita dove \\(\\cos x\\neq0\\), cioè \\(x\\neq\\frac{\\pi}{2}+k\\pi\\)."
   },
   {
     cat: "esercizio",
@@ -663,7 +663,7 @@ const cards = [
   {
     cat: "esercizio",
     q: "Calcola la derivata di \\(f(x)=\\arcsin\\!\\left(\\dfrac{x}{2}\\right)\\) e specifica il dominio.",
-    a: "Regola della catena con \\(u=x/2\\): \\[f'(x)=\\frac{1}{\\sqrt{1-(x/2)^2}}\\cdot\\frac{1}{2}=\\frac{1}{\\sqrt{4-x^2}}\\] Dominio: \\(|x/2|<1\\Rightarrow|x|<2\\), cioè \\(x\\in(-2,2)\\)."
+    a: "Regola di derivazione di una funzione composta con \\(u=x/2\\): \\[f'(x)=\\frac{1}{\\sqrt{1-(x/2)^2}}\\cdot\\frac{1}{2}=\\frac{1}{\\sqrt{4-x^2}}\\] Dominio: \\(|x/2|<1\\Rightarrow|x|<2\\), cioè \\(x\\in(-2,2)\\)."
   },
 
   // ── RAGIONAMENTO (15) ────────────────────────────────────────────────────
@@ -700,7 +700,7 @@ const cards = [
   {
     cat: "ragionamento",
     q: "Perché \\((\\ln|x|)'=1/x\\) vale anche per \\(x<0\\)?",
-    a: "Per \\(x<0\\): \\(|x|=-x\\), quindi \\(\\ln|x|=\\ln(-x)\\). Derivando con la catena: \\((\\ln(-x))'=\\frac{1}{-x}\\cdot(-1)=\\frac{1}{x}\\). Lo stesso risultato! L'estensione \\((\\ln|x|)'=1/x\\) è valida per \\(x\\neq0\\) ed è fondamentale nel calcolo integrale: permette di scrivere \\(\\int\\frac{1}{x}dx=\\ln|x|+C\\) anche per \\(x<0\\)."
+    a: "Per \\(x<0\\): \\(|x|=-x\\), quindi \\(\\ln|x|=\\ln(-x)\\). Derivando con la regola di derivazione di una funzione composta: \\((\\ln(-x))'=\\frac{1}{-x}\\cdot(-1)=\\frac{1}{x}\\). Lo stesso risultato! L'estensione \\((\\ln|x|)'=1/x\\) è valida per \\(x\\neq0\\) ed è fondamentale nel calcolo integrale: permette di scrivere \\(\\int\\frac{1}{x}dx=\\ln|x|+C\\) anche per \\(x<0\\)."
   },
   {
     cat: "ragionamento",
@@ -722,11 +722,7 @@ const cards = [
     q: "Cosa implica \\(f^{(n)}(x)=0\\) per ogni \\(x\\)?",
     a: "Se \\(f^{(n)}\\equiv0\\), allora \\(f\\) è un polinomio di grado al più \\(n-1\\). Ragionamento: \\(f^{(n)}=0\\Rightarrow f^{(n-1)}=c_{n-1}\\) (costante) \\(\\Rightarrow f^{(n-2)}=c_{n-1}x+c_{n-2}\\Rightarrow\\cdots\\Rightarrow f(x)=c_{n-1}\\frac{x^{n-1}}{(n-1)!}+\\cdots+c_0\\). I polinomi sono esattamente le funzioni con derivata di ordine sufficientemente alto identicamente nulla."
   },
-  {
-    cat: "ragionamento",
-    q: "Perché la regola della catena moltiplica le derivate invece di sommarle?",
-    a: "La regola della catena riflette la composizione delle variazioni relative. Se \\(u\\) cambia del \\(g'\\) per unità di \\(x\\), e \\(y\\) cambia del \\(f'\\) per unità di \\(u\\), allora \\(y\\) cambia del \\(f'\\cdot g'\\) per unità di \\(x\\): le variazioni relative si moltiplicano (come i fattori di scala). Formalmente: \\(\\frac{dy}{dx}=\\frac{dy}{du}\\cdot\\frac{du}{dx}\\), i \\(du\\) si 'cancellano' simbolicamente."
-  },
+
   {
     cat: "ragionamento",
     q: "Un polinomio è sempre derivabile infinite volte su \\(\\mathbb{R}\\). Perché?",
