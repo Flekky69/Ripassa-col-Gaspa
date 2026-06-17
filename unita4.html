@@ -627,7 +627,7 @@ const cards = [
   },
   {
     cat: "esercizio",
-    q: "Usando la derivazione logaritmica, calcola la derivata di \\(f(x)=x^x\\) per \\(x>0\\).",
+    q: "Calcola la derivata di \\(f(x)=x^x\\) per \\(x>0\\).",
     a: "Pongo \\(y=x^x\\), quindi \\(\\ln y=x\\ln x\\). Derivo: \\(\\frac{y'}{y}=\\ln x+1\\). Quindi: \\[f'(x)=x^x(\\ln x+1)\\] Si annulla per \\(\\ln x=-1\\), cioè \\(x=e^{-1}=1/e\\) (minimo assoluto di \\(x^x\\))."
   },
   {
@@ -652,11 +652,6 @@ const cards = [
   },
   {
     cat: "esercizio",
-    q: "Trova la derivata implicita di \\(y\\) definita da \\(x^3+y^3=3xy\\).",
-    a: "Derivo rispetto a \\(x\\): \\(3x^2+3y^2 y'=3y+3xy'\\). Raccolgo \\(y'\\): \\(3y^2 y'-3xy'=3y-3x^2\\), cioè \\(y'(y^2-x)=y-x^2\\). Quindi: \\[y'=\\frac{y-x^2}{y^2-x}\\] (valida dove \\(y^2\\neq x\\))."
-  },
-  {
-    cat: "esercizio",
     q: "Calcola la derivata di \\(f(x)=\\arcsin\\!\\left(\\dfrac{x}{2}\\right)\\) e specifica il dominio.",
     a: "Regola di derivazione di una funzione composta con \\(u=x/2\\): \\[f'(x)=\\frac{1}{\\sqrt{1-(x/2)^2}}\\cdot\\frac{1}{2}=\\frac{1}{\\sqrt{4-x^2}}\\] Dominio: \\(|x/2|<1\\Rightarrow|x|<2\\), cioè \\(x\\in(-2,2)\\)."
   },
@@ -664,8 +659,8 @@ const cards = [
   // ── RAGIONAMENTO (15) ────────────────────────────────────────────────────
   {
     cat: "ragionamento",
-    q: "Perché la derivata dell'esponenziale \\(e^x\\) è proprio \\(e^x\\) stessa?",
-    a: "Dal rapporto incrementale: \\(\\frac{e^{x+h}-e^x}{h}=e^x\\cdot\\frac{e^h-1}{h}\\). Per il limite notevole \\(\\lim_{h\\to0}\\frac{e^h-1}{h}=1\\), si ottiene \\((e^x)'=e^x\\cdot1=e^x\\). Il numero \\(e\\) è definito <em>proprio</em> affinché questa proprietà valga: è l'unica base per cui la derivata dell'esponenziale coincide con la funzione stessa."
+    q: "Come dimostrare che derivata dell'esponenziale \\(e^x\\) è proprio \\(e^x\\) stessa?",
+    a: "Si può dimostrare utilizzando la definizione di derivata. Si calcola il rapporto incrementale: \\(\\frac{e^{x+h}-e^x}{h}=e^x\\cdot\\frac{e^h-1}{h}\\). Per il limite notevole \\(\\lim_{h\\to0}\\frac{e^h-1}{h}=1\\), si ottiene \\((e^x)'=e^x\\cdot1=e^x\\). "
   },
   {
     cat: "ragionamento",
@@ -692,11 +687,6 @@ const cards = [
     cat: "ragionamento",
     q: "Perché \\((\\ln|x|)'=1/x\\) vale anche per \\(x<0\\)?",
     a: "Per \\(x<0\\): \\(|x|=-x\\), quindi \\(\\ln|x|=\\ln(-x)\\). Derivando con la regola di derivazione di una funzione composta: \\((\\ln(-x))'=\\frac{1}{-x}\\cdot(-1)=\\frac{1}{x}\\). Lo stesso risultato! L'estensione \\((\\ln|x|)'=1/x\\) è valida per \\(x\\neq0\\) ed è fondamentale nel calcolo integrale: permette di scrivere \\(\\int\\frac{1}{x}dx=\\ln|x|+C\\) anche per \\(x<0\\)."
-  },
-  {
-    cat: "ragionamento",
-    q: "Perché la derivazione logaritmica è utile per funzioni del tipo \\(f(x)^{g(x)}\\)?",
-    a: "Perché l'esponente variabile rende inapplicabili sia la regola delle potenze \\((x^n)'=nx^{n-1}\\) (che richiede esponente costante) sia la regola degli esponenziali \\((a^x)'=a^x\\ln a\\) (che richiede base costante). Prendendo \\(\\ln\\) si riduce il problema: \\(\\ln(f^g)=g\\ln f\\), e si applica la regola del prodotto al membro destro, poi si moltiplica per \\(f^g\\)."
   },
   {
     cat: "ragionamento",
