@@ -455,13 +455,13 @@ const cards = [
   // ── TEORIA (30) ──────────────────────────────────────────────────────────
   {
     cat: "teoria",
-    q: "Definizione di rapporto incrementale di \\(f\\) in \\(x_0\\) con incremento \\(h\\).",
-    a: "\\[\\frac{\\Delta y}{\\Delta x} = \\frac{f(x_0+h)-f(x_0)}{h}, \\quad h\\neq 0\\] Rappresenta la pendenza della <em>retta secante</em> passante per \\((x_0,f(x_0))\\) e \\((x_0+h,f(x_0+h))\\). Al variare di \\(h\\) si ottengono secanti diverse; il limite per \\(h\\to0\\) dà la tangente."
+    q: "Definisci il rapporto incrementale di \\(f\\) in \\(x_0\\) con incremento \\(h\\).",
+    a: "\\[\\frac{\\Delta y}{\\Delta x} = \\frac{f(x_0+h)-f(x_0)}{h}, \\quad h\\neq 0\\] Rappresenta la pendenza della <em>retta secante</em> passante per \\((x_0,f(x_0))\\) e \\((x_0+h,f(x_0+h))\\). Al variare di \\(h\\) si ottengono secanti diverse."
   },
   {
     cat: "teoria",
     q: "Definizione di derivata di \\(f\\) nel punto \\(x_0\\).",
-    a: "\\[f'(x_0)=\\lim_{h\\to0}\\frac{f(x_0+h)-f(x_0)}{h}\\] Se questo limite esiste finito, \\(f\\) è <em>derivabile</em> in \\(x_0\\). Geometricamente: pendenza della retta tangente al grafico in \\(x_0\\). Notazioni equivalenti: \\(f'(x_0)\\), \\(\\frac{df}{dx}(x_0)\\), \\(Df(x_0)\\), \\(\\dot{f}(x_0)\\)."
+    a: "\\[f'(x_0)=\\lim_{h\\to0}\\frac{f(x_0+h)-f(x_0)}{h}\\] Se questo limite esiste finito, \\(f\\) si dice <em>derivabile</em> in \\(x_0\\). Geometricamente: la derivata rappresenta la pendenza (il coefficiente angolare) della retta tangente al grafico in \\(x_0\\). Notazioni equivalenti: \\(f'(x_0)\\), \\(\\frac{df}{dx}(x_0)\\), \\(Df(x_0)\\)."
   },
   {
     cat: "teoria",
@@ -470,7 +470,7 @@ const cards = [
   },
   {
     cat: "teoria",
-    q: "Teorema: derivabilità implica continuità. Vale il viceversa?",
+    q: "La derivabilità implica la continuità?. Vale il viceversa?",
     a: "Se \\(f\\) è derivabile in \\(x_0\\) allora è continua in \\(x_0\\). <strong>Il viceversa è falso</strong>: \\(f(x)=|x|\\) è continua in 0 ma non derivabile (\\(f'_+(0)=1\\neq-1=f'_-(0)\\)). La derivabilità è una condizione più forte della continuità."
   },
   {
@@ -481,7 +481,7 @@ const cards = [
   {
     cat: "teoria",
     q: "Derivata della funzione costante e della funzione identità.",
-    a: "\\((c)'=0\\) per ogni costante \\(c\\in\\mathbb{R}\\) (la retta orizzontale ha pendenza 0). \\((x)'=1\\) (la retta \\(y=x\\) ha pendenza 1). Più in generale: \\((mx+q)'=m\\)."
+    a: "Se f(x)=c allora\\(f'(x)=0\\) per ogni costante \\(c\\in\\mathbb{R}\\) (la retta orizzontale ha pendenza 0). Se \\(f(x)=x allora f'(x)=1\\) (la retta \\(y=x\\) ha pendenza 1). Più in generale: \\(se f(x) = mx+q allora f'(x)=m\\)."
   },
   {
     cat: "teoria",
