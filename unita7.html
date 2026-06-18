@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studio delle Funzioni — Flashcards</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1008;
+    --paper: #f5f0e8;
+    --paper-dark: #ebe4d4;
+    --gold: #c8963e;
+    --gold-light: #e8b55a;
+    --red: #8b2020;
+    --blue: #1a3a5c;
+    --green: #1a4a2e;
+    --shadow: rgba(26,16,8,0.18);
+    --card-w: min(560px, 94vw);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(200,150,62,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 80%, rgba(26,58,92,0.06) 0%, transparent 60%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23f5f0e8'/%3E%3Cpath d='M0 0h1v1H0z' fill='%23e8e0cc' opacity='.4'/%3E%3C/svg%3E");
+  }
+
+  header {
+    text-align: center;
+    padding: 2.5rem 1rem 1.5rem;
+    border-bottom: 2px solid var(--gold);
+    background: linear-gradient(180deg, rgba(200,150,62,0.08) 0%, transparent 100%);
+    position: relative;
+  }
+  header::before {
+    content: "S";
+    position: absolute; left: 50%; top: .6rem;
+    transform: translateX(-50%);
+    font-size: 5rem; opacity: .04; font-family: 'Playfair Display', serif;
+    pointer-events: none; user-select: none;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: .04em;
+    color: var(--ink);
+  }
+  header p {
+    margin-top: .4rem;
+    font-size: .9rem;
+    color: #6b5a3e;
+    font-style: italic;
+    letter-spacing: .06em;
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+    justify-content: center;
+    padding: 1.2rem 1rem .8rem;
+    border-bottom: 1px solid rgba(200,150,62,.3);
+    background: rgba(245,240,232,.8);
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(6px);
+  }
+
+  .tab-group { display: flex; gap: 0; border: 1.5px solid var(--gold); border-radius: 6px; overflow: hidden; }
+  .tab-btn {
+    padding: .42rem .9rem;
+    font-family: 'Source Serif 4', serif;
+    font-size: .82rem;
+    border: none; background: transparent; cursor: pointer;
+    color: #6b5a3e; transition: all .2s;
+    letter-spacing: .03em;
+  }
+  .tab-btn.active { background: var(--gold); color: #fff; font-weight: 600; }
+  .tab-btn:not(.active):hover { background: rgba(200,150,62,.15); }
+
+  .mode-group { display: flex; gap: 0; border: 1.5px solid var(--blue); border-radius: 6px; overflow: hidden; }
+  .mode-btn {
+    padding: .42rem .9rem;
+    font-family: 'Source Serif 4', serif;
+    font-size: .82rem;
+    border: none; background: transparent; cursor: pointer;
+    color: var(--blue); transition: all .2s;
+    letter-spacing: .03em;
+  }
+  .mode-btn.active { background: var(--blue); color: #fff; font-weight: 600; }
+  .mode-btn:not(.active):hover { background: rgba(26,58,92,.1); }
+
+  .stat-pill {
+    padding: .38rem .75rem;
+    background: rgba(26,16,8,.06);
+    border-radius: 20px;
+    font-size: .78rem;
+    color: #6b5a3e;
+    letter-spacing: .04em;
+    align-self: center;
+  }
+
+  main { padding: 1.5rem 1rem 3rem; }
+
+  #browse-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(340px,94vw), 1fr));
+    gap: 1.2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .browse-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    box-shadow: 0 2px 8px var(--shadow);
+    border-left: 4px solid var(--gold);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .browse-card:hover { transform: translateY(-2px); box-shadow: 0 5px 16px var(--shadow); }
+  .browse-card[data-cat="esercizio"] { border-left-color: var(--red); }
+  .browse-card[data-cat="ragionamento"] { border-left-color: var(--green); }
+
+  .bc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: .7rem; }
+  .bc-num { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; color: var(--gold); }
+  .browse-card[data-cat="esercizio"] .bc-num { color: var(--red); }
+  .browse-card[data-cat="ragionamento"] .bc-num { color: var(--green); }
+
+  .bc-tag { font-size: .67rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; padding: .2rem .5rem; border-radius: 3px; }
+  .tag-teoria { background: rgba(200,150,62,.15); color: var(--gold); }
+  .tag-esercizio { background: rgba(139,32,32,.12); color: var(--red); }
+  .tag-ragionamento { background: rgba(26,74,46,.12); color: var(--green); }
+
+  .bc-q { font-size: .92rem; line-height: 1.55; color: #2a1f0d; font-weight: 600; margin-bottom: .6rem; }
+  .bc-divider { height: 1px; background: rgba(200,150,62,.25); margin: .6rem 0; }
+  .bc-a { font-size: .88rem; line-height: 1.6; color: #3a2f1d; font-style: italic; }
+  .bc-a-label { font-size: .7rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #8a7458; margin-bottom: .3rem; font-style: normal; }
+
+  #quiz-view { display: flex; flex-direction: column; align-items: center; gap: 1.2rem; }
+
+  .quiz-progress-bar { width: var(--card-w); height: 4px; background: rgba(200,150,62,.2); border-radius: 2px; overflow: hidden; }
+  .quiz-progress-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width .4s ease; }
+
+  .quiz-counter { font-size: .82rem; color: #6b5a3e; letter-spacing: .05em; font-style: italic; width: var(--card-w); text-align: right; }
+
+  .flip-scene { width: var(--card-w); height: min(340px, 60vw); cursor: pointer; position: relative; }
+  .flip-card { width: 100%; height: 100%; position: relative; }
+
+  .flip-face {
+    position: absolute; inset: 0;
+    border-radius: 14px;
+    padding: 1.8rem;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center;
+    box-shadow: 0 6px 24px var(--shadow);
+    overflow: auto;
+    transition: opacity .35s ease, transform .35s ease;
+  }
+
+  .flip-front { background: #fff; border: 2px solid var(--gold); opacity: 1; transform: scale(1); z-index: 2; }
+  .flip-front::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 30%, rgba(200,150,62,.05) 0%, transparent 70%); pointer-events: none; }
+  .flip-back { background: linear-gradient(135deg, #1a3a5c 0%, #0f2236 100%); color: #e8d9c0; opacity: 0; transform: scale(.96); z-index: 1; }
+
+  .flip-card.flipped .flip-front { opacity: 0; transform: scale(.96); z-index: 1; pointer-events: none; }
+  .flip-card.flipped .flip-back { opacity: 1; transform: scale(1); z-index: 2; }
+
+  .flip-card[data-cat="esercizio"] .flip-front { border-color: var(--red); }
+  .flip-card[data-cat="esercizio"] .flip-back { background: linear-gradient(135deg, #5c1a1a 0%, #380f0f 100%); }
+  .flip-card[data-cat="ragionamento"] .flip-front { border-color: var(--green); }
+  .flip-card[data-cat="ragionamento"] .flip-back { background: linear-gradient(135deg, #1a4a2e 0%, #0f2e1c 100%); }
+
+  .face-label { font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .5; margin-bottom: .8rem; font-style: normal; }
+  .flip-back .face-label { color: #e8d9c0; }
+  .face-q { font-size: clamp(.9rem, 2.5vw, 1.05rem); line-height: 1.55; font-weight: 600; color: var(--ink); z-index: 1; }
+  .flip-back .face-a { font-size: clamp(.82rem, 2.3vw, .97rem); line-height: 1.65; color: #e8d9c0; font-style: italic; }
+  .face-hint { position: absolute; bottom: .8rem; font-size: .68rem; opacity: .35; letter-spacing: .05em; font-style: italic; }
+
+  .quiz-nav { display: flex; gap: .8rem; align-items: center; flex-wrap: wrap; justify-content: center; }
+
+  .nav-btn { font-family: 'Source Serif 4', serif; font-size: .88rem; padding: .55rem 1.4rem; border-radius: 6px; cursor: pointer; border: 1.5px solid transparent; transition: all .18s; letter-spacing: .03em; }
+  .nav-btn.primary { background: var(--gold); color: #fff; border-color: var(--gold); }
+  .nav-btn.primary:hover { background: var(--gold-light); }
+  .nav-btn.secondary { background: transparent; color: var(--ink); border-color: rgba(26,16,8,.25); }
+  .nav-btn.secondary:hover { background: rgba(26,16,8,.06); }
+  .nav-btn:disabled { opacity: .35; cursor: default; }
+
+  .shuffle-btn { padding: .5rem; border: none; background: none; cursor: pointer; color: #8a7458; font-size: 1.1rem; transition: transform .2s; line-height: 1; }
+  .shuffle-btn:hover { transform: rotate(180deg); color: var(--gold); }
+
+  .score-panel { display: none; flex-direction: column; align-items: center; gap: .8rem; width: var(--card-w); background: #fff; border-radius: 12px; padding: 1.8rem; box-shadow: 0 4px 20px var(--shadow); text-align: center; }
+  .score-panel.visible { display: flex; }
+  .score-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--ink); }
+  .score-num { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--gold); font-weight: 700; line-height: 1; }
+  .score-sub { font-size: .88rem; color: #6b5a3e; font-style: italic; }
+
+  @media (max-width: 480px) { .flip-scene { height: min(280px, 72vw); } .flip-face { padding: 1.2rem; } .face-q, .flip-back .face-a { font-size: .88rem; } }
+  @media (min-width: 900px) { #browse-view { grid-template-columns: repeat(auto-fill, minmax(340px,1fr)); } }
+
+  .MJX-TEX { font-size: 1em !important; }
+  mjx-container { margin: .15em 0; max-width: 100%; overflow-x: auto; }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--paper-dark); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+  .home-link { display: inline-block; margin-bottom: .8rem; font-size: .8rem; color: #8a7458; text-decoration: none; letter-spacing: .06em; border: 1px solid rgba(200,150,62,.35); padding: .28rem .7rem; border-radius: 4px; transition: all .18s; }
+  .home-link:hover { color: var(--gold); border-color: var(--gold); background: rgba(200,150,62,.07); }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="home-link">← Tutte le unità</a>
+  <h1>Studio delle Funzioni</h1>
+  <p>Unità 7 — Analisi Matematica &nbsp;·&nbsp; 60 Flashcards</p>
+</header>
+
+<div class="controls">
+  <div class="tab-group">
+    <button class="tab-btn active" data-filter="all">Tutte</button>
+    <button class="tab-btn" data-filter="teoria">Teoria</button>
+    <button class="tab-btn" data-filter="esercizio">Esercizi</button>
+    <button class="tab-btn" data-filter="ragionamento">Ragionamento</button>
+  </div>
+  <div class="mode-group">
+    <button class="mode-btn active" data-mode="quiz">Quiz</button>
+    <button class="mode-btn" data-mode="browse">Consultazione</button>
+  </div>
+  <span class="stat-pill" id="stat-pill">60 carte</span>
+</div>
+
+<main>
+  <div id="browse-view" style="display:none"></div>
+
+  <div id="quiz-view">
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="qpf" style="width:0%"></div></div>
+    <div class="quiz-counter" id="qcounter">1 / 60</div>
+    <div class="flip-scene" id="flip-scene" onclick="flipCard()">
+      <div class="flip-card" id="flip-card">
+        <div class="flip-face flip-front">
+          <div class="face-label" id="fc-tag">Teoria</div>
+          <div class="face-q" id="fc-q"></div>
+          <span class="face-hint">tocca per vedere la risposta</span>
+        </div>
+        <div class="flip-face flip-back">
+          <div class="face-label">Risposta</div>
+          <div id="fc-a" style="font-style:italic;font-size:clamp(.82rem,2.3vw,.97rem);line-height:1.65;color:#e8d9c0;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="quiz-nav">
+      <button class="nav-btn secondary" id="btn-prev" onclick="prevCard()" disabled>← Indietro</button>
+      <button class="nav-btn primary" id="btn-next" onclick="nextCard()">Avanti →</button>
+      <button class="shuffle-btn" title="Mischia le carte" onclick="shuffle()">⇄</button>
+    </div>
+    <div class="score-panel" id="score-panel">
+      <div class="score-title">Sessione completata!</div>
+      <div class="score-num" id="score-num">60</div>
+      <div class="score-sub">carte studiate</div>
+      <button class="nav-btn primary" onclick="restart()">Ricomincia</button>
+    </div>
+  </div>
+</main>
+
+<script>
+const cards = [
+  // ── TEORIA (25) ──────────────────────────────────────────────────────────
+  {
+    cat: "teoria",
+    q: "Qual è lo schema generale per lo studio di una funzione? Elenca i 7 passi.",
+    a: "<strong>1.</strong> Dominio. <strong>2.</strong> Simmetrie e periodicità. <strong>3.</strong> Intersezioni con gli assi. <strong>4.</strong> Segno della funzione. <strong>5.</strong> Comportamento agli estremi del dominio e asintoti. <strong>6.</strong> Derivata prima: monotonia, massimi, minimi relativi, flessi orizzontali, punti angolosi e cuspidi. <strong>7.</strong> Derivata seconda: concavità, flessi obliqui, tangente inflessionale."
+  },
+  {
+    cat: "teoria",
+    q: "Come si sfrutta la parità o disparità di una funzione nel suo studio?",
+    a: "Se \\(f\\) è <strong>pari</strong> (\\(f(-x)=f(x)\\)) il grafico è simmetrico rispetto all'asse \\(y\\): basta studiare \\(x\\geq0\\) e riflettere. Se \\(f\\) è <strong>dispari</strong> (\\(f(-x)=-f(x)\\)) il grafico è simmetrico rispetto all'origine: stessa strategia. Se \\(f\\) è <strong>periodica</strong> di periodo \\(T\\) basta studiare un intervallo di ampiezza \\(T\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Come si ricerca un asintoto verticale?",
+    a: "\\(x=x_0\\) è un <strong>asintoto verticale</strong> se almeno uno dei limiti laterali è infinito: \\[\\lim_{x\\to x_0^+}f(x)=\\pm\\infty \\quad\\text{o}\\quad \\lim_{x\\to x_0^-}f(x)=\\pm\\infty\\] Va cercato nei punti esclusi dal dominio (zeri del denominatore, argomenti negativi di logaritmi, ecc.)."
+  },
+  {
+    cat: "teoria",
+    q: "Come si ricerca un asintoto orizzontale?",
+    a: "\\(y=y_0\\) è un <strong>asintoto orizzontale</strong> per \\(x\\to+\\infty\\) (o \\(-\\infty\\)) se \\[\\lim_{x\\to+\\infty}f(x)=y_0 \\quad (y_0\\in\\mathbb{R})\\] Se entrambi i limiti sono finiti può esistere un unico asintoto orizzontale (stesso per \\(+\\infty\\) e \\(-\\infty\\)) oppure due distinti."
+  },
+  {
+    cat: "teoria",
+    q: "Come si ricerca un asintoto obliquo?",
+    a: "\\(y=mx+q\\) è <strong>asintoto obliquo</strong> per \\(x\\to+\\infty\\) se: \\[m=\\lim_{x\\to+\\infty}\\frac{f(x)}{x}\\in\\mathbb{R}\\setminus\\{0\\}, \\quad q=\\lim_{x\\to+\\infty}[f(x)-mx]\\in\\mathbb{R}\\] Stesso procedimento per \\(x\\to-\\infty\\). Esiste asintoto obliquo solo se \\(n=m+1\\) per funzioni razionali fratte (grado numeratore = grado denominatore \\(+1\\))."
+  },
+  {
+    cat: "teoria",
+    q: "Quali sono le proprietà caratteristiche delle funzioni polinomiali?",
+    a: "Le funzioni polinomiali \\(y=a_nx^n+\\ldots+a_0\\) con \\(n>2\\) hanno dominio \\(\\mathbb{R}\\), nessun punto di discontinuità o singolarità, nessun asintoto, nessuna cuspide né flesso verticale né punto angoloso. Se dispari hanno un flesso in \\(O(0;0)\\); se pari hanno in \\(x=0\\) un massimo o minimo relativo."
+  },
+  {
+    cat: "teoria",
+    q: "Quali sono le proprietà caratteristiche delle funzioni razionali fratte?",
+    a: "La funzione \\(y=\\frac{a_nx^n+\\ldots}{b_mx^m+\\ldots}\\) non è definita negli zeri del denominatore (asintoti verticali, salvo annullamento contestuale del numeratore). Ha asintoto orizzontale \\(y=0\\) se \\(n<m\\), asintoto \\(y=a_n/b_m\\) se \\(n=m\\), asintoto obliquo se \\(n=m+1\\), nessun asintoto finito se \\(n>m+1\\). Non ha cuspidi né flessi verticali."
+  },
+  {
+    cat: "teoria",
+    q: "Come si studia il segno di una funzione razionale fratta?",
+    a: "Si pone \\(f(x)>0\\) e si studia il segno separatamente di numeratore e denominatore. Si compila il <strong>quadro dei segni</strong>: per ogni fattore si determina il segno su ogni intervallo del dominio. Il segno di \\(f\\) è il prodotto (o rapporto) dei segni dei singoli fattori. Si escludono i punti in cui il denominatore si annulla."
+  },
+  {
+    cat: "teoria",
+    q: "Come si legge il grafico di \\(f'\\) dal grafico di \\(f\\)?",
+    a: "Nei punti di <strong>massimo/minimo relativo</strong> di \\(f\\) il grafico di \\(f'\\) interseca l'asse \\(x\\) (\\(f'=0\\)). Negli intervalli in cui \\(f\\) è <strong>crescente</strong> si ha \\(f'>0\\); dove è <strong>decrescente</strong>, \\(f'<0\\). Nei punti di <strong>flesso orizzontale</strong> \\(f'=0\\) e \\(f'\\) ha un estremo. Se \\(f\\) ha una <strong>cuspide o flesso verticale</strong>, \\(f'\\) ha un asintoto verticale."
+  },
+  {
+    cat: "teoria",
+    q: "Come si legge il grafico di \\(f\\) dal grafico di \\(f'\\)?",
+    a: "Dal grafico di \\(f'\\) si può ricavare \\(f\\) solo a meno di una costante additiva. Dove \\(f'>0\\): \\(f\\) cresce; dove \\(f'<0\\): \\(f\\) decresce. Gli zeri di \\(f'\\) sono candidati estremi di \\(f\\). La pendenza di \\(f'\\) indica la concavità di \\(f\\): se \\(f'\\) cresce, \\(f\\) è concava verso l'alto; se \\(f'\\) decresce, concava verso il basso."
+  },
+  {
+    cat: "teoria",
+    q: "Come si effettua la risoluzione grafica di un'equazione?",
+    a: "Si riscrive l'equazione nella forma \\(f(x)=0\\) e si cerca gli zeri del grafico di \\(f\\); oppure nella forma \\(g(x)=h(x)\\) e si cercano le intersezioni dei grafici di \\(g\\) e \\(h\\). Le ascisse dei punti di intersezione sono le soluzioni. Il grafico permette di stimare il numero di soluzioni e i loro valori approssimati."
+  },
+  {
+    cat: "teoria",
+    q: "Come si effettua la discussione grafica di un'equazione parametrica?",
+    a: "Si ricava il parametro \\(k\\) in funzione di \\(x\\): \\(f(x)=k\\). Si studia la funzione \\(y=f(x)\\) e si disegna il suo grafico. Le soluzioni dell'equazione per un dato \\(k\\) corrispondono alle intersezioni del grafico con la retta orizzontale \\(y=k\\). Variando \\(k\\) si contano le intersezioni e si discutono i casi critici (massimi, minimi, asintoti)."
+  },
+  {
+    cat: "teoria",
+    q: "Cosa si intende per separazione delle radici nel calcolo numerico?",
+    a: "La <strong>separazione delle radici</strong> consiste nel determinare intervalli \\([a;b]\\) che contengano <em>soltanto una</em> radice dell'equazione \\(f(x)=0\\). Si usa il grafico o il Teorema degli zeri: se \\(f\\) è continua in \\([a;b]\\) e \\(f(a)\\cdot f(b)<0\\), esiste almeno uno zero in \\(]a;b[\\). L'unicità si garantisce con i teoremi del primo e del secondo tipo."
+  },
+  {
+    cat: "teoria",
+    q: "Enunciare il Primo Teorema di unicità dello zero.",
+    a: "Se \\(f\\) è continua in \\([a;b]\\), derivabile in \\(]a;b[\\), \\(f(a)\\cdot f(b)<0\\) e \\(f'(x)\\neq0\\) in \\(]a;b[\\), allora esiste <em>un unico</em> punto interno \\(c\\in]a;b[\\) in cui \\(f(c)=0\\). La condizione \\(f'\\neq0\\) garantisce la monotonia, quindi l'unicità dello zero (la funzione attraversa l'asse delle \\(x\\) una sola volta)."
+  },
+  {
+    cat: "teoria",
+    q: "Enunciare il Secondo Teorema di unicità dello zero.",
+    a: "Se \\(f\\) è continua in \\([a;b]\\), derivabile due volte nei suoi punti interni, \\(f(a)\\cdot f(b)<0\\) e \\(f''(x)>0\\) (oppure \\(f''(x)<0\\)) per ogni \\(x\\in[a;b]\\), allora esiste <em>un unico</em> punto interno \\(c\\) in cui \\(f(c)=0\\). La concavità costante impedisce alla curva di attraversare l'asse più di una volta."
+  },
+  {
+    cat: "teoria",
+    q: "Come funziona il metodo di bisezione per il calcolo approssimato di una radice?",
+    a: "Dato \\([a_0;b_0]\\) con una sola radice \\(c\\): (1) si calcola il punto medio \\(m_0=\\frac{a_0+b_0}{2}\\); (2) se \\(f(m_0)=0\\) si è trovata la radice; (3) altrimenti si sceglie il semi-intervallo in cui \\(f\\) cambia segno come nuovo \\([a_1;b_1]\\). Si ripete fino alla precisione voluta. L'errore al passo \\(n\\) è \\(\\varepsilon_n=\\frac{b_0-a_0}{2^{n+1}}\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Come funziona il metodo delle tangenti (Newton-Raphson)?",
+    a: "Se \\(f'(x)\\) ha segno costante in \\([a_0;b_0]\\), si parte dall'estremo in cui \\(f(x_0)\\cdot f''(x_0)>0\\) e si itera: \\[x_{n+1}=x_n-\\frac{f(x_n)}{f'(x_n)}\\] La successione converge alla radice. È più efficiente della bisezione: ha convergenza quadratica, ma richiede il calcolo di \\(f'\\). Non funziona se \\(f'(x_0)\\) è piccolo (tangente quasi orizzontale)."
+  },
+  {
+    cat: "teoria",
+    q: "Qual è la formula di ricorrenza del metodo di Newton-Raphson e come si sceglie il punto di partenza?",
+    a: "Formula: \\[x_{n+1}=x_n-\\frac{f(x_n)}{f'(x_n)}\\] Il punto di partenza \\(x_0\\) deve essere l'estremo dell'intervallo \\([a_0;b_0]\\) in cui \\(f(x_0)\\cdot f''(x_0)>0\\), cioè l'estremo in cui \\(f\\) e \\(f''\\) hanno lo stesso segno. Questo garantisce che la successione rimanga nell'intervallo e converga."
+  },
+  {
+    cat: "teoria",
+    q: "Come si trovano gli asintoti di una funzione esponenziale del tipo \\(y=ae^{bx}+c\\)?",
+    a: "Per \\(x\\to-\\infty\\) (se \\(b>0\\)): \\(e^{bx}\\to0\\), quindi \\(f(x)\\to c\\): l'asse \\(y=c\\) è un <strong>asintoto orizzontale</strong>. Per \\(x\\to+\\infty\\): \\(f(x)\\to\\pm\\infty\\), nessun asintoto orizzontale. Non ci sono asintoti verticali (dominio \\(\\mathbb{R}\\)). Per \\(b<0\\) il comportamento si inverte."
+  },
+  {
+    cat: "teoria",
+    q: "Come si interpreta il cambiamento di concavità di \\(f\\) leggendo il grafico di \\(f'\\)?",
+    a: "Nei punti in cui il grafico di \\(f'\\) ha un <strong>massimo o minimo relativo</strong> (cioè \\(f''=0\\) e cambia segno), il grafico di \\(f\\) ha un <strong>punto di flesso</strong>. Dove \\(f'\\) è crescente (\\(f''>0\\)) il grafico di \\(f\\) è concavo verso l'alto; dove \\(f'\\) è decrescente (\\(f''<0\\)) è concavo verso il basso."
+  },
+  {
+    cat: "teoria",
+    q: "Perché nello studio di una funzione si analizza anche il segno della funzione?",
+    a: "Lo studio del segno (\\(f(x)>0\\)) permette di sapere dove il grafico si trova <strong>al di sopra</strong> dell'asse \\(x\\) e dove al di sotto. Questa informazione è fondamentale per: tracciare un grafico coerente, verificare la presenza di zeri (intersezioni con l'asse \\(x\\)), e risolvere disequazioni. Combinato con il dominio, individua anche eventuali intervalli vuoti."
+  },
+  {
+    cat: "teoria",
+    q: "Come si classificano i punti di discontinuità o singolarità negli estremi del dominio?",
+    a: "Si calcola il limite della funzione per \\(x\\) che si avvicina all'estremo: se il limite è finito \\(y_0\\) ed esiste un solo lato, la funzione ha un <strong>asintoto orizzontale</strong> o un valore mancante (discontinuità eliminabile). Se il limite è \\(\\pm\\infty\\), il punto è un <strong>asintoto verticale</strong>. Se la funzione oscilla senza limite, non ha asintoto (es. \\(\\sin(1/x)\\) per \\(x\\to0\\))."
+  },
+  {
+    cat: "teoria",
+    q: "Che informazioni fornisce lo studio della derivata prima nel grafico di una funzione?",
+    a: "La derivata prima fornisce: (1) gli <strong>intervalli di monotonia</strong> (\\(f'>0\\) crescente, \\(f'<0\\) decrescente); (2) i <strong>punti stazionari</strong> (\\(f'=0\\)); (3) i <strong>massimi e minimi relativi</strong> (cambio di segno di \\(f'\\)); (4) i <strong>flessi orizzontali</strong> (\\(f'=0\\) senza cambio di segno); (5) i <strong>punti angolosi e cuspidi</strong> (discontinuità di \\(f'\\))."
+  },
+  {
+    cat: "teoria",
+    q: "Che informazioni fornisce lo studio della derivata seconda nel grafico di una funzione?",
+    a: "La derivata seconda fornisce: (1) gli <strong>intervalli di concavità</strong>: verso l'alto (\\(f''>0\\)), verso il basso (\\(f''<0\\)); (2) i <strong>punti di flesso</strong> (cambio di segno di \\(f''\\), cercati tra le soluzioni di \\(f''=0\\)); (3) il <strong>tipo di flesso</strong>: obliquo se \\(f'(x_0)\\neq0\\), orizzontale se \\(f'(x_0)=0\\), verticale se \\(f'\\) ha asintoto in \\(x_0\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Come si determina l'equazione della tangente inflessionale in un punto di flesso?",
+    a: "Nel punto di flesso \\(x_0\\), la <strong>tangente inflessionale</strong> ha equazione: \\[y - f(x_0) = f'(x_0)(x - x_0)\\] Se il flesso è obliquo, \\(f'(x_0)\\in\\mathbb{R}\\setminus\\{0\\}\\); se è orizzontale, \\(f'(x_0)=0\\) e la tangente è \\(y=f(x_0)\\); se è verticale, \\(f'(x_0)\\) è infinita e la tangente è \\(x=x_0\\). La tangente in un flesso attraversa il grafico."
+  },
+
+  // ── ESERCIZI (20) ─────────────────────────────────────────────────────────
+  {
+    cat: "esercizio",
+    q: "Studiare e rappresentare la funzione \\(y=x-x^3\\). Trovare dominio, simmetrie, intersezioni e derivate.",
+    a: "<strong>Dom:</strong> \\(\\mathbb{R}\\). <strong>Disparità:</strong> \\(f(-x)=-f(x)\\), dispari, simmetrica rispetto a \\(O\\). <strong>Intersezioni:</strong> asse \\(y\\): \\(O(0;0)\\); asse \\(x\\): \\(x(1-x^2)=0\\Rightarrow x=0,\\pm1\\). <strong>Segno:</strong> \\(f>0\\) per \\(-1<x<0\\) e \\(x>1\\) (no: \\(x(1-x)(1+x)>0\\Rightarrow\\) \\(f>0\\) per \\(x<-1\\) e \\(0<x<1\\)). <strong>\\(f'\\):</strong> \\(1-3x^2=0\\Rightarrow x=\\pm\\frac{1}{\\sqrt3}\\); massimo in \\(-\\frac{1}{\\sqrt3}\\), minimo in \\(\\frac{1}{\\sqrt3}\\). <strong>\\(f''\\):</strong> \\(-6x=0\\Rightarrow x=0\\): flesso orizzontale."
+  },
+  {
+    cat: "esercizio",
+    q: "Studiare la funzione \\(y=x^4-3x^2+2\\). Trovare simmetrie, stazionari e flessi.",
+    a: "<strong>Dom:</strong> \\(\\mathbb{R}\\). <strong>Parità:</strong> \\(f(-x)=f(x)\\), pari. <strong>\\(f'\\)=}\\(4x^3-6x=2x(2x^2-3)\\). Zeri: \\(x=0,\\pm\\sqrt{3/2}\\). \\(x=0\\) massimo relativo (\\(f(0)=2\\)); \\(x=\\pm\\sqrt{3/2}\\) minimi relativi (\\(f=−\\frac{1}{4}\\)). <strong>\\(f''\\):</strong> \\(12x^2-6\\). Zeri: \\(x=\\pm\\frac{1}{\\sqrt2}\\). Flessi in \\(x=\\pm\\frac{1}{\\sqrt{2}}\\) con \\(f=\\frac{3}{4}\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Studiare \\(y=\\dfrac{2x+5}{x}-4=2+\\dfrac{5}{x}-4\\). Asintoti, monotonia e rappresentazione.",
+    a: "Riscriviamo: \\(f(x)=2x+\\dfrac{5}{x}-4\\). <strong>Dom:</strong> \\(x\\neq0\\). <strong>Simmetrie:</strong> né pari né dispari. <strong>Asse \\(x\\):</strong> \\(2x^2-4x+5=0\\), \\(\\Delta=-24<0\\): nessuna intersezione. <strong>Segno:</strong> \\(f<0\\) per \\(x<0\\), \\(f>0\\) per \\(x>0\\). <strong>Asintoti:</strong> verticale \\(x=0\\); obliquo \\(y=2x-4\\). <strong>\\(f'\\):</strong> \\(2-\\frac{5}{x^2}\\), zeri \\(x=\\pm\\sqrt{5/2}\\). Massimo in \\(-\\sqrt{5/2}\\), minimo in \\(\\sqrt{5/2}\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Studiare \\(f(x)=-\\dfrac{1}{2}(e^{-x}+e^x)\\) (catenaria con \\(a=-1\\)). Dominio, simmetrie, stazionari.",
+    a: "<strong>Dom:</strong> \\(\\mathbb{R}\\). <strong>Parità:</strong> \\(f(-x)=f(x)\\), pari. <strong>Intersezioni:</strong> nessuna con l'asse \\(x\\) (\\(f(x)\\leq-1\\)); con asse \\(y\\): \\((0;-1)\\). <strong>Segno:</strong> \\(f(x)<0\\) per ogni \\(x\\). <strong>\\(f'\\):</strong> \\(-\\frac{1}{2}(-e^{-x}+e^x)=0\\Rightarrow e^{2x}=1\\Rightarrow x=0\\). Massimo relativo in \\(x=0\\), \\(f(0)=-1\\). <strong>\\(f''\\):</strong> \\(-\\frac{1}{2}(e^{-x}+e^x)<0\\) sempre: concava verso il basso ovunque, nessun flesso."
+  },
+  {
+    cat: "esercizio",
+    q: "Trovare gli asintoti di \\(f(x)=\\dfrac{x^2-4}{x}\\).",
+    a: "<strong>Dom:</strong> \\(x\\neq0\\). Riscriviamo: \\(f(x)=x-\\dfrac{4}{x}\\). <strong>Asintoto verticale:</strong> \\(x=0\\) (\\(\\lim_{x\\to0^\\pm}f=\\mp\\infty\\)). <strong>Asintoto obliquo:</strong> \\(m=\\lim_{x\\to\\pm\\infty}\\frac{f(x)}{x}=1\\); \\(q=\\lim_{x\\to\\pm\\infty}[f(x)-x]=\\lim(-4/x)=0\\). Asintoto: \\(y=x\\) (valido sia per \\(+\\infty\\) che \\(-\\infty\\)). Nessun asintoto orizzontale."
+  },
+  {
+    cat: "esercizio",
+    q: "Risolvere graficamente \\(x^3-4x=\\ln x\\). Quante soluzioni ha e in quale intervallo?",
+    a: "Si rappresentano \\(g(x)=x^3-4x\\) e \\(h(x)=\\ln x\\) (dominio \\(x>0\\)). Per \\(x>0\\): \\(g(0)=0>\\ln 0^+=-\\infty\\), \\(g(1)=-3<0=\\ln1\\), \\(g(2)=0<\\ln2\\approx0.69\\) — no: \\(g(2)=8-8=0\\), \\(\\ln2>0\\): \\(g<h\\). \\(g(3)=27-12=15\\), \\(\\ln3\\approx1.1\\): \\(g>h\\). Quindi almeno un'intersezione tra \\(x=2\\) e \\(x=3\\). Ulteriore analisi grafica rivela circa <strong>due soluzioni</strong> per \\(x>0\\), una in \\(]0;1[\\) e una in \\(]2;3[\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Discutere \\(\\dfrac{1}{xe^x}=k\\) al variare di \\(k\\in\\mathbb{R}\\) nell'intervallo \\(-2\\leq x<4\\).",
+    a: "Si studia \\(f(x)=\\frac{1}{xe^x}\\) su \\([-2;0[\\cup]0;4[\\). Asintoto verticale: \\(x=0\\). \\(f'(x)=-\\frac{1+x}{x^2e^x}\\), zero in \\(x=-1\\): massimo relativo \\(M(-1;-e)\\). <br>Contando le intersezioni con \\(y=k\\): <strong>2 soluzioni</strong> per \\(-\\frac{e^2}{2}\\leq k\\leq -e\\); <strong>1 soluzione</strong> per \\(k<-e\\) o \\(k>\\frac{1}{4e^4}\\); <strong>0 soluzioni</strong> per \\(-e<k\\leq0\\). Il punto \\(B(4;\\frac{1}{4e^4})\\) è l'estremo destro aperto."
+  },
+  {
+    cat: "esercizio",
+    q: "Studiare la funzione \\(f(x)=x^4-3x^2+2\\) con focus sul quadro dei segni per lo studio del segno.",
+    a: "\\(f(x)=x^4-3x^2+2=(x^2-2)(x^2-1)=(x-\\sqrt2)(x+\\sqrt2)(x-1)(x+1)\\). Zeri: \\(x=\\pm1,\\pm\\sqrt2\\). Quadro dei segni: \\(f>0\\) per \\(x<-\\sqrt2\\), \\(-1<x<1\\), \\(x>\\sqrt2\\); \\(f<0\\) per \\(-\\sqrt2<x<-1\\) e \\(1<x<\\sqrt2\\). Il grafico è sotto l'asse \\(x\\) in due intervalli simmetrici."
+  },
+  {
+    cat: "esercizio",
+    q: "Separare le radici di \\(f(x)=x^3-3x+1=0\\) e individuare gli intervalli.",
+    a: "\\(f'(x)=3x^2-3=3(x-1)(x+1)\\). Massimo relativo in \\(x=-1\\): \\(f(-1)=3>0\\); minimo relativo in \\(x=1\\): \\(f(1)=-1<0\\). Limiti: \\(f\\to-\\infty\\) per \\(x\\to-\\infty\\), \\(f\\to+\\infty\\) per \\(x\\to+\\infty\\). Cambi di segno: in \\(]-2;-1[\\) (\\(f(-2)=-1<0\\), \\(f(-1)=3>0\\)); in \\(]0;1[\\) (\\(f(0)=1>0\\), \\(f(1)=-1<0\\)); in \\(]1;2[\\) (\\(f(1)=-1<0\\), \\(f(2)=3>0\\)). Tre radici separate."
+  },
+  {
+    cat: "esercizio",
+    q: "Applicare il metodo di bisezione a \\(f(x)=x^3-x+1=0\\) nell'intervallo \\([-2;-1]\\) per due passi.",
+    a: "\\(f(-2)=-5<0\\), \\(f(-1)=1>0\\): cambio di segno, radice in \\([-2;-1]\\). <strong>Passo 1:</strong> \\(m_0=\\frac{-2+(-1)}{2}=-1{,}5\\); \\(f(-1{,}5)=-0{,}875<0\\): radice in \\([-1{,}5;-1]\\). <strong>Passo 2:</strong> \\(m_1=-1{,}25\\); \\(f(-1{,}25)=0{,}297>0\\): radice in \\([-1{,}5;-1{,}25]\\). Soluzione approssimata: \\(\\bar x\\approx-1{,}25\\) con errore \\(\\varepsilon_2\\leq0{,}125\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Applicare il metodo di Newton a \\(f(x)=x^3-x+1=0\\) nell'intervallo \\([-2;-1]\\). Primo passo.",
+    a: "\\(f'(x)=3x^2-1\\), \\(f''(x)=6x\\). \\(f(-2)=-5<0\\), \\(f''(-2)=-12<0\\): \\(f\\cdot f''>0\\) — no. \\(f(-1)=1>0\\), \\(f''(-1)=-6<0\\): \\(f(-1)\\cdot f''(-1)<0\\) — no. Proviamo \\(f(-2)\\cdot f''(-2)=(-5)(-12)=60>0\\): si parte da \\(x_0=-2\\). \\[x_1=-2-\\frac{f(-2)}{f'(-2)}=-2-\\frac{-5}{11}=-2+\\frac{5}{11}\\approx-1{,}545\\] Valore molto più preciso già al primo passo rispetto alla bisezione."
+  },
+  {
+    cat: "esercizio",
+    q: "Trovare dominio e asintoti di \\(f(x)=\\ln(x^2-1)\\).",
+    a: "<strong>Dom:</strong> \\(x^2-1>0\\Rightarrow|x|>1\\Rightarrow x\\in(-\\infty;-1)\\cup(1;+\\infty)\\). <strong>Asintoti verticali:</strong> \\(x=\\pm1\\) (\\(\\lim_{x\\to\\pm1}\\ln(x^2-1)=-\\infty\\)). <strong>Comportamento per \\(x\\to\\pm\\infty\\):</strong> \\(\\ln(x^2-1)\\sim\\ln(x^2)=2\\ln|x|\\to+\\infty\\): nessun asintoto orizzontale. Nessun asintoto obliquo (\\(\\frac{\\ln(x^2-1)}{x}\\to0\\))."
+  },
+  {
+    cat: "esercizio",
+    q: "Studiare \\(f(x)=x\\cdot e^{-x}\\): trovare massimo assoluto e comportamento agli estremi.",
+    a: "<strong>Dom:</strong> \\(\\mathbb{R}\\). \\(\\lim_{x\\to+\\infty}xe^{-x}=0\\) (asintoto \\(y=0\\)); \\(\\lim_{x\\to-\\infty}xe^{-x}=-\\infty\\). <strong>\\(f'\\):</strong> \\(e^{-x}-xe^{-x}=e^{-x}(1-x)\\). Zero: \\(x=1\\). \\(f'>0\\) per \\(x<1\\), \\(f'<0\\) per \\(x>1\\): <strong>massimo assoluto</strong> in \\(x=1\\), \\(f(1)=e^{-1}=\\frac{1}{e}\\). <strong>\\(f''\\):</strong> \\(e^{-x}(x-2)\\). Zero: \\(x=2\\): flesso in \\((2;2e^{-2})\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Ricavare il grafico di \\(f\\) dal grafico di \\(f'\\) dato: \\(f'>0\\) per \\(x<-1\\) e \\(x>2\\), \\(f'<0\\) per \\(-1<x<2\\), \\(f'(-1)=f'(2)=0\\).",
+    a: "\\(x=-1\\): \\(f'\\) passa da \\(+\\) a \\(-\\) ⇒ <strong>massimo relativo</strong> di \\(f\\). \\(x=2\\): \\(f'\\) passa da \\(-\\) a \\(+\\) ⇒ <strong>minimo relativo</strong> di \\(f\\). \\(f\\) cresce su \\((-\\infty;-1)\\), decresce su \\((-1;2)\\), torna a crescere su \\((2;+\\infty)\\). La forma del grafico è un doppio flesso sinusoidale con un massimo e un minimo. La costante verticale è indeterminata."
+  },
+  {
+    cat: "esercizio",
+    q: "Verificare che \\(f(x)=x\\ln x-4\\) ha un solo zero in \\([1;4]\\) e applicare la bisezione per un passo.",
+    a: "\\(f(1)=0-4=-4<0\\), \\(f(4)=4\\ln4-4=4(\\ln4-1)\\approx4(1{,}386-1)=1{,}545>0\\): cambio di segno. \\(f'(x)=\\ln x+1>0\\) per \\(x>e^{-1}>0\\): \\(f\\) strettamente crescente su \\([1;4]\\), quindi <strong>unico zero</strong>. <strong>Bisezione passo 1:</strong> \\(m_0=2{,}5\\); \\(f(2{,}5)=2{,}5\\ln2{,}5-4\\approx2{,}5(0{,}916)-4=-1{,}71<0\\): radice in \\(]2{,}5;4[\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Trovare e classificare tutti i punti notevoli di \\(f(x)=\\dfrac{x^2}{x^2+1}\\).",
+    a: "<strong>Dom:</strong> \\(\\mathbb{R}\\). Nessun asintoto verticale. \\(\\lim_{x\\to\\pm\\infty}f=1\\): asintoto orizzontale \\(y=1\\). <strong>\\(f'\\):</strong> \\(\\frac{2x(x^2+1)-x^2\\cdot2x}{(x^2+1)^2}=\\frac{2x}{(x^2+1)^2}\\). Zero: \\(x=0\\). \\(f'<0\\) per \\(x<0\\), \\(f'>0\\) per \\(x>0\\): <strong>minimo assoluto</strong> in \\(x=0\\), \\(f(0)=0\\). <strong>\\(f''\\):</strong> \\(\\frac{2(1-3x^2)}{(x^2+1)^3}\\). Flessi in \\(x=\\pm\\frac{1}{\\sqrt3}\\) con \\(f=\\frac{1}{4}\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Discutere al variare di \\(k\\) il numero di soluzioni di \\(x^3-3x=k\\).",
+    a: "Si studia \\(f(x)=x^3-3x\\). \\(f'=3x^2-3\\), zeri \\(x=\\pm1\\). Massimo relativo \\(f(-1)=2\\), minimo relativo \\(f(1)=-2\\). Contando le intersezioni con \\(y=k\\): <strong>3 soluzioni</strong> per \\(-2<k<2\\); <strong>2 soluzioni</strong> per \\(k=\\pm2\\); <strong>1 soluzione</strong> per \\(k>2\\) o \\(k<-2\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Studiare \\(f(x)=\\dfrac{x}{e^x}\\): dominio, asintoti, stazionari e flessi.",
+    a: "<strong>Dom:</strong> \\(\\mathbb{R}\\). \\(\\lim_{x\\to+\\infty}xe^{-x}=0\\): asintoto \\(y=0\\). \\(\\lim_{x\\to-\\infty}xe^{-x}=-\\infty\\): nessun asintoto per \\(-\\infty\\). <strong>\\(f'\\):</strong> \\(\\frac{e^x-xe^x}{e^{2x}}=\\frac{1-x}{e^x}\\). Zero: \\(x=1\\). Massimo in \\(x=1\\), \\(f(1)=e^{-1}\\). <strong>\\(f''\\):</strong> \\(\\frac{x-2}{e^x}\\). Zero: \\(x=2\\). Flesso in \\((2;2e^{-2})\\) obliquo."
+  },
+  {
+    cat: "esercizio",
+    q: "Discutere \\(\\ln x - x^2 + 2 = 0\\): separare le radici nell'intervallo \\([0{,}1; 2]\\).",
+    a: "\\(f(x)=\\ln x - x^2+2\\), dominio \\(x>0\\). \\(f(0{,}1)=\\ln0{,}1-0{,}01+2\\approx-2{,}303+1{,}99=-0{,}31<0\\). \\(f(0{,}5)=\\ln0{,}5-0{,}25+2\\approx-0{,}693+1{,}75=1{,}057>0\\): radice in \\(]0{,}1;0{,}5[\\). \\(f(1)=0-1+2=1>0\\). \\(f(2)=\\ln2-4+2\\approx0{,}693-2=-1{,}307<0\\): radice in \\(]1;2[\\). Due radici separate: \\(x_1\\in]0{,}1;0{,}5[\\) e \\(x_2\\in]1;2[\\)."
+  },
+
+  // ── RAGIONAMENTO (15) ─────────────────────────────────────────────────────
+  {
+    cat: "ragionamento",
+    q: "Perché lo studio del dominio è il primo passo indispensabile nell'analisi di una funzione?",
+    a: "Il dominio delimita l'insieme su cui \\(f\\) è definita: tutti gli altri passi (segno, limiti, derivate, asintoti) hanno senso solo all'interno del dominio. Punti esclusi dal dominio possono generare asintoti verticali o singolarità. Senza conoscere il dominio si rischia di calcolare \\(f'\\) o \\(f''\\) in punti inesistenti, portando a conclusioni errate sul grafico."
+  },
+  {
+    cat: "ragionamento",
+    q: "Una funzione può avere sia un asintoto orizzontale che uno obliquo?",
+    a: "No, non nello stesso verso. Se \\(\\lim_{x\\to+\\infty}f(x)=L\\in\\mathbb{R}\\) (asintoto orizzontale), allora \\(m=\\lim_{x\\to+\\infty}\\frac{f(x)}{x}=0\\): non esiste asintoto obliquo per \\(x\\to+\\infty\\). Viceversa, se esiste asintoto obliquo \\(y=mx+q\\) con \\(m\\neq0\\), il limite non è finito. Possono coesistere asintoto orizzontale per \\(x\\to+\\infty\\) e obliquo per \\(x\\to-\\infty\\) (o viceversa)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché conoscere il grafico di \\(f'\\) non permette di determinare univocamente il grafico di \\(f\\)?",
+    a: "Perché \\(f\\) è determinata da \\(f'\\) solo a meno di una costante additiva \\(c\\). Due funzioni \\(f(x)\\) e \\(f(x)+c\\) hanno la stessa derivata ma grafici traslati verticalmente. Quindi dal grafico di \\(f'\\) si conosce la <em>forma</em> del grafico di \\(f\\) (monotonia, estremi, flessi) ma non la sua posizione verticale assoluta senza un'informazione aggiuntiva (es. un valore iniziale)."
+  },
+  {
+    cat: "ragionamento",
+    q: "In che senso il metodo di Newton è 'più efficiente' della bisezione? Qual è il suo limite?",
+    a: "Il metodo di Newton ha <strong>convergenza quadratica</strong>: ad ogni passo il numero di cifre decimali corrette raddoppia circa (l'errore al passo \\(n+1\\) è proporzionale al quadrato dell'errore al passo \\(n\\)). La bisezione ha convergenza lineare (ogni passo dimezza l'errore). Il limite di Newton è la necessità di calcolare \\(f'\\) e di scegliere bene il punto di partenza: se la derivata è piccola, la convergenza rallenta o può divergere."
+  },
+  {
+    cat: "ragionamento",
+    q: "Una funzione con asintoto obliquo \\(y=mx+q\\) 'si avvicina' alla retta senza mai toccarla?",
+    a: "Non necessariamente. La definizione di asintoto obliquo richiede solo che \\(f(x)-(mx+q)\\to0\\) per \\(x\\to\\pm\\infty\\). Il grafico può <em>attraversare</em> l'asintoto un numero finito di volte per \\(x\\) grande. Esempio: \\(f(x)=x+\\frac{\\sin x}{x}\\) ha asintoto \\(y=x\\) ma oscilla intorno ad esso. Ciò che non può accadere è che rimanga <em>permanentemente</em> discosto dalla retta."
+  },
+  {
+    cat: "ragionamento",
+    q: "Se \\(f\\) è pari e ha un massimo relativo in \\(x_0>0\\), cosa si può dedurre su \\(x=-x_0\\)?",
+    a: "Per la simmetria rispetto all'asse \\(y\\), anche \\(x=-x_0\\) è un punto di massimo relativo con lo stesso valore \\(f(-x_0)=f(x_0)\\). Infatti se \\(f(x)\\leq f(x_0)\\) per ogni \\(x\\) in un intorno di \\(x_0\\), allora per ogni \\(t\\) in un intorno di \\(-x_0\\) si ha \\(f(t)=f(-t)\\leq f(x_0)=f(-x_0)\\). Stessa logica vale per i minimi."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché l'equazione \\(f(x)=k\\) può avere soluzioni diverse al variare di \\(k\\), e come si usa il grafico per rispondere?",
+    a: "Il numero di soluzioni di \\(f(x)=k\\) corrisponde al numero di intersezioni del grafico di \\(f\\) con la retta orizzontale \\(y=k\\). Per \\(k\\) fuori dal range dei valori di \\(f\\): zero intersezioni. Per \\(k\\) uguale a un massimo o minimo: una intersezione (tangenza). Per \\(k\\) in un intervallo di valori tra un massimo e un minimo: due o più intersezioni. I valori critici di \\(k\\) sono i valori di \\(f\\) nei punti stazionari e agli estremi del dominio."
+  },
+  {
+    cat: "ragionamento",
+    q: "Cosa significa che una funzione è asintoticamente equivalente a un'altra per \\(x\\to\\infty\\)?",
+    a: "\\(f(x)\\sim g(x)\\) per \\(x\\to\\infty\\) significa \\(\\lim_{x\\to\\infty}\\frac{f(x)}{g(x)}=1\\). Nello studio delle funzioni, questo è utile per semplificare il calcolo di limiti e asintoti: si sostituisce la funzione con la sua equivalente (es. \\(\\sin x\\sim x\\) per \\(x\\to0\\), \\(\\ln(1+x)\\sim x\\)). Due funzioni asintoticamente equivalenti hanno lo stesso comportamento qualitativo all'infinito ma possono differire per termini di ordine inferiore."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché nel metodo di bisezione si sceglie il semintervallo con cambio di segno e non quello senza?",
+    a: "Per il <strong>Teorema degli zeri</strong>: se \\(f\\) è continua in \\([a;b]\\) e \\(f(a)\\cdot f(b)<0\\), allora esiste almeno uno zero in \\(]a;b[\\). Il semiintervallo con cambio di segno <em>contiene certamente</em> la radice, mentre l'altro potrebbe non contenerla (\\(f\\) potrebbe avere lo stesso segno ai due estremi pur avendo uno zero interno). Si mantiene così la garanzia di convergenza alla radice."
+  },
+  {
+    cat: "ragionamento",
+    q: "Come si può verificare che un grafico tracciato è 'coerente' con tutti i dati dello studio?",
+    a: "Si verifica che: (1) il grafico esiste solo nel <em>dominio</em>; (2) passa per le <em>intersezioni</em> trovate; (3) ha il <em>segno</em> corretto (sopra/sotto l'asse \\(x\\) negli intervalli giusti); (4) rispetta la <em>monotonia</em> (cresce/decresce nei giusti intervalli); (5) ha <em>massimi, minimi e flessi</em> nelle posizioni e con i valori calcolati; (6) si avvicina agli <em>asintoti</em> corretti; (7) rispetta le <em>simmetrie</em>."
+  },
+  {
+    cat: "ragionamento",
+    q: "Una funzione con asintoto verticale \\(x=x_0\\) può essere continua in \\(x_0\\)?",
+    a: "No per definizione: l'asintoto verticale richiede \\(\\lim_{x\\to x_0^\\pm}f(x)=\\pm\\infty\\), il che implica che \\(f\\) non è definita in \\(x_0\\) (o se lo è, non è continua lì). Se \\(f(x_0)\\) fosse definita e il limite fosse finito, si avrebbe una discontinuità eliminabile o un semplice buco nel grafico, non un asintoto. Quindi la presenza di un asintoto verticale è incompatibile con la continuità nel punto."
+  },
+  {
+    cat: "ragionamento",
+    q: "Come si usa la parità/disparità per dimezzare il lavoro nello studio di una funzione?",
+    a: "Se \\(f\\) è <strong>pari</strong>, si studia solo \\(x\\geq0\\) e si riflette il grafico rispetto all'asse \\(y\\). Se \\(f\\) è <strong>dispari</strong>, si studia solo \\(x\\geq0\\) e si riflette rispetto all'origine (e cambia segno). Questo riduce a metà i calcoli di derivate, zeri, segno e asintoti. Importante: i punti stazionari per funzioni pari vanno sempre cercati in \\(x=0\\) (dove \\(f'\\) dispari si annulla)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché lo studio della derivata seconda è necessario anche dopo aver già trovato massimi e minimi con la derivata prima?",
+    a: "La derivata prima classifica i punti stazionari (massimi, minimi, flessi orizzontali) ma non descrive la <em>forma</em> della curva tra essi. La derivata seconda aggiunge: (1) la <em>concavità</em> in ogni intervallo (verso l'alto o basso), che determina la forma 'tazza' o 'collina'; (2) i <em>flessi obliqui</em> (non rilevabili dalla sola \\(f'\\)); (3) la <em>tangente inflessionale</em>, utile per un grafico preciso."
+  },
+  {
+    cat: "ragionamento",
+    q: "In che condizioni il Teorema degli zeri garantisce l'esistenza ma non l'unicità di una radice?",
+    a: "Il Teorema degli zeri (Bolzano) garantisce solo l'<em>esistenza</em> di almeno una radice se \\(f\\) è continua su \\([a;b]\\) e \\(f(a)\\cdot f(b)<0\\). L'unicità non è garantita: possono esserci un numero dispari di radici (1, 3, 5, …). L'unicità si ottiene con condizioni aggiuntive: (I teorema) \\(f'\\neq0\\) sull'intervallo aperto; (II teorema) \\(f''\\) di segno costante. Senza queste, il grafico può oscillare più volte attraverso l'asse \\(x\\)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Se il metodo di bisezione converge sempre, perché si preferisce spesso il metodo di Newton?",
+    a: "La bisezione converge lentamente: per guadagnare una cifra decimale corretta servono circa 3-4 iterazioni (\\(\\log_2 10\\approx3{,}32\\)). Newton converge quadraticamente: dopo le prime iterazioni, il numero di cifre corrette raddoppia ad ogni passo, richiedendo molto meno iterazioni. Per una precisione di 10 decimali: bisezione ≈ 33 passi, Newton ≈ 4-5 passi. Il costo per iterazione è però maggiore (calcolo di \\(f'\\)) e Newton può divergere se mal inizializzato."
+  }
+];
+
+// ─── STATE ─────────────────────────────────────────────────────────────────
+let filtered = [...cards];
+let deck = [...filtered];
+let idx = 0;
+let currentFilter = "all";
+let currentMode = "quiz";
+
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentFilter = btn.dataset.filter;
+    applyFilter();
+  });
+});
+
+document.querySelectorAll(".mode-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".mode-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentMode = btn.dataset.mode;
+    switchMode();
+  });
+});
+
+function applyFilter() {
+  filtered = currentFilter === "all" ? [...cards] : cards.filter(c => c.cat === currentFilter);
+  deck = [...filtered];
+  idx = 0;
+  document.getElementById("stat-pill").textContent = filtered.length + " carte";
+  if (currentMode === "quiz") {
+    document.getElementById("score-panel").classList.remove("visible");
+    document.getElementById("flip-scene").style.display = "";
+    document.querySelectorAll(".quiz-nav button").forEach(b => b.disabled = false);
+    renderCard();
+  } else {
+    renderBrowse();
+  }
+}
+
+function switchMode() {
+  if (currentMode === "quiz") {
+    document.getElementById("browse-view").style.display = "none";
+    document.getElementById("quiz-view").style.display = "flex";
+    deck = [...filtered];
+    idx = 0;
+    document.getElementById("score-panel").classList.remove("visible");
+    document.getElementById("flip-scene").style.display = "";
+    document.querySelector(".quiz-nav").style.display = "";
+    renderCard();
+  } else {
+    document.getElementById("quiz-view").style.display = "none";
+    document.getElementById("browse-view").style.display = "grid";
+    renderBrowse();
+  }
+}
+
+function renderCard() {
+  if (!deck.length) return;
+  const c = deck[idx];
+  const fc = document.getElementById("flip-card");
+  fc.classList.remove("flipped");
+  fc.dataset.cat = c.cat;
+  document.getElementById("fc-tag").textContent = c.cat.charAt(0).toUpperCase() + c.cat.slice(1);
+  document.getElementById("fc-q").innerHTML = c.q;
+  document.getElementById("fc-a").innerHTML = c.a;
+  document.getElementById("qcounter").textContent = (idx + 1) + " / " + deck.length;
+  document.getElementById("qpf").style.width = ((idx + 1) / deck.length * 100) + "%";
+  document.getElementById("btn-prev").disabled = idx === 0;
+  document.getElementById("btn-next").textContent = idx === deck.length - 1 ? "Fine ✓" : "Avanti →";
+  if (window.MathJax) MathJax.typesetPromise([document.getElementById("flip-card")]);
+}
+
+function flipCard() {
+  document.getElementById("flip-card").classList.toggle("flipped");
+}
+
+function nextCard() {
+  if (idx < deck.length - 1) {
+    idx++;
+    renderCard();
+  } else {
+    document.getElementById("flip-scene").style.display = "none";
+    document.querySelector(".quiz-nav").style.display = "none";
+    document.getElementById("score-num").textContent = deck.length;
+    document.getElementById("score-panel").classList.add("visible");
+  }
+}
+
+function prevCard() {
+  if (idx > 0) { idx--; renderCard(); }
+}
+
+function shuffle() {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  idx = 0;
+  document.getElementById("score-panel").classList.remove("visible");
+  document.getElementById("flip-scene").style.display = "";
+  document.querySelector(".quiz-nav").style.display = "";
+  renderCard();
+}
+
+function restart() {
+  deck = [...filtered];
+  idx = 0;
+  document.getElementById("score-panel").classList.remove("visible");
+  document.getElementById("flip-scene").style.display = "";
+  document.querySelector(".quiz-nav").style.display = "";
+  renderCard();
+}
+
+function renderBrowse() {
+  const container = document.getElementById("browse-view");
+  container.innerHTML = "";
+  filtered.forEach((c, i) => {
+    const tagClass = "tag-" + c.cat;
+    const tagLabel = c.cat.charAt(0).toUpperCase() + c.cat.slice(1);
+    const div = document.createElement("div");
+    div.className = "browse-card";
+    div.dataset.cat = c.cat;
+    div.innerHTML = `
+      <div class="bc-header">
+        <span class="bc-num">#${i + 1}</span>
+        <span class="bc-tag ${tagClass}">${tagLabel}</span>
+      </div>
+      <div class="bc-q">${c.q}</div>
+      <div class="bc-divider"></div>
+      <div class="bc-a-label">Risposta</div>
+      <div class="bc-a">${c.a}</div>
+    `;
+    container.appendChild(div);
+  });
+  if (window.MathJax) MathJax.typesetPromise([container]);
+}
+
+renderCard();
+</script>
+</body>
+</html>
