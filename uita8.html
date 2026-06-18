@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Integrali Indefiniti — Flashcards</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1008;
+    --paper: #f5f0e8;
+    --paper-dark: #ebe4d4;
+    --gold: #c8963e;
+    --gold-light: #e8b55a;
+    --red: #8b2020;
+    --blue: #1a3a5c;
+    --green: #1a4a2e;
+    --shadow: rgba(26,16,8,0.18);
+    --card-w: min(560px, 94vw);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(200,150,62,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 80%, rgba(26,58,92,0.06) 0%, transparent 60%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23f5f0e8'/%3E%3Cpath d='M0 0h1v1H0z' fill='%23e8e0cc' opacity='.4'/%3E%3C/svg%3E");
+  }
+
+  header {
+    text-align: center;
+    padding: 2.5rem 1rem 1.5rem;
+    border-bottom: 2px solid var(--gold);
+    background: linear-gradient(180deg, rgba(200,150,62,0.08) 0%, transparent 100%);
+    position: relative;
+  }
+  header::before {
+    content: "∫";
+    position: absolute; left: 50%; top: .6rem;
+    transform: translateX(-50%);
+    font-size: 5rem; opacity: .04; font-family: 'Playfair Display', serif;
+    pointer-events: none; user-select: none;
+  }
+  header h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.4rem, 4vw, 2.2rem); font-weight: 700; letter-spacing: .04em; color: var(--ink); }
+  header p { margin-top: .4rem; font-size: .9rem; color: #6b5a3e; font-style: italic; letter-spacing: .06em; }
+
+  .controls { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; padding: 1.2rem 1rem .8rem; border-bottom: 1px solid rgba(200,150,62,.3); background: rgba(245,240,232,.8); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(6px); }
+
+  .tab-group { display: flex; gap: 0; border: 1.5px solid var(--gold); border-radius: 6px; overflow: hidden; }
+  .tab-btn { padding: .42rem .9rem; font-family: 'Source Serif 4', serif; font-size: .82rem; border: none; background: transparent; cursor: pointer; color: #6b5a3e; transition: all .2s; letter-spacing: .03em; }
+  .tab-btn.active { background: var(--gold); color: #fff; font-weight: 600; }
+  .tab-btn:not(.active):hover { background: rgba(200,150,62,.15); }
+
+  .mode-group { display: flex; gap: 0; border: 1.5px solid var(--blue); border-radius: 6px; overflow: hidden; }
+  .mode-btn { padding: .42rem .9rem; font-family: 'Source Serif 4', serif; font-size: .82rem; border: none; background: transparent; cursor: pointer; color: var(--blue); transition: all .2s; letter-spacing: .03em; }
+  .mode-btn.active { background: var(--blue); color: #fff; font-weight: 600; }
+  .mode-btn:not(.active):hover { background: rgba(26,58,92,.1); }
+
+  .stat-pill { padding: .38rem .75rem; background: rgba(26,16,8,.06); border-radius: 20px; font-size: .78rem; color: #6b5a3e; letter-spacing: .04em; align-self: center; }
+
+  main { padding: 1.5rem 1rem 3rem; }
+
+  #browse-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px,94vw), 1fr)); gap: 1.2rem; max-width: 1200px; margin: 0 auto; }
+
+  .browse-card { background: #fff; border-radius: 10px; padding: 1.2rem 1.4rem; box-shadow: 0 2px 8px var(--shadow); border-left: 4px solid var(--gold); transition: transform .15s, box-shadow .15s; }
+  .browse-card:hover { transform: translateY(-2px); box-shadow: 0 5px 16px var(--shadow); }
+  .browse-card[data-cat="esercizio"] { border-left-color: var(--red); }
+  .browse-card[data-cat="ragionamento"] { border-left-color: var(--green); }
+
+  .bc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: .7rem; }
+  .bc-num { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; color: var(--gold); }
+  .browse-card[data-cat="esercizio"] .bc-num { color: var(--red); }
+  .browse-card[data-cat="ragionamento"] .bc-num { color: var(--green); }
+
+  .bc-tag { font-size: .67rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; padding: .2rem .5rem; border-radius: 3px; }
+  .tag-teoria { background: rgba(200,150,62,.15); color: var(--gold); }
+  .tag-esercizio { background: rgba(139,32,32,.12); color: var(--red); }
+  .tag-ragionamento { background: rgba(26,74,46,.12); color: var(--green); }
+
+  .bc-q { font-size: .92rem; line-height: 1.55; color: #2a1f0d; font-weight: 600; margin-bottom: .6rem; }
+  .bc-divider { height: 1px; background: rgba(200,150,62,.25); margin: .6rem 0; }
+  .bc-a { font-size: .88rem; line-height: 1.6; color: #3a2f1d; font-style: italic; }
+  .bc-a-label { font-size: .7rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #8a7458; margin-bottom: .3rem; font-style: normal; }
+
+  #quiz-view { display: flex; flex-direction: column; align-items: center; gap: 1.2rem; }
+
+  .quiz-progress-bar { width: var(--card-w); height: 4px; background: rgba(200,150,62,.2); border-radius: 2px; overflow: hidden; }
+  .quiz-progress-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width .4s ease; }
+  .quiz-counter { font-size: .82rem; color: #6b5a3e; letter-spacing: .05em; font-style: italic; width: var(--card-w); text-align: right; }
+
+  .flip-scene { width: var(--card-w); height: min(340px, 60vw); cursor: pointer; position: relative; }
+  .flip-card { width: 100%; height: 100%; position: relative; }
+  .flip-face { position: absolute; inset: 0; border-radius: 14px; padding: 1.8rem; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; box-shadow: 0 6px 24px var(--shadow); overflow: auto; transition: opacity .35s ease, transform .35s ease; }
+  .flip-front { background: #fff; border: 2px solid var(--gold); opacity: 1; transform: scale(1); z-index: 2; }
+  .flip-front::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 30%, rgba(200,150,62,.05) 0%, transparent 70%); pointer-events: none; }
+  .flip-back { background: linear-gradient(135deg, #1a3a5c 0%, #0f2236 100%); color: #e8d9c0; opacity: 0; transform: scale(.96); z-index: 1; }
+  .flip-card.flipped .flip-front { opacity: 0; transform: scale(.96); z-index: 1; pointer-events: none; }
+  .flip-card.flipped .flip-back { opacity: 1; transform: scale(1); z-index: 2; }
+  .flip-card[data-cat="esercizio"] .flip-front { border-color: var(--red); }
+  .flip-card[data-cat="esercizio"] .flip-back { background: linear-gradient(135deg, #5c1a1a 0%, #380f0f 100%); }
+  .flip-card[data-cat="ragionamento"] .flip-front { border-color: var(--green); }
+  .flip-card[data-cat="ragionamento"] .flip-back { background: linear-gradient(135deg, #1a4a2e 0%, #0f2e1c 100%); }
+
+  .face-label { font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .5; margin-bottom: .8rem; font-style: normal; }
+  .flip-back .face-label { color: #e8d9c0; }
+  .face-q { font-size: clamp(.9rem, 2.5vw, 1.05rem); line-height: 1.55; font-weight: 600; color: var(--ink); z-index: 1; }
+  .flip-back .face-a { font-size: clamp(.82rem, 2.3vw, .97rem); line-height: 1.65; color: #e8d9c0; font-style: italic; }
+  .face-hint { position: absolute; bottom: .8rem; font-size: .68rem; opacity: .35; letter-spacing: .05em; font-style: italic; }
+
+  .quiz-nav { display: flex; gap: .8rem; align-items: center; flex-wrap: wrap; justify-content: center; }
+  .nav-btn { font-family: 'Source Serif 4', serif; font-size: .88rem; padding: .55rem 1.4rem; border-radius: 6px; cursor: pointer; border: 1.5px solid transparent; transition: all .18s; letter-spacing: .03em; }
+  .nav-btn.primary { background: var(--gold); color: #fff; border-color: var(--gold); }
+  .nav-btn.primary:hover { background: var(--gold-light); }
+  .nav-btn.secondary { background: transparent; color: var(--ink); border-color: rgba(26,16,8,.25); }
+  .nav-btn.secondary:hover { background: rgba(26,16,8,.06); }
+  .nav-btn:disabled { opacity: .35; cursor: default; }
+  .shuffle-btn { padding: .5rem; border: none; background: none; cursor: pointer; color: #8a7458; font-size: 1.1rem; transition: transform .2s; line-height: 1; }
+  .shuffle-btn:hover { transform: rotate(180deg); color: var(--gold); }
+
+  .score-panel { display: none; flex-direction: column; align-items: center; gap: .8rem; width: var(--card-w); background: #fff; border-radius: 12px; padding: 1.8rem; box-shadow: 0 4px 20px var(--shadow); text-align: center; }
+  .score-panel.visible { display: flex; }
+  .score-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--ink); }
+  .score-num { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--gold); font-weight: 700; line-height: 1; }
+  .score-sub { font-size: .88rem; color: #6b5a3e; font-style: italic; }
+
+  @media (max-width: 480px) { .flip-scene { height: min(280px, 72vw); } .flip-face { padding: 1.2rem; } .face-q, .flip-back .face-a { font-size: .88rem; } }
+  @media (min-width: 900px) { #browse-view { grid-template-columns: repeat(auto-fill, minmax(340px,1fr)); } }
+
+  .MJX-TEX { font-size: 1em !important; }
+  mjx-container { margin: .15em 0; max-width: 100%; overflow-x: auto; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--paper-dark); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+  .home-link { display: inline-block; margin-bottom: .8rem; font-size: .8rem; color: #8a7458; text-decoration: none; letter-spacing: .06em; border: 1px solid rgba(200,150,62,.35); padding: .28rem .7rem; border-radius: 4px; transition: all .18s; }
+  .home-link:hover { color: var(--gold); border-color: var(--gold); background: rgba(200,150,62,.07); }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="home-link">← Tutte le unità</a>
+  <h1>Integrali Indefiniti</h1>
+  <p>Unità 8 — Analisi Matematica &nbsp;·&nbsp; 60 Flashcards</p>
+</header>
+
+<div class="controls">
+  <div class="tab-group">
+    <button class="tab-btn active" data-filter="all">Tutte</button>
+    <button class="tab-btn" data-filter="teoria">Teoria</button>
+    <button class="tab-btn" data-filter="esercizio">Esercizi</button>
+    <button class="tab-btn" data-filter="ragionamento">Ragionamento</button>
+  </div>
+  <div class="mode-group">
+    <button class="mode-btn active" data-mode="quiz">Quiz</button>
+    <button class="mode-btn" data-mode="browse">Consultazione</button>
+  </div>
+  <span class="stat-pill" id="stat-pill">60 carte</span>
+</div>
+
+<main>
+  <div id="browse-view" style="display:none"></div>
+  <div id="quiz-view">
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="qpf" style="width:0%"></div></div>
+    <div class="quiz-counter" id="qcounter">1 / 60</div>
+    <div class="flip-scene" id="flip-scene" onclick="flipCard()">
+      <div class="flip-card" id="flip-card">
+        <div class="flip-face flip-front">
+          <div class="face-label" id="fc-tag">Teoria</div>
+          <div class="face-q" id="fc-q"></div>
+          <span class="face-hint">tocca per vedere la risposta</span>
+        </div>
+        <div class="flip-face flip-back">
+          <div class="face-label">Risposta</div>
+          <div id="fc-a" style="font-style:italic;font-size:clamp(.82rem,2.3vw,.97rem);line-height:1.65;color:#e8d9c0;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="quiz-nav">
+      <button class="nav-btn secondary" id="btn-prev" onclick="prevCard()" disabled>← Indietro</button>
+      <button class="nav-btn primary" id="btn-next" onclick="nextCard()">Avanti →</button>
+      <button class="shuffle-btn" title="Mischia le carte" onclick="shuffle()">⇄</button>
+    </div>
+    <div class="score-panel" id="score-panel">
+      <div class="score-title">Sessione completata!</div>
+      <div class="score-num" id="score-num">60</div>
+      <div class="score-sub">carte studiate</div>
+      <button class="nav-btn primary" onclick="restart()">Ricomincia</button>
+    </div>
+  </div>
+</main>
+
+<script>
+const cards = [
+  // ── TEORIA (25) ──────────────────────────────────────────────────────────
+  {
+    cat: "teoria",
+    q: "Definizione di primitiva di una funzione.",
+    a: "Una funzione \\(F(x)\\) è una <strong>primitiva</strong> di \\(f(x)\\) nell'intervallo \\([a;b]\\) se \\(F\\) è derivabile in tutto \\([a;b]\\) e la sua derivata è \\(f(x)\\): \\[F'(x)=f(x)\\] Se \\(F(x)\\) è una primitiva di \\(f(x)\\), allora anche \\(F(x)+c\\) (con \\(c\\in\\mathbb{R}\\)) è una primitiva di \\(f\\). Tutte e sole le primitive di \\(f\\) sono del tipo \\(F(x)+c\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Definizione di integrale indefinito.",
+    a: "L'<strong>integrale indefinito</strong> di \\(f(x)\\) è l'insieme di tutte le primitive \\(F(x)+c\\), con \\(c\\in\\mathbb{R}\\) qualunque. Si indica con \\[\\int f(x)\\,dx = F(x)+c\\] La funzione \\(f(x)\\) è la <em>funzione integranda</em>, \\(x\\) è la <em>variabile di integrazione</em>, \\(F(x)\\) ottenuta per \\(c=0\\) è la <em>primitiva fondamentale</em>."
+  },
+  {
+    cat: "teoria",
+    q: "Qual è la relazione fondamentale tra integrazione e derivazione?",
+    a: "L'integrazione indefinita è l'operazione inversa della derivazione: \\[\\mathrm{D}\\!\\left[\\int f(x)\\,dx\\right]=f(x)\\] e \\[\\int F'(x)\\,dx = F(x)+c\\] Le curve integrali \\(F(x)+c\\) sono geometricamente delle traslazioni verticali le une delle altre; in ogni punto con la stessa ascissa hanno la stessa tangente."
+  },
+  {
+    cat: "teoria",
+    q: "Condizione sufficiente di integrabilità.",
+    a: "Se \\(f\\) è <strong>continua</strong> in \\([a;b]\\), allora ammette primitive nello stesso intervallo. Attenzione: non tutte le funzioni integrabili sono derivabili (es. funzioni continue con punti angolosi), e non tutte le funzioni continue ammettono primitiva esprimibile in forma elementare (es. \\(\\int\\frac{\\sin x}{x}\\,dx\\))."
+  },
+  {
+    cat: "teoria",
+    q: "Prima e seconda proprietà di linearità dell'integrale indefinito.",
+    a: "<strong>Prima proprietà:</strong> \\[\\int[f(x)+g(x)]\\,dx = \\int f(x)\\,dx + \\int g(x)\\,dx\\] <strong>Seconda proprietà:</strong> \\[\\int k\\cdot f(x)\\,dx = k\\cdot\\int f(x)\\,dx\\] In forma compatta (operatore lineare): \\[\\int[c_1 f(x)+c_2 g(x)]\\,dx = c_1\\int f(x)\\,dx + c_2\\int g(x)\\,dx\\]"
+  },
+  {
+    cat: "teoria",
+    q: "Integrali immediati delle potenze di \\(x\\): casi \\(\\alpha\\neq-1\\) e \\(\\alpha=-1\\).",
+    a: "<strong>Caso \\(\\alpha\\neq-1\\):</strong> \\[\\int x^\\alpha\\,dx = \\frac{x^{\\alpha+1}}{\\alpha+1}+c, \\quad \\alpha\\in\\mathbb{R},\\,\\alpha\\neq-1\\] Casi particolari: \\(\\int dx=x+c\\); \\(\\int x\\,dx=\\frac{x^2}{2}+c\\); \\(\\int\\sqrt{x}\\,dx=\\frac{2}{3}x^{3/2}+c\\). <strong>Caso \\(\\alpha=-1\\):</strong> \\[\\int\\frac{1}{x}\\,dx = \\ln|x|+c\\] Il valore assoluto è necessario per coprire anche \\(x<0\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Integrali immediati delle funzioni esponenziali.",
+    a: "\\[\\int e^x\\,dx = e^x+c\\] \\[\\int a^x\\,dx = \\frac{a^x}{\\ln a}+c \\quad (a>0,\\,a\\neq1)\\] Verifica: \\(\\mathrm{D}\\!\\left[\\frac{a^x}{\\ln a}+c\\right]=\\frac{a^x\\ln a}{\\ln a}=a^x\\). ✓"
+  },
+  {
+    cat: "teoria",
+    q: "Integrali immediati delle funzioni goniometriche fondamentali.",
+    a: "\\[\\int\\sin x\\,dx = -\\cos x+c \\qquad \\int\\cos x\\,dx = \\sin x+c\\] \\[\\int\\frac{1}{\\cos^2 x}\\,dx = \\tan x+c \\qquad \\int\\frac{1}{\\sin^2 x}\\,dx = -\\cot x+c\\] Verifica: \\(\\mathrm{D}[-\\cos x+c]=\\sin x\\). ✓"
+  },
+  {
+    cat: "teoria",
+    q: "Integrali immediati che danno funzioni goniometriche inverse.",
+    a: "\\[\\int\\frac{1}{\\sqrt{1-x^2}}\\,dx = \\arcsin x+c \\qquad \\left(=-\\arccos x+c\\right)\\] \\[\\int\\frac{1}{1+x^2}\\,dx = \\arctan x+c \\qquad \\left(=-\\text{arccot}\\,x+c\\right)\\] Nota: \\(\\arcsin x\\) e \\(-\\arccos x\\) differiscono per una costante \\(\\frac{\\pi}{2}\\), quindi entrambe le risposte sono corrette."
+  },
+  {
+    cat: "teoria",
+    q: "Formula generale per l'integrale di una funzione composta: caso potenza.",
+    a: "\\[\\int[f(x)]^\\alpha\\cdot f'(x)\\,dx = \\frac{[f(x)]^{\\alpha+1}}{\\alpha+1}+c \\quad (\\alpha\\neq-1)\\] La funzione integranda deve essere esattamente \\([f(x)]^\\alpha\\) moltiplicata per la derivata \\(f'(x)\\) della funzione 'interna'. Esempio: \\(\\int(\\sin x)^4\\cos x\\,dx=\\frac{(\\sin x)^5}{5}+c\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Formule per integrali di funzioni composte: logaritmo ed esponenziale.",
+    a: "\\[\\int\\frac{f'(x)}{f(x)}\\,dx = \\ln|f(x)|+c\\] \\[\\int f'(x)\\cdot e^{f(x)}\\,dx = e^{f(x)}+c\\] \\[\\int f'(x)\\cdot a^{f(x)}\\,dx = \\frac{a^{f(x)}}{\\ln a}+c\\] Riconoscere che il numeratore è la derivata del denominatore (o del'argomento dell'esponenziale) è la chiave."
+  },
+  {
+    cat: "teoria",
+    q: "Formule per integrali di funzioni composte: funzioni goniometriche.",
+    a: "\\[\\int f'(x)\\sin f(x)\\,dx = -\\cos f(x)+c\\] \\[\\int f'(x)\\cos f(x)\\,dx = \\sin f(x)+c\\] \\[\\int\\frac{f'(x)}{\\cos^2 f(x)}\\,dx = \\tan f(x)+c \\qquad \\int\\frac{f'(x)}{\\sin^2 f(x)}\\,dx = -\\cot f(x)+c\\] \\[\\int\\frac{f'(x)}{\\sqrt{1-[f(x)]^2}}\\,dx = \\arcsin f(x)+c \\qquad \\int\\frac{f'(x)}{1+[f(x)]^2}\\,dx = \\arctan f(x)+c\\]"
+  },
+  {
+    cat: "teoria",
+    q: "Metodo di integrazione per sostituzione: procedura.",
+    a: "Per calcolare \\(\\int f(x)\\,dx\\): (1) si pone \\(x=g(t)\\) (oppure \\(t=g^{-1}(x)\\)), dove \\(g\\) è invertibile con \\(g'\\) continua e diversa da 0; (2) si calcola il differenziale \\(dx=g'(t)\\,dt\\); (3) si sostituisce nell'integrale, ottenendo \\(\\int f[g(t)]\\cdot g'(t)\\,dt\\); (4) si calcola l'integrale in \\(t\\); (5) si riporta il risultato in funzione di \\(x\\) usando la sostituzione inversa."
+  },
+  {
+    cat: "teoria",
+    q: "Formula di integrazione per parti e come si scelgono i fattori.",
+    a: "\\[\\int f(x)\\cdot g'(x)\\,dx = f(x)\\cdot g(x) - \\int f'(x)\\cdot g(x)\\,dx\\] \\(f(x)\\) è il <em>fattore finito</em> (si deriva), \\(g'(x)\\) è il <em>fattore differenziale</em> (si integra). Scelta: negli integrali \\(\\int x^n e^x dx\\), \\(\\int x^n\\sin x\\,dx\\), \\(\\int x^n\\cos x\\,dx\\) si pone \\(f=x^n\\). Negli integrali \\(\\int x^n\\ln x\\,dx\\), \\(\\int x^n\\arctan x\\,dx\\), \\(\\int x^n\\arcsin x\\,dx\\) si pone \\(f=\\ln x\\) (o la funzione goniometrica inversa)."
+  },
+  {
+    cat: "teoria",
+    q: "Come si calcola \\(\\int\\ln x\\,dx\\) con l'integrazione per parti?",
+    a: "Si pone \\(f=\\ln x\\) (fattore finito) e \\(g'=1\\) (fattore differenziale), quindi \\(f'=\\frac{1}{x}\\) e \\(g=x\\): \\[\\int\\ln x\\,dx = x\\ln x - \\int x\\cdot\\frac{1}{x}\\,dx = x\\ln x - \\int 1\\,dx = x\\ln x - x + c\\] Verifica: \\(\\mathrm{D}[x\\ln x - x+c]=\\ln x+1-1=\\ln x\\). ✓"
+  },
+  {
+    cat: "teoria",
+    q: "Come si calcola \\(\\int\\tan x\\,dx\\)?",
+    a: "Si scrive la tangente come rapporto seno/coseno e si riconosce la forma \\(\\int\\frac{f'(x)}{f(x)}\\,dx\\): \\[\\int\\tan x\\,dx = \\int\\frac{\\sin x}{\\cos x}\\,dx = -\\int\\frac{-\\sin x}{\\cos x}\\,dx = -\\ln|\\cos x|+c\\] Analogamente: \\(\\int\\cot x\\,dx = \\ln|\\sin x|+c\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Integrazione di funzioni razionali fratte: caso in cui il numeratore è la derivata del denominatore.",
+    a: "Se il numeratore è (o può essere reso proporzionale a) la derivata del denominatore, si applica direttamente: \\[\\int\\frac{f'(x)}{f(x)}\\,dx = \\ln|f(x)|+c\\] Esempio: \\(\\int\\frac{6x-2}{3x^2-2x-1}\\,dx = \\ln|3x^2-2x-1|+c\\) poiché \\(\\mathrm{D}[3x^2-2x-1]=6x-2\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Integrazione di \\(\\int\\frac{px+q}{ax^2+bx+c}\\,dx\\) con denominatore di secondo grado e \\(\\Delta>0\\).",
+    a: "Se \\(\\Delta>0\\) il denominatore si fattorizza: \\(ax^2+bx+c=a(x-x_1)(x-x_2)\\). Si decompone in frazioni parziali: \\[\\frac{px+q}{ax^2+bx+c}=\\frac{A}{a(x-x_1)}+\\frac{B}{x-x_2}\\] Si determinano \\(A\\) e \\(B\\) per identità dei polinomi, poi si integra termine per termine ottenendo una somma di logaritmi: \\(A\\ln|x-x_1|+B\\ln|x-x_2|+c\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Integrazione di \\(\\int\\frac{px+q}{ax^2+bx+c}\\,dx\\) con denominatore di secondo grado e \\(\\Delta=0\\).",
+    a: "Se \\(\\Delta=0\\) il denominatore è un quadrato perfetto: \\(ax^2+bx+c=a(x-x_1)^2\\). Si decompone: \\[\\frac{px+q}{a(x-x_1)^2}=\\frac{A}{a(x-x_1)}+\\frac{B}{(x-x_1)^2}\\] Integrando: \\(A\\ln|x-x_1|-\\frac{B}{x-x_1}+c\\). Oppure si riconosce direttamente la forma \\(\\frac{f'}{f}\\) aggiungendo e togliendo opportunamente."
+  },
+  {
+    cat: "teoria",
+    q: "Integrazione di \\(\\int\\frac{1}{ax^2+bx+c}\\,dx\\) con denominatore di secondo grado e \\(\\Delta<0\\).",
+    a: "Se \\(\\Delta<0\\) il denominatore è sempre positivo. Si completa il quadrato e si riconduce alla formula: \\[\\int\\frac{f'(x)}{k^2+[f(x)]^2}\\,dx = \\frac{1}{k}\\arctan\\frac{f(x)}{k}+c\\] Esempio: \\(x^2+2x+2=(x+1)^2+1\\), quindi \\(\\int\\frac{1}{x^2+2x+2}\\,dx=\\arctan(x+1)+c\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Integrazione di \\(\\int\\frac{px+q}{ax^2+bx+c}\\,dx\\) con \\(\\Delta<0\\) e \\(p\\neq0\\).",
+    a: "Si trasforma il numeratore per far comparire la derivata del denominatore: si scrive \\(px+q=r(2ax+b)+s\\), si calcola \\(r\\) e \\(s\\), poi: \\[\\int\\frac{px+q}{ax^2+bx+c}\\,dx = r\\int\\frac{2ax+b}{ax^2+bx+c}\\,dx + s\\int\\frac{1}{ax^2+bx+c}\\,dx\\] Il primo integrale è \\(r\\ln|ax^2+bx+c|\\), il secondo si risolve con il completamento del quadrato."
+  },
+  {
+    cat: "teoria",
+    q: "Integrazione di funzioni razionali fratte con denominatore di grado superiore al secondo.",
+    a: "Si scompone il denominatore in fattori di primo e secondo grado, poi si decompone la frazione come somma di frazioni parziali. Per fattori lineari distinti \\((x-x_i)\\): termini \\(\\frac{A_i}{x-x_i}\\). Per fattori lineari ripetuti \\((x-x_i)^k\\): termini \\(\\frac{A_1}{x-x_i}+\\frac{A_2}{(x-x_i)^2}+\\ldots+\\frac{A_k}{(x-x_i)^k}\\). Per fattori quadratici irriducibili \\((x^2+px+q)\\): termini \\(\\frac{Bx+C}{x^2+px+q}\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Cosa fare quando il grado del numeratore è maggiore o uguale al grado del denominatore?",
+    a: "Si esegue la <strong>divisione polinomiale</strong> \\(N(x):D(x)\\), ottenendo: \\[\\frac{N(x)}{D(x)}=Q(x)+\\frac{R(x)}{D(x)}\\] dove \\(Q(x)\\) è il quoziente (polinomio) e \\(R(x)\\) il resto (grado minore di \\(D\\)). Si integra separatamente il polinomio \\(Q(x)\\) e la frazione propria \\(\\frac{R(x)}{D(x)}\\). Esempio: \\(\\frac{x^3+2x^2+x+1}{x^2+1}=x+2+\\frac{-1}{x^2+1}\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Come si calcola \\(\\int x\\sin x\\,dx\\) con l'integrazione per parti?",
+    a: "Si pone \\(f=x\\) (fattore finito, si deriva) e \\(g'=\\sin x\\) (fattore differenziale, si integra): \\(f'=1\\), \\(g=-\\cos x\\). \\[\\int x\\sin x\\,dx = x(-\\cos x)-\\int 1\\cdot(-\\cos x)\\,dx = -x\\cos x+\\int\\cos x\\,dx = -x\\cos x+\\sin x+c\\] Verifica: \\(\\mathrm{D}[-x\\cos x+\\sin x]=-\\cos x+x\\sin x+\\cos x=x\\sin x\\). ✓"
+  },
+  {
+    cat: "teoria",
+    q: "Tavola completa degli integrali immediati e delle funzioni composte.",
+    a: "<strong>Immediati:</strong> \\(\\int x^\\alpha dx=\\frac{x^{\\alpha+1}}{\\alpha+1}+c\\); \\(\\int\\frac{1}{x}dx=\\ln|x|+c\\); \\(\\int e^x dx=e^x+c\\); \\(\\int a^x dx=\\frac{a^x}{\\ln a}+c\\); \\(\\int\\sin x\\,dx=-\\cos x+c\\); \\(\\int\\cos x\\,dx=\\sin x+c\\); \\(\\int\\frac{1}{\\cos^2 x}dx=\\tan x+c\\); \\(\\int\\frac{1}{\\sin^2 x}dx=-\\cot x+c\\); \\(\\int\\frac{1}{\\sqrt{1-x^2}}dx=\\arcsin x+c\\); \\(\\int\\frac{1}{1+x^2}dx=\\arctan x+c\\). <strong>Composte:</strong> sostituire \\(x\\) con \\(f(x)\\) e moltiplicare per \\(f'(x)\\)."
+  },
+
+  // ── ESERCIZI (20) ─────────────────────────────────────────────────────────
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int(2x^3-4x+3)\\,dx\\).",
+    a: "Usando la linearità e la regola della potenza: \\[\\int(2x^3-4x+3)\\,dx = 2\\cdot\\frac{x^4}{4}-4\\cdot\\frac{x^2}{2}+3x+c = \\frac{x^4}{2}-2x^2+3x+c\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int\\frac{3x^2+2}{x}\\,dx\\).",
+    a: "Si separa la frazione: \\(\\frac{3x^2+2}{x}=3x+\\frac{2}{x}\\). Quindi: \\[\\int\\left(3x+\\frac{2}{x}\\right)dx = \\frac{3x^2}{2}+2\\ln|x|+c\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int(2e^x+5^x)\\,dx\\).",
+    a: "\\[\\int(2e^x+5^x)\\,dx = 2e^x+\\frac{5^x}{\\ln 5}+c\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int(3\\sin x-\\frac{4}{\\cos^2 x})\\,dx\\).",
+    a: "\\[\\int\\left(3\\sin x-\\frac{4}{\\cos^2 x}\\right)dx = -3\\cos x - 4\\tan x + c\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int 3x^2(x^3+4)^5\\,dx\\).",
+    a: "Si riconosce la forma \\(\\int[f(x)]^\\alpha f'(x)\\,dx\\) con \\(f(x)=x^3+4\\), \\(f'(x)=3x^2\\), \\(\\alpha=5\\): \\[\\int 3x^2(x^3+4)^5\\,dx = \\frac{(x^3+4)^6}{6}+c\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int\\frac{6x^2-2}{2x^3-2x+1}\\,dx\\).",
+    a: "Il numeratore \\(6x^2-2=2(3x^2-1)\\) è (a meno del fattore 2) la derivata del denominatore: \\(\\mathrm{D}[2x^3-2x+1]=6x^2-2\\). Quindi: \\[\\int\\frac{6x^2-2}{2x^3-2x+1}\\,dx = \\ln|2x^3-2x+1|+c\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int x\\cos x\\,dx\\) con l'integrazione per parti.",
+    a: "\\(f=x\\), \\(g'=\\cos x\\), \\(f'=1\\), \\(g=\\sin x\\): \\[\\int x\\cos x\\,dx = x\\sin x - \\int\\sin x\\,dx = x\\sin x+\\cos x+c\\] Verifica: \\(\\mathrm{D}[x\\sin x+\\cos x]=\\sin x+x\\cos x-\\sin x=x\\cos x\\). ✓"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int x^2 e^x\\,dx\\) con l'integrazione per parti (doppia applicazione).",
+    a: "Prima applicazione: \\(f=x^2\\), \\(g'=e^x\\): \\(\\int x^2 e^x\\,dx=x^2 e^x-2\\int xe^x\\,dx\\). Seconda: \\(f=x\\), \\(g'=e^x\\): \\(\\int xe^x\\,dx=xe^x-e^x+c\\). Quindi: \\[\\int x^2 e^x\\,dx = x^2 e^x - 2(xe^x-e^x)+c = e^x(x^2-2x+2)+c\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int x\\arctan x\\,dx\\) con l'integrazione per parti.",
+    a: "\\(f=\\arctan x\\), \\(g'=x\\), \\(f'=\\frac{1}{1+x^2}\\), \\(g=\\frac{x^2}{2}\\): \\[\\int x\\arctan x\\,dx = \\frac{x^2}{2}\\arctan x - \\int\\frac{x^2}{2(1+x^2)}\\,dx\\] Per il secondo integrale: \\(\\frac{x^2}{1+x^2}=1-\\frac{1}{1+x^2}\\). Quindi: \\[=\\frac{x^2}{2}\\arctan x - \\frac{1}{2}\\left(x-\\arctan x\\right)+c = \\frac{x^2+1}{2}\\arctan x - \\frac{x}{2}+c\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int\\frac{1}{1+\\sqrt{x}}\\,dx\\) con la sostituzione \\(\\sqrt{x}=t\\).",
+    a: "Poniamo \\(\\sqrt{x}=t\\), cioè \\(x=t^2\\), \\(dx=2t\\,dt\\): \\[\\int\\frac{1}{1+t}\\cdot 2t\\,dt = 2\\int\\frac{t}{1+t}\\,dt = 2\\int\\frac{t+1-1}{1+t}\\,dt = 2\\int\\left(1-\\frac{1}{1+t}\\right)dt\\] \\[=2(t-\\ln|1+t|)+c = 2\\sqrt{x}-2\\ln(1+\\sqrt{x})+c\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int\\frac{5x-1}{x^2-x-2}\\,dx\\) con le frazioni parziali (\\(\\Delta>0\\)).",
+    a: "\\(x^2-x-2=(x+1)(x-2)\\). Poniamo \\(\\frac{5x-1}{(x+1)(x-2)}=\\frac{A}{x+1}+\\frac{B}{x-2}\\). Moltiplicando: \\(5x-1=A(x-2)+B(x+1)\\). Per \\(x=2\\): \\(9=3B\\Rightarrow B=3\\). Per \\(x=-1\\): \\(-6=-3A\\Rightarrow A=2\\). Quindi: \\[\\int\\left(\\frac{2}{x+1}+\\frac{3}{x-2}\\right)dx = 2\\ln|x+1|+3\\ln|x-2|+c\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int\\frac{1}{x^2+2x+2}\\,dx\\) (\\(\\Delta<0\\), \\(p=0\\)).",
+    a: "\\(\\Delta=4-8=-4<0\\). Completiamo il quadrato: \\(x^2+2x+2=(x+1)^2+1\\). Si riconosce la forma \\(\\int\\frac{1}{[f(x)]^2+1}\\,dx\\) con \\(f(x)=x+1\\), \\(f'(x)=1\\): \\[\\int\\frac{1}{(x+1)^2+1}\\,dx = \\arctan(x+1)+c\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int\\frac{2x}{x^2+4x+5}\\,dx\\) (\\(\\Delta<0\\), \\(p\\neq0\\)).",
+    a: "\\(\\Delta=16-20=-4<0\\). Derivata del denominatore: \\(2x+4\\). Scriviamo \\(2x=1\\cdot(2x+4)-4\\): \\[\\int\\frac{2x}{x^2+4x+5}\\,dx = \\int\\frac{2x+4}{x^2+4x+5}\\,dx - 4\\int\\frac{1}{x^2+4x+5}\\,dx\\] \\(=\\ln(x^2+4x+5)-4\\arctan(x+2)+c\\) (poiché \\(x^2+4x+5=(x+2)^2+1\\))."
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int\\frac{x^3+2x^2+x+1}{x^2+1}\\,dx\\).",
+    a: "Grado numeratore (3) > grado denominatore (2): si divide. \\(x^3+2x^2+x+1=(x+2)(x^2+1)+(x-2)+1\\): più precisamente \\(x^3+2x^2+x+1=(x^2+1)(x+2)+(-1)\\). Quindi: \\(\\frac{x^3+2x^2+x+1}{x^2+1}=x+2+\\frac{-1}{x^2+1}\\). \\[\\int\\left(x+2-\\frac{1}{x^2+1}\\right)dx = \\frac{x^2}{2}+2x-\\arctan x+c\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int e^x\\cos x\\,dx\\) (integrazione per parti ciclica).",
+    a: "Prima applicazione: \\(f=e^x\\), \\(g'=\\cos x\\): \\(I=e^x\\sin x-\\int e^x\\sin x\\,dx\\). Seconda: \\(f=e^x\\), \\(g'=\\sin x\\): \\(\\int e^x\\sin x\\,dx=-e^x\\cos x+\\int e^x\\cos x\\,dx=-e^x\\cos x+I\\). Quindi: \\(I=e^x\\sin x-(-e^x\\cos x+I)=e^x\\sin x+e^x\\cos x-I\\). \\[2I=e^x(\\sin x+\\cos x) \\Rightarrow \\int e^x\\cos x\\,dx=\\frac{e^x(\\sin x+\\cos x)}{2}+c\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int\\frac{4x}{(x-1)(x+1)(x-3)}\\,dx\\) con la decomposizione in frazioni parziali.",
+    a: "Si decompone: \\(\\frac{4x}{(x-1)(x+1)(x-3)}=\\frac{A}{x-1}+\\frac{B}{x+1}+\\frac{C}{x-3}\\). Moltiplicando e confrontando: \\(x=1\\Rightarrow 4=(-2)A\\cdot\\ldots\\). Per il metodo dei residui: \\(A=\\frac{4}{(1+1)(1-3)}=\\frac{4}{-4}=-1\\); \\(B=\\frac{-4}{(-2)(-4)}=\\frac{-4}{8}=-\\frac{1}{2}\\); \\(C=\\frac{12}{(2)(4)}=\\frac{3}{2}\\). \\[\\int\\left(\\frac{-1}{x-1}-\\frac{1/2}{x+1}+\\frac{3/2}{x-3}\\right)dx = -\\ln|x-1|-\\tfrac{1}{2}\\ln|x+1|+\\tfrac{3}{2}\\ln|x-3|+c\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Trovare la primitiva di \\(f(x)=-4x\\) che passa per il punto \\((2;-1)\\).",
+    a: "L'integrale generale è \\(\\int(-4x)\\,dx=-2x^2+c\\). Imponendo il passaggio per \\((2;-1)\\): \\(-2(4)+c=-1\\Rightarrow -8+c=-1\\Rightarrow c=7\\). La primitiva cercata è \\[F(x)=-2x^2+7\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int\\frac{\\sin x}{1+\\cos^2 x}\\,dx\\).",
+    a: "Si riconosce la forma \\(\\int\\frac{f'(x)}{1+[f(x)]^2}\\,dx=\\arctan f(x)+c\\) con \\(f(x)=\\cos x\\) e \\(f'(x)=-\\sin x\\): \\[\\int\\frac{\\sin x}{1+\\cos^2 x}\\,dx = -\\int\\frac{-\\sin x}{1+\\cos^2 x}\\,dx = -\\arctan(\\cos x)+c\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int x\\sqrt{x^2+1}\\,dx\\).",
+    a: "Si riconosce la forma \\(\\int[f(x)]^\\alpha f'(x)\\,dx\\) con \\(f(x)=x^2+1\\), \\(f'(x)=2x\\), \\(\\alpha=\\frac{1}{2}\\): \\[\\int x\\sqrt{x^2+1}\\,dx = \\frac{1}{2}\\int 2x\\cdot(x^2+1)^{1/2}\\,dx = \\frac{1}{2}\\cdot\\frac{(x^2+1)^{3/2}}{3/2}+c = \\frac{(x^2+1)^{3/2}}{3}+c\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int\\frac{2x+3}{x^2-4x+4}\\,dx\\) (\\(\\Delta=0\\)).",
+    a: "\\(x^2-4x+4=(x-2)^2\\). Poniamo \\(\\frac{2x+3}{(x-2)^2}=\\frac{A}{x-2}+\\frac{B}{(x-2)^2}\\). Moltiplicando: \\(2x+3=A(x-2)+B\\). Per \\(x=2\\): \\(B=7\\). Per i coefficienti di \\(x\\): \\(A=2\\). Quindi: \\[\\int\\left(\\frac{2}{x-2}+\\frac{7}{(x-2)^2}\\right)dx = 2\\ln|x-2|-\\frac{7}{x-2}+c\\]"
+  },
+
+  // ── RAGIONAMENTO (15) ─────────────────────────────────────────────────────
+  {
+    cat: "ragionamento",
+    q: "Perché l'integrale indefinito ha sempre una costante \\(+c\\) e non è un valore unico?",
+    a: "Perché la primitiva di \\(f\\) non è unica: se \\(F'=f\\), anche \\((F+c)'=f\\) per qualsiasi costante reale \\(c\\). Geometricamente, le infinite curve integrali \\(y=F(x)+c\\) sono traslazioni verticali le une delle altre e hanno tutte la stessa tangente in ogni punto con la stessa ascissa. Per determinare la costante serve una condizione aggiuntiva (es. il passaggio per un punto dato)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché \\(\\int\\frac{1}{x}\\,dx=\\ln|x|+c\\) e non semplicemente \\(\\ln x+c\\)?",
+    a: "La funzione \\(\\frac{1}{x}\\) è definita anche per \\(x<0\\), dove \\(\\ln x\\) non esiste. Per \\(x<0\\): \\(\\mathrm{D}[\\ln(-x)]=\\frac{-1}{-x}=\\frac{1}{x}\\), quindi \\(\\ln(-x)\\) è una primitiva valida. Unificando i due casi con \\(\\ln|x|\\): \\(\\mathrm{D}[\\ln|x|]=\\frac{1}{x}\\) per ogni \\(x\\neq0\\). Il valore assoluto è necessario per garantire la validità su tutto il dominio."
+  },
+  {
+    cat: "ragionamento",
+    q: "Cosa significa che l'integrale è un 'operatore lineare'? Perché non vale \\(\\int f\\cdot g\\,dx=\\int f\\,dx\\cdot\\int g\\,dx\\)?",
+    a: "L'integrale è lineare perché rispetta la somma e il prodotto per una costante: \\(\\int(f+g)=\\int f+\\int g\\) e \\(\\int cf=c\\int f\\). Non vale la regola del prodotto perché derivare un prodotto dà \\((fg)'=f'g+fg'\\), che ha due termini: l'integrale del prodotto non si può 'separare'. Questo è esattamente il motivo per cui esiste l'integrazione per parti, che serve a gestire integrali di prodotti."
+  },
+  {
+    cat: "ragionamento",
+    q: "Come si riconosce se un integrale si può risolvere con la sostituzione vs. per parti?",
+    a: "Si usa la <strong>sostituzione</strong> quando l'integranda contiene una funzione composta e un fattore che è (o è proporzionale a) la derivata della funzione interna: forma \\(\\int f[g(x)]\\cdot g'(x)\\,dx\\). Si usa l'integrazione <strong>per parti</strong> quando l'integranda è un prodotto di due funzioni di natura diversa (polinomio × esponenziale, polinomio × goniometrica, polinomio × logaritmo, ecc.) che non si riconducono a nessuna formula immediata."
+  },
+  {
+    cat: "ragionamento",
+    q: "Nell'integrazione per parti, come si sceglie quale fattore derivare e quale integrare?",
+    a: "Il <strong>fattore finito</strong> (da derivare) si sceglie in modo che la sua derivata semplifichi l'integrale residuo. Regola mnemonica LIATE (in ordine decrescente di priorità come fattore finito): <em>L</em>ogaritmo, <em>I</em>nversa goniometrica (arcsin, arctan…), <em>A</em>lgebrica (polinomio), <em>T</em>rigonometrica, <em>E</em>sponenziale. Si deriva il fattore che viene prima nell'ordine LIATE. Esempio: \\(\\int x\\ln x\\,dx\\): \\(f=\\ln x\\) (L viene prima di A)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché nell'integrazione ciclica (es. \\(\\int e^x\\cos x\\,dx\\)) si ottiene un'equazione e non un ciclo infinito?",
+    a: "Dopo due applicazioni per parti, l'integrale di partenza \\(I\\) ricompare al secondo membro con segno meno (o più). Si ottiene un'equazione del tipo \\(I=A-I\\) (o \\(I=A+(-1)I\\)), da cui \\(2I=A\\) e quindi \\(I=\\frac{A}{2}+c\\). Il ciclo non è infinito perché ad ogni passo si 'riconosce' lo stesso integrale, non se ne crea uno nuovo. La condizione è che i due fattori abbiano lo stesso ordine di derivazione ciclico (es. \\(e^x\\) e funzioni goniometriche)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché la decomposizione in frazioni parziali funziona solo se il grado del numeratore è strettamente minore del grado del denominatore?",
+    a: "La decomposizione in frazioni parziali si basa sul fatto che ogni frazione propria \\(\\frac{R(x)}{D(x)}\\) (con grado \\(R<\\) grado \\(D\\)) può essere scritta come somma di frazioni elementari. Se il grado del numeratore è ≥ al grado del denominatore, si esegue prima la <em>divisione polinomiale</em> per ridurre alla parte intera più una frazione propria. Solo la parte frazionaria si decompone in frazioni parziali."
+  },
+  {
+    cat: "ragionamento",
+    q: "Qual è la differenza tra le tre procedure di integrazione per un denominatore di secondo grado a seconda del segno di \\(\\Delta\\)?",
+    a: "Se \\(\\Delta>0\\): il denominatore ha due radici reali distinte → frazioni parziali con denominatori lineari → somma di logaritmi. Se \\(\\Delta=0\\): radice doppia → frazioni parziali con \\(\\frac{A}{x-x_1}+\\frac{B}{(x-x_1)^2}\\) → logaritmo più potenza negativa. Se \\(\\Delta<0\\): denominatore sempre positivo → completamento del quadrato → arcotangente (più eventualmente un logaritmo se il numeratore è di primo grado)."
+  },
+  {
+    cat: "ragionamento",
+    q: "È vero che ogni funzione continua ha una primitiva? E ogni funzione integrabile è derivabile?",
+    a: "Ogni funzione <strong>continua</strong> su \\([a;b]\\) ha una primitiva (condizione sufficiente). Tuttavia non ogni primitiva è esprimibile mediante funzioni elementari (es. \\(\\int e^{-x^2}dx\\) non ha forma chiusa). Le funzioni derivabili sono un sottoinsieme delle funzioni continue. Le funzioni integrabili (che ammettono primitiva) comprendono le funzioni continue ma anche funzioni con punti angolosi: la condizione di continuità non è né necessaria né sufficiente in generale."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché si usa il valore assoluto nell'integrale \\(\\int\\tan x\\,dx=-\\ln|\\cos x|+c\\)?",
+    a: "La funzione \\(\\tan x=\\frac{\\sin x}{\\cos x}\\) è definita per \\(\\cos x\\neq0\\). Negli intervalli in cui \\(\\cos x>0\\): \\(-\\ln(\\cos x)+c\\) funziona. Negli intervalli in cui \\(\\cos x<0\\): \\(\\cos x\\) è negativo e il logaritmo non è definito, ma \\(|\\cos x|=-\\cos x>0\\) e \\(\\mathrm{D}[-\\ln(-\\cos x)]=\\frac{-(-\\sin x)}{-\\cos x}=\\frac{\\sin x}{\\cos x}=\\tan x\\). Il valore assoluto unifica i due casi."
+  },
+  {
+    cat: "ragionamento",
+    q: "Come si verifica la correttezza di un integrale indefinito calcolato?",
+    a: "Si <strong>deriva</strong> il risultato trovato e si verifica che sia uguale alla funzione integranda originale. Esempio: se si trova \\(\\int(2x^3+1)\\,dx=\\frac{x^4}{2}+x+c\\), si calcola \\(\\mathrm{D}\\!\\left[\\frac{x^4}{2}+x+c\\right]=2x^3+1\\). ✓ Questo è il metodo definitivo per controllare ogni integrale: la derivazione è sempre eseguibile e non lascia dubbi, mentre i calcoli dell'integrazione sono più soggetti ad errori."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché \\(\\int\\frac{1}{\\sqrt{1-x^2}}\\,dx\\) può essere scritto sia come \\(\\arcsin x+c\\) che come \\(-\\arccos x+c\\)?",
+    a: "Perché \\(\\arcsin x+\\arccos x=\\frac{\\pi}{2}\\) per ogni \\(x\\in[-1;1]\\), quindi \\(-\\arccos x=\\arcsin x-\\frac{\\pi}{2}\\). Le due espressioni differiscono per la costante \\(-\\frac{\\pi}{2}\\), che viene assorbita nella costante \\(c\\) dell'integrale indefinito. Entrambe sono corrette: \\(\\mathrm{D}[\\arcsin x]=\\mathrm{D}[-\\arccos x]=\\frac{1}{\\sqrt{1-x^2}}\\)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Qual è l'idea geometrica dietro all'integrazione per sostituzione?",
+    a: "La sostituzione \\(x=g(t)\\) è un <em>cambio di variabile</em> che 'riscala' l'asse \\(x\\): \\(dx=g'(t)\\,dt\\) tiene conto della velocità di percorrenza del nuovo parametro. Geometricamente, si 'distorce' l'asse delle ascisse in modo che la funzione composta diventi più semplice nella nuova variabile. Il fattore \\(g'(t)\\) compensa la distorsione. È l'analogo della regola della catena per la derivazione, applicata in senso inverso."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché negli integrali del tipo \\(\\int x^n\\ln x\\,dx\\) si sceglie \\(f=\\ln x\\) e non \\(f=x^n\\)?",
+    a: "Se si sceglie \\(f=\\ln x\\), allora \\(f'=\\frac{1}{x}\\) (che semplifica la potenza nel termine residuo) e \\(g=\\frac{x^{n+1}}{n+1}\\): l'integrale residuo \\(\\int\\frac{x^{n+1}}{n+1}\\cdot\\frac{1}{x}\\,dx=\\frac{1}{n+1}\\int x^n\\,dx\\) è elementare. Se invece \\(f=x^n\\), allora \\(g=x\\ln x-x\\) (bisogna integrare \\(\\ln x\\), che non è immediato): si finisce con un integrale più complicato di quello di partenza."
+  },
+  {
+    cat: "ragionamento",
+    q: "Quando conviene aggiungere e sottrarre una costante al numeratore (trucco algebrico) nell'integrazione di frazioni con \\(\\Delta<0\\)?",
+    a: "Quando il numeratore è di primo grado \\(px+q\\) e \\(p\\neq0\\): si vuole far comparire la derivata \\(2ax+b\\) del denominatore per poter spezzare in due integrali separati. Si scrive \\(px+q=r(2ax+b)+s\\) e si risolvono: \\(r=\\frac{p}{2a}\\) e \\(s=q-\\frac{pb}{2a}\\). Il primo integrale diventa \\(r\\ln|ax^2+bx+c|\\) e il secondo si risolve con il completamento del quadrato. Senza questo trucco non si può procedere."
+  }
+];
+
+// ─── STATE ─────────────────────────────────────────────────────────────────
+let filtered = [...cards];
+let deck = [...filtered];
+let idx = 0;
+let currentFilter = "all";
+let currentMode = "quiz";
+
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentFilter = btn.dataset.filter;
+    applyFilter();
+  });
+});
+
+document.querySelectorAll(".mode-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".mode-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentMode = btn.dataset.mode;
+    switchMode();
+  });
+});
+
+function applyFilter() {
+  filtered = currentFilter === "all" ? [...cards] : cards.filter(c => c.cat === currentFilter);
+  deck = [...filtered];
+  idx = 0;
+  document.getElementById("stat-pill").textContent = filtered.length + " carte";
+  if (currentMode === "quiz") {
+    document.getElementById("score-panel").classList.remove("visible");
+    document.getElementById("flip-scene").style.display = "";
+    document.querySelectorAll(".quiz-nav button").forEach(b => b.disabled = false);
+    renderCard();
+  } else { renderBrowse(); }
+}
+
+function switchMode() {
+  if (currentMode === "quiz") {
+    document.getElementById("browse-view").style.display = "none";
+    document.getElementById("quiz-view").style.display = "flex";
+    deck = [...filtered]; idx = 0;
+    document.getElementById("score-panel").classList.remove("visible");
+    document.getElementById("flip-scene").style.display = "";
+    document.querySelector(".quiz-nav").style.display = "";
+    renderCard();
+  } else {
+    document.getElementById("quiz-view").style.display = "none";
+    document.getElementById("browse-view").style.display = "grid";
+    renderBrowse();
+  }
+}
+
+function renderCard() {
+  if (!deck.length) return;
+  const c = deck[idx];
+  const fc = document.getElementById("flip-card");
+  fc.classList.remove("flipped");
+  fc.dataset.cat = c.cat;
+  document.getElementById("fc-tag").textContent = c.cat.charAt(0).toUpperCase() + c.cat.slice(1);
+  document.getElementById("fc-q").innerHTML = c.q;
+  document.getElementById("fc-a").innerHTML = c.a;
+  document.getElementById("qcounter").textContent = (idx + 1) + " / " + deck.length;
+  document.getElementById("qpf").style.width = ((idx + 1) / deck.length * 100) + "%";
+  document.getElementById("btn-prev").disabled = idx === 0;
+  document.getElementById("btn-next").textContent = idx === deck.length - 1 ? "Fine ✓" : "Avanti →";
+  if (window.MathJax) MathJax.typesetPromise([document.getElementById("flip-card")]);
+}
+
+function flipCard() { document.getElementById("flip-card").classList.toggle("flipped"); }
+
+function nextCard() {
+  if (idx < deck.length - 1) { idx++; renderCard(); }
+  else {
+    document.getElementById("flip-scene").style.display = "none";
+    document.querySelector(".quiz-nav").style.display = "none";
+    document.getElementById("score-num").textContent = deck.length;
+    document.getElementById("score-panel").classList.add("visible");
+  }
+}
+
+function prevCard() { if (idx > 0) { idx--; renderCard(); } }
+
+function shuffle() {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  idx = 0;
+  document.getElementById("score-panel").classList.remove("visible");
+  document.getElementById("flip-scene").style.display = "";
+  document.querySelector(".quiz-nav").style.display = "";
+  renderCard();
+}
+
+function restart() {
+  deck = [...filtered]; idx = 0;
+  document.getElementById("score-panel").classList.remove("visible");
+  document.getElementById("flip-scene").style.display = "";
+  document.querySelector(".quiz-nav").style.display = "";
+  renderCard();
+}
+
+function renderBrowse() {
+  const container = document.getElementById("browse-view");
+  container.innerHTML = "";
+  filtered.forEach((c, i) => {
+    const div = document.createElement("div");
+    div.className = "browse-card";
+    div.dataset.cat = c.cat;
+    div.innerHTML = `
+      <div class="bc-header">
+        <span class="bc-num">#${i + 1}</span>
+        <span class="bc-tag tag-${c.cat}">${c.cat.charAt(0).toUpperCase()+c.cat.slice(1)}</span>
+      </div>
+      <div class="bc-q">${c.q}</div>
+      <div class="bc-divider"></div>
+      <div class="bc-a-label">Risposta</div>
+      <div class="bc-a">${c.a}</div>
+    `;
+    container.appendChild(div);
+  });
+  if (window.MathJax) MathJax.typesetPromise([container]);
+}
+
+renderCard();
+</script>
+</body>
+</html>
