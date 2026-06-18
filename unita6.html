@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Massimi, Minimi e Flessi — Flashcards</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1008;
+    --paper: #f5f0e8;
+    --paper-dark: #ebe4d4;
+    --gold: #c8963e;
+    --gold-light: #e8b55a;
+    --red: #8b2020;
+    --blue: #1a3a5c;
+    --green: #1a4a2e;
+    --shadow: rgba(26,16,8,0.18);
+    --card-w: min(560px, 94vw);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(200,150,62,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 80%, rgba(26,58,92,0.06) 0%, transparent 60%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23f5f0e8'/%3E%3Cpath d='M0 0h1v1H0z' fill='%23e8e0cc' opacity='.4'/%3E%3C/svg%3E");
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    text-align: center;
+    padding: 2.5rem 1rem 1.5rem;
+    border-bottom: 2px solid var(--gold);
+    background: linear-gradient(180deg, rgba(200,150,62,0.08) 0%, transparent 100%);
+    position: relative;
+  }
+  header::before {
+    content: "M";
+    position: absolute; left: 50%; top: .6rem;
+    transform: translateX(-50%);
+    font-size: 5rem; opacity: .04; font-family: 'Playfair Display', serif;
+    pointer-events: none; user-select: none;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: .04em;
+    color: var(--ink);
+  }
+  header p {
+    margin-top: .4rem;
+    font-size: .9rem;
+    color: #6b5a3e;
+    font-style: italic;
+    letter-spacing: .06em;
+  }
+
+  /* ─── CONTROLS ─── */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+    justify-content: center;
+    padding: 1.2rem 1rem .8rem;
+    border-bottom: 1px solid rgba(200,150,62,.3);
+    background: rgba(245,240,232,.8);
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(6px);
+  }
+
+  .tab-group { display: flex; gap: 0; border: 1.5px solid var(--gold); border-radius: 6px; overflow: hidden; }
+  .tab-btn {
+    padding: .42rem .9rem;
+    font-family: 'Source Serif 4', serif;
+    font-size: .82rem;
+    border: none; background: transparent; cursor: pointer;
+    color: #6b5a3e; transition: all .2s;
+    letter-spacing: .03em;
+  }
+  .tab-btn.active { background: var(--gold); color: #fff; font-weight: 600; }
+  .tab-btn:not(.active):hover { background: rgba(200,150,62,.15); }
+
+  .mode-group { display: flex; gap: 0; border: 1.5px solid var(--blue); border-radius: 6px; overflow: hidden; }
+  .mode-btn {
+    padding: .42rem .9rem;
+    font-family: 'Source Serif 4', serif;
+    font-size: .82rem;
+    border: none; background: transparent; cursor: pointer;
+    color: var(--blue); transition: all .2s;
+    letter-spacing: .03em;
+  }
+  .mode-btn.active { background: var(--blue); color: #fff; font-weight: 600; }
+  .mode-btn:not(.active):hover { background: rgba(26,58,92,.1); }
+
+  .stat-pill {
+    padding: .38rem .75rem;
+    background: rgba(26,16,8,.06);
+    border-radius: 20px;
+    font-size: .78rem;
+    color: #6b5a3e;
+    letter-spacing: .04em;
+    align-self: center;
+  }
+
+  /* ─── MAIN ─── */
+  main { padding: 1.5rem 1rem 3rem; }
+
+  /* ─── BROWSE MODE ─── */
+  #browse-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(340px,94vw), 1fr));
+    gap: 1.2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .browse-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    box-shadow: 0 2px 8px var(--shadow);
+    border-left: 4px solid var(--gold);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .browse-card:hover { transform: translateY(-2px); box-shadow: 0 5px 16px var(--shadow); }
+  .browse-card[data-cat="esercizio"] { border-left-color: var(--red); }
+  .browse-card[data-cat="ragionamento"] { border-left-color: var(--green); }
+
+  .bc-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: .7rem;
+  }
+  .bc-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem; font-weight: 700;
+    color: var(--gold);
+  }
+  .browse-card[data-cat="esercizio"] .bc-num { color: var(--red); }
+  .browse-card[data-cat="ragionamento"] .bc-num { color: var(--green); }
+
+  .bc-tag {
+    font-size: .67rem; font-weight: 600; letter-spacing: .07em;
+    text-transform: uppercase; padding: .2rem .5rem;
+    border-radius: 3px;
+  }
+  .tag-teoria { background: rgba(200,150,62,.15); color: var(--gold); }
+  .tag-esercizio { background: rgba(139,32,32,.12); color: var(--red); }
+  .tag-ragionamento { background: rgba(26,74,46,.12); color: var(--green); }
+
+  .bc-q {
+    font-size: .92rem; line-height: 1.55;
+    color: #2a1f0d;
+    font-weight: 600;
+    margin-bottom: .6rem;
+  }
+  .bc-divider {
+    height: 1px; background: rgba(200,150,62,.25);
+    margin: .6rem 0;
+  }
+  .bc-a {
+    font-size: .88rem; line-height: 1.6;
+    color: #3a2f1d;
+    font-style: italic;
+  }
+  .bc-a-label {
+    font-size: .7rem; font-weight: 600; letter-spacing: .08em;
+    text-transform: uppercase; color: #8a7458;
+    margin-bottom: .3rem; font-style: normal;
+  }
+
+  /* ─── QUIZ MODE ─── */
+  #quiz-view {
+    display: flex; flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  .quiz-progress-bar {
+    width: var(--card-w);
+    height: 4px;
+    background: rgba(200,150,62,.2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .quiz-progress-fill {
+    height: 100%; background: var(--gold);
+    border-radius: 2px;
+    transition: width .4s ease;
+  }
+
+  .quiz-counter {
+    font-size: .82rem; color: #6b5a3e;
+    letter-spacing: .05em; font-style: italic;
+    width: var(--card-w); text-align: right;
+  }
+
+  /* FLIP CARD */
+  .flip-scene {
+    width: var(--card-w);
+    height: min(340px, 60vw);
+    cursor: pointer;
+    position: relative;
+  }
+
+  .flip-card {
+    width: 100%; height: 100%;
+    position: relative;
+  }
+
+  .flip-face {
+    position: absolute; inset: 0;
+    border-radius: 14px;
+    padding: 1.8rem;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center;
+    box-shadow: 0 6px 24px var(--shadow);
+    overflow: auto;
+    transition: opacity .35s ease, transform .35s ease;
+  }
+
+  .flip-front {
+    background: #fff;
+    border: 2px solid var(--gold);
+    opacity: 1;
+    transform: scale(1);
+    z-index: 2;
+  }
+  .flip-front::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 30%, rgba(200,150,62,.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .flip-back {
+    background: linear-gradient(135deg, #1a3a5c 0%, #0f2236 100%);
+    color: #e8d9c0;
+    opacity: 0;
+    transform: scale(.96);
+    z-index: 1;
+  }
+
+  /* flipped state */
+  .flip-card.flipped .flip-front {
+    opacity: 0;
+    transform: scale(.96);
+    z-index: 1;
+    pointer-events: none;
+  }
+  .flip-card.flipped .flip-back {
+    opacity: 1;
+    transform: scale(1);
+    z-index: 2;
+  }
+
+  .flip-card[data-cat="esercizio"] .flip-front { border-color: var(--red); }
+  .flip-card[data-cat="esercizio"] .flip-back {
+    background: linear-gradient(135deg, #5c1a1a 0%, #380f0f 100%);
+  }
+  .flip-card[data-cat="ragionamento"] .flip-front { border-color: var(--green); }
+  .flip-card[data-cat="ragionamento"] .flip-back {
+    background: linear-gradient(135deg, #1a4a2e 0%, #0f2e1c 100%);
+  }
+
+  .face-label {
+    font-size: .68rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; opacity: .5;
+    margin-bottom: .8rem;
+    font-style: normal;
+  }
+  .flip-back .face-label { color: #e8d9c0; }
+
+  .face-q {
+    font-size: clamp(.9rem, 2.5vw, 1.05rem);
+    line-height: 1.55;
+    font-weight: 600;
+    color: var(--ink);
+    z-index: 1;
+  }
+  .flip-back .face-a {
+    font-size: clamp(.82rem, 2.3vw, .97rem);
+    line-height: 1.65;
+    color: #e8d9c0;
+    font-style: italic;
+  }
+
+  .face-hint {
+    position: absolute; bottom: .8rem;
+    font-size: .68rem; opacity: .35; letter-spacing: .05em;
+    font-style: italic;
+  }
+
+  /* ─── QUIZ CONTROLS ─── */
+  .quiz-nav {
+    display: flex; gap: .8rem; align-items: center;
+    flex-wrap: wrap; justify-content: center;
+  }
+
+  .nav-btn {
+    font-family: 'Source Serif 4', serif;
+    font-size: .88rem;
+    padding: .55rem 1.4rem;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all .18s;
+    letter-spacing: .03em;
+  }
+  .nav-btn.primary {
+    background: var(--gold); color: #fff; border-color: var(--gold);
+  }
+  .nav-btn.primary:hover { background: var(--gold-light); }
+  .nav-btn.secondary {
+    background: transparent; color: var(--ink);
+    border-color: rgba(26,16,8,.25);
+  }
+  .nav-btn.secondary:hover { background: rgba(26,16,8,.06); }
+  .nav-btn:disabled { opacity: .35; cursor: default; }
+
+  .shuffle-btn {
+    padding: .5rem; border: none; background: none;
+    cursor: pointer; color: #8a7458; font-size: 1.1rem;
+    transition: transform .2s;
+    line-height: 1;
+  }
+  .shuffle-btn:hover { transform: rotate(180deg); color: var(--gold); }
+
+  /* ─── SCORE PANEL ─── */
+  .score-panel {
+    display: none;
+    flex-direction: column; align-items: center;
+    gap: .8rem;
+    width: var(--card-w);
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.8rem;
+    box-shadow: 0 4px 20px var(--shadow);
+    text-align: center;
+  }
+  .score-panel.visible { display: flex; }
+  .score-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; color: var(--ink);
+  }
+  .score-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem; color: var(--gold); font-weight: 700;
+    line-height: 1;
+  }
+  .score-sub { font-size: .88rem; color: #6b5a3e; font-style: italic; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 480px) {
+    .flip-scene { height: min(280px, 72vw); }
+    .flip-face { padding: 1.2rem; }
+    .face-q, .flip-back .face-a { font-size: .88rem; }
+  }
+  @media (min-width: 900px) {
+    #browse-view { grid-template-columns: repeat(auto-fill, minmax(340px,1fr)); }
+  }
+
+  /* MathJax overrides */
+  .MJX-TEX { font-size: 1em !important; }
+  mjx-container { margin: .15em 0; max-width: 100%; overflow-x: auto; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--paper-dark); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+  .home-link {
+    display: inline-block;
+    margin-bottom: .8rem;
+    font-size: .8rem;
+    color: #8a7458;
+    text-decoration: none;
+    letter-spacing: .06em;
+    border: 1px solid rgba(200,150,62,.35);
+    padding: .28rem .7rem;
+    border-radius: 4px;
+    transition: all .18s;
+  }
+  .home-link:hover { color: var(--gold); border-color: var(--gold); background: rgba(200,150,62,.07); }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="home-link">← Tutte le unità</a>
+  <h1>Massimi, Minimi e Flessi</h1>
+  <p>Unità 6 — Analisi Matematica &nbsp;·&nbsp; 60 Flashcards</p>
+</header>
+
+<div class="controls">
+  <div class="tab-group">
+    <button class="tab-btn active" data-filter="all">Tutte</button>
+    <button class="tab-btn" data-filter="teoria">Teoria</button>
+    <button class="tab-btn" data-filter="esercizio">Esercizi</button>
+    <button class="tab-btn" data-filter="ragionamento">Ragionamento</button>
+  </div>
+  <div class="mode-group">
+    <button class="mode-btn active" data-mode="quiz">Quiz</button>
+    <button class="mode-btn" data-mode="browse">Consultazione</button>
+  </div>
+  <span class="stat-pill" id="stat-pill">60 carte</span>
+</div>
+
+<main>
+  <!-- BROWSE VIEW -->
+  <div id="browse-view" style="display:none"></div>
+
+  <!-- QUIZ VIEW -->
+  <div id="quiz-view">
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="qpf" style="width:0%"></div></div>
+    <div class="quiz-counter" id="qcounter">1 / 60</div>
+    <div class="flip-scene" id="flip-scene" onclick="flipCard()">
+      <div class="flip-card" id="flip-card">
+        <div class="flip-face flip-front">
+          <div class="face-label" id="fc-tag">Teoria</div>
+          <div class="face-q" id="fc-q"></div>
+          <span class="face-hint">tocca per vedere la risposta</span>
+        </div>
+        <div class="flip-face flip-back">
+          <div class="face-label">Risposta</div>
+          <div id="fc-a" style="font-style:italic;font-size:clamp(.82rem,2.3vw,.97rem);line-height:1.65;color:#e8d9c0;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="quiz-nav">
+      <button class="nav-btn secondary" id="btn-prev" onclick="prevCard()" disabled>← Indietro</button>
+      <button class="nav-btn primary" id="btn-next" onclick="nextCard()">Avanti →</button>
+      <button class="shuffle-btn" title="Mischia le carte" onclick="shuffle()">⇄</button>
+    </div>
+    <div class="score-panel" id="score-panel">
+      <div class="score-title">Sessione completata!</div>
+      <div class="score-num" id="score-num">60</div>
+      <div class="score-sub">carte studiate</div>
+      <button class="nav-btn primary" onclick="restart()">Ricomincia</button>
+    </div>
+  </div>
+</main>
+
+<script>
+// ─── DATASET ───────────────────────────────────────────────────────────────
+const cards = [
+  // ── TEORIA (25) ──────────────────────────────────────────────────────────
+  {
+    cat: "teoria",
+    q: "Definizione di punto di massimo assoluto di una funzione.",
+    a: "Data \\(f\\) con dominio \\(D\\), un punto \\(x_0\\in D\\) è <strong>punto di massimo assoluto</strong> se \\(f(x)\\leq f(x_0)\\) per ogni \\(x\\in D\\). Il valore \\(M=f(x_0)\\) è il <em>massimo assoluto</em> della funzione. Il massimo assoluto, se esiste, è unico."
+  },
+  {
+    cat: "teoria",
+    q: "Definizione di punto di minimo assoluto di una funzione.",
+    a: "Data \\(f\\) con dominio \\(D\\), un punto \\(x_0\\in D\\) è <strong>punto di minimo assoluto</strong> se \\(f(x)\\geq f(x_0)\\) per ogni \\(x\\in D\\). Il valore \\(m=f(x_0)\\) è il <em>minimo assoluto</em>. I punti di massimo e minimo assoluto si chiamano anche <em>punti di estremo assoluto</em>."
+  },
+  {
+    cat: "teoria",
+    q: "Teorema di Weierstrass: enunciato e significato.",
+    a: "Se \\(f\\) è <strong>continua</strong> su un intervallo <strong>chiuso e limitato</strong> \\([a;b]\\), allora \\(f\\) assume in tale intervallo il suo massimo assoluto e il suo minimo assoluto. Il teorema garantisce l'esistenza degli estremi ma non dice dove si trovano; per trovarli occorre confrontare i valori nei punti stazionari, nei punti di non derivabilità e agli estremi \\(a\\) e \\(b\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Definizione di punto di massimo relativo.",
+    a: "Data \\(f\\) definita in \\([a;b]\\), \\(x_0\\in[a;b]\\) è <strong>punto di massimo relativo</strong> se esiste un intorno \\(I\\) di \\(x_0\\) tale che \\(f(x_0)\\geq f(x)\\) per ogni \\(x\\) dell'intorno \\(I\\). Il valore \\(f(x_0)\\) è detto <em>massimo relativo</em> della funzione in \\([a;b]\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Definizione di punto di minimo relativo.",
+    a: "Data \\(f\\) definita in \\([a;b]\\), \\(x_0\\in[a;b]\\) è <strong>punto di minimo relativo</strong> se esiste un intorno \\(I\\) di \\(x_0\\) tale che \\(f(x_0)\\leq f(x)\\) per ogni \\(x\\) dell'intorno \\(I\\). I punti di massimo e minimo relativi si chiamano <em>punti estremanti relativi</em> o <em>estremi relativi</em>."
+  },
+  {
+    cat: "teoria",
+    q: "Relazione tra estremo assoluto ed estremo relativo.",
+    a: "Un punto di estremo assoluto è anche un punto di estremo relativo, ma non è vero il viceversa. Una funzione può avere più punti di massimo o minimo relativi, ma il massimo e il minimo assoluti (se esistono) sono unici come valori. Gli estremi relativi possono trovarsi anche in punti di discontinuità o non derivabilità."
+  },
+  {
+    cat: "teoria",
+    q: "Cosa si intende per concavità verso l'alto (verso il semiasse positivo delle y)?",
+    a: "La funzione \\(f\\) ha la <strong>concavità rivolta verso l'alto</strong> in \\(x_0\\) se esiste un intorno completo \\(I\\) di \\(x_0\\) tale che \\(f(x)>t(x)\\) per ogni \\(x\\in I\\setminus\\{x_0\\}\\), dove \\(t(x)\\) è la retta tangente in \\(x_0\\). Equivale a dire che il grafico si trova al di sopra della tangente in un intorno di \\(x_0\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Cosa si intende per concavità verso il basso (verso il semiasse negativo delle y)?",
+    a: "La funzione \\(f\\) ha la <strong>concavità rivolta verso il basso</strong> in \\(x_0\\) se esiste un intorno \\(I\\) di \\(x_0\\) tale che \\(f(x)<t(x)\\) per ogni \\(x\\in I\\setminus\\{x_0\\}\\). Il grafico si trova al di sotto della retta tangente. Una curva con concavità verso l'alto in tutto un intervallo si dice <em>convessa</em>, quella con concavità verso il basso si dice <em>concava</em>."
+  },
+  {
+    cat: "teoria",
+    q: "Definizione di punto di flesso.",
+    a: "Data \\(f\\) definita in \\(]a;b[\\), \\(x_0\\in]a;b[\\) punto di derivabilità (oppure con \\(\\lim_{x\\to x_0}f'(x)=\\pm\\infty\\)) è un <strong>punto di flesso</strong> se in \\(x_0\\) il grafico di \\(f\\) <em>cambia concavità</em>: la concavità rivolta verso l'alto da un lato diventa verso il basso dall'altro (o viceversa)."
+  },
+  {
+    cat: "teoria",
+    q: "Classificazione dei flessi: orizzontale, verticale, obliquo.",
+    a: "Il flesso è <strong>orizzontale</strong> se la tangente nel punto di flesso è parallela all'asse \\(x\\) (cioè \\(f'(x_0)=0\\)). È <strong>verticale</strong> se la tangente è parallela all'asse \\(y\\) (\\(f'\\) infinita). È <strong>obliquo</strong> se la tangente non è parallela a nessuno degli assi. La tangente in un punto di flesso viene anche chiamata <em>tangente inflessionale</em>."
+  },
+  {
+    cat: "teoria",
+    q: "Flesso ascendente e flesso discendente: come si distinguono?",
+    a: "Se la concavità è verso il basso a sinistra del punto di flesso e verso l'alto a destra, il flesso è <strong>ascendente</strong> (la funzione attraversa la tangente dal basso verso l'alto). Se è verso l'alto a sinistra e verso il basso a destra, il flesso è <strong>discendente</strong>. Si riconosce graficamente dall'andamento delle frecce di concavità intorno al punto."
+  },
+  {
+    cat: "teoria",
+    q: "Teorema di Fermat per i massimi e minimi relativi: enunciato.",
+    a: "Data \\(f\\) definita e derivabile in \\(]a;b[\\), se \\(f\\) ha un massimo o un minimo relativo nel punto \\(x_0\\) <em>interno</em> ad \\([a;b]\\), allora \\[f'(x_0)=0\\] La condizione è <strong>necessaria ma non sufficiente</strong>: \\(f'(x_0)=0\\) non implica l'esistenza di un estremo (il punto potrebbe essere un flesso orizzontale)."
+  },
+  {
+    cat: "teoria",
+    q: "Cosa si intende per punto stazionario?",
+    a: "Dati \\(f\\) derivabile in \\(x_0\\) e \\(f'(x_0)=0\\), allora \\(x=x_0\\) è un <strong>punto stazionario</strong>. Per il significato geometrico della derivata, la tangente nel punto del grafico con ascissa \\(x=x_0\\) è parallela all'asse \\(x\\). Un punto stazionario può essere un massimo relativo, un minimo relativo o un flesso orizzontale."
+  },
+  {
+    cat: "teoria",
+    q: "Come si trovano massimi e minimi relativi con la derivata prima: teorema della condizione sufficiente.",
+    a: "Data \\(f\\) continua in un intorno \\(I\\) di \\(x_0\\) e derivabile nello stesso intorno per \\(x\\neq x_0\\): (a) se \\(f'(x)>0\\) per \\(x<x_0\\) e \\(f'(x)<0\\) per \\(x>x_0\\) allora \\(x_0\\) è <strong>massimo relativo</strong>; (b) se \\(f'(x)<0\\) per \\(x<x_0\\) e \\(f'(x)>0\\) per \\(x>x_0\\) allora \\(x_0\\) è <strong>minimo relativo</strong>; (c) se il segno non cambia, \\(x_0\\) <strong>non è un estremante</strong>."
+  },
+  {
+    cat: "teoria",
+    q: "Cosa sono i punti stazionari di flesso orizzontale?",
+    a: "Un punto stazionario \\(x_0\\) (con \\(f'(x_0)=0\\)) in cui il segno di \\(f'\\) <strong>non cambia</strong> attraversando \\(x_0\\) è un <strong>punto di flesso orizzontale</strong>. La tangente è parallela all'asse \\(x\\) e il grafico attraversa la tangente: non si tratta di un estremo relativo. I casi possibili: \\(f'\\) positiva da entrambi i lati (flesso orizzontale ascendente) o negativa (discendente)."
+  },
+  {
+    cat: "teoria",
+    q: "Come si ricercano massimi e minimi assoluti in un intervallo chiuso?",
+    a: "Per trovare massimo e minimo assoluti di \\(f\\) continua su \\([a;b]\\): (1) si calcola \\(f'(x)\\) e si determinano i punti di non derivabilità; (2) si risolvono \\(f'(x)=0\\) per trovare i punti stazionari; (3) si calcola \\(f\\) in tutti i punti critici (stazionari, non derivabilità) e agli estremi \\(a,b\\); (4) il valore maggiore è il massimo assoluto, il minore è il minimo assoluto."
+  },
+  {
+    cat: "teoria",
+    q: "Criterio per la concavità con la derivata seconda: enunciato.",
+    a: "Sia \\(f\\) definita e continua in un intorno \\(I\\) di \\(x_0\\), con derivate prima e seconda. Se \\(f''(x_0)\\neq0\\), il grafico di \\(f\\) in \\(x_0\\) volge: la <strong>concavità verso l'alto</strong> se \\(f''(x_0)>0\\); la <strong>concavità verso il basso</strong> se \\(f''(x_0)<0\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Condizione necessaria per l'esistenza di un flesso con la derivata seconda.",
+    a: "Sia \\(f\\) definita in \\([a;b]\\) con derivate prima e seconda. Se \\(f\\) ha un flesso nel punto \\(x_0\\) interno ad \\([a;b]\\), allora la derivata seconda in quel punto si annulla: \\[f''(x_0)=0\\] Questa è una condizione <strong>necessaria ma non sufficiente</strong>: \\(f''(x_0)=0\\) non implica l'esistenza di un flesso (es. \\(f(x)=x^4\\) in \\(x=0\\))."
+  },
+  {
+    cat: "teoria",
+    q: "Condizione sufficiente per l'esistenza di un flesso con la derivata seconda.",
+    a: "Sia \\(f\\) definita e derivabile in \\([a;b]\\) con derivata seconda. Il punto \\(x_0\\) è un punto di flesso se, per ogni \\(x\\neq x_0\\) dell'intorno \\(I\\), si ha \\(f''(x)>0\\) per \\(x<x_0\\) e \\(f''(x)<0\\) per \\(x>x_0\\) (oppure viceversa). Cioè: se la derivata seconda <strong>cambia segno</strong> in \\(x_0\\), allora \\(x_0\\) è un punto di flesso."
+  },
+  {
+    cat: "teoria",
+    q: "Come si trovano i flessi con la derivata seconda: procedura.",
+    a: "Per trovare i punti di flesso di \\(f\\): (1) calcolare \\(f''(x)\\) e determinarne il dominio; (2) studiare il segno di \\(f''(x)\\) e trovare i punti in cui la concavità cambia; (3) i punti di flesso orizzontali e obliqui si trovano fra le soluzioni di \\(f''(x)=0\\); (4) se \\(f''(x_0)=0\\) e il flesso è obliquo: \\(f'(x_0)\\neq0\\); se è orizzontale: \\(f'(x_0)=0\\). Se \\(f\\) non è derivabile in \\(x_0\\) e \\(f''\\) cambia segno: flesso verticale."
+  },
+  {
+    cat: "teoria",
+    q: "Condizione sufficiente del secondo ordine per massimi e minimi relativi.",
+    a: "Se \\(f'(x_0)=0\\) e \\(f''(x_0)\\neq0\\): \\(f''(x_0)<0\\Rightarrow\\) <strong>massimo relativo</strong> (concavità verso il basso); \\(f''(x_0)>0\\Rightarrow\\) <strong>minimo relativo</strong> (concavità verso l'alto). Se \\(f''(x_0)=0\\) il test è inconcludente: occorre analizzare il segno di \\(f'\\) intorno a \\(x_0\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Massimi, minimi e flessi con derivate successive: teorema (caso n-esima derivata).",
+    a: "Se \\(f'(x_0)=f''(x_0)=\\dots=f^{(n-1)}(x_0)=0\\) e \\(f^{(n)}(x_0)\\neq0\\), con \\(n\\geq2\\): se \\(n\\) è <strong>pari</strong> e \\(f^{(n)}(x_0)<0\\): massimo relativo; se \\(n\\) pari e \\(f^{(n)}(x_0)>0\\): minimo relativo; se \\(n\\) è <strong>dispari</strong>: flesso orizzontale (ascendente se \\(f^{(n)}>0\\), discendente se \\(f^{(n)}<0\\))."
+  },
+  {
+    cat: "teoria",
+    q: "Cosa si intende per problema di ottimizzazione?",
+    a: "In un <strong>problema di ottimizzazione</strong> si cerca il valore da assegnare alla variabile indipendente per ottenere il valore che soddisfi nel miglior modo possibile particolari condizioni. Si traduce nella ricerca del <strong>massimo</strong> o del <strong>minimo assoluto</strong> di una funzione in un intervallo. La funzione da ottimizzare si chiama <em>funzione obiettivo</em>."
+  },
+  {
+    cat: "teoria",
+    q: "Come si imposta e risolve un problema di ottimizzazione.",
+    a: "Procedura: (1) si cerca la <strong>funzione obiettivo</strong> da rendere massima o minima; (2) si pongono le <strong>condizioni</strong> (o vincoli) relativi alla variabile indipendente; (3) si determinano i massimi o i minimi della funzione nell'intervallo individuato dai vincoli; (4) fra i valori trovati, si accettano soltanto quelli che soddisfano le condizioni del problema."
+  },
+  {
+    cat: "teoria",
+    q: "Come si determinano massimo e minimo assoluti su un intervallo non chiuso o non limitato?",
+    a: "Se l'intervallo \\(I\\) non è chiuso o non è limitato, il Teorema di Weierstrass non garantisce l'esistenza degli estremi. Occorre: (1) trovare i punti stazionari e di non derivabilità interni; (2) confrontarne i valori con i limiti della funzione agli estremi (finiti o infiniti) dell'intervallo; (3) il massimo assoluto è il valore più grande, se raggiunto; altrimenti non esiste."
+  },
+
+  // ── ESERCIZI (20) ─────────────────────────────────────────────────────────
+  {
+    cat: "esercizio",
+    q: "Trovare massimi, minimi e flessi orizzontali di \\(f(x)=x^3-3x\\).",
+    a: "\\(f'(x)=3x^2-3=3(x^2-1)\\). Punti stazionari: \\(x=\\pm1\\). \\(f'\\): positiva per \\(x<-1\\), negativa per \\(-1<x<1\\), positiva per \\(x>1\\). Quindi: \\(x=-1\\) è <strong>massimo relativo</strong> con \\(f(-1)=2\\); \\(x=1\\) è <strong>minimo relativo</strong> con \\(f(1)=-2\\). Nessun flesso orizzontale."
+  },
+  {
+    cat: "esercizio",
+    q: "Determinare i punti di flesso di \\(f(x)=x^3-2x^2+x\\).",
+    a: "\\(f'(x)=3x^2-4x+1\\); \\(f''(x)=6x-4\\). Poniamo \\(f''(x)=0\\): \\(6x-4=0\\Rightarrow x=\\tfrac{2}{3}\\). Il segno di \\(f''\\): negativo per \\(x<\\tfrac{2}{3}\\), positivo per \\(x>\\tfrac{2}{3}\\). Poiché cambia segno, \\(x=\\tfrac{2}{3}\\) è un <strong>punto di flesso obliquo</strong> (\\(f'(\\tfrac{2}{3})=-\\tfrac{1}{3}\\neq0\\))."
+  },
+  {
+    cat: "esercizio",
+    q: "Trovare massimo e minimo assoluti di \\(f(x)=\\tfrac{1}{4}x^4-\\tfrac{4}{3}x^3+2x^2\\) su \\([-1;3]\\).",
+    a: "\\(f'(x)=x^3-4x^2+4x=x(x-2)^2\\). Zeri: \\(x=0\\) e \\(x=2\\). \\(f'<0\\) per \\(x<0\\), \\(f'>0\\) per \\(0<x<2\\) e \\(x>2\\): quindi \\(x=0\\) è <strong>minimo relativo</strong>, \\(x=2\\) è flesso orizzontale. Si calcola \\(f(-1)=\\tfrac{1}{4}+\\tfrac{4}{3}+2=\\tfrac{43}{12}\\), \\(f(0)=0\\), \\(f(2)=\\tfrac{4}{3}\\), \\(f(3)=\\tfrac{9}{4}\\). <strong>Massimo assoluto:</strong> \\(f(-1)=\\tfrac{43}{12}\\); <strong>minimo assoluto:</strong> \\(f(0)=0\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Studiare concavità e flessi di \\(f(x)=2x^3-5\\).",
+    a: "\\(f'(x)=6x^2\\); \\(f''(x)=12x\\). \\(f''=0\\) per \\(x=0\\). Segno di \\(f''\\): negativo per \\(x<0\\), positivo per \\(x>0\\): la concavità cambia in \\(x=0\\). Inoltre \\(f'(0)=0\\), quindi \\(x=0\\) è un <strong>punto di flesso orizzontale</strong>. (Il punto \\(x=0\\) è anche punto stazionario ma non un estremo.)"
+  },
+  {
+    cat: "esercizio",
+    q: "Trovare i punti stazionari e classificarli per \\(f(x)=4x^3-9x^2+6x\\).",
+    a: "\\(f'(x)=12x^2-18x+6=6(2x^2-3x+1)=6(2x-1)(x-1)\\). Zeri: \\(x=\\tfrac{1}{2}\\) e \\(x=1\\). Segno di \\(f'\\): positivo per \\(x<\\tfrac{1}{2}\\), negativo per \\(\\tfrac{1}{2}<x<1\\), positivo per \\(x>1\\). Quindi: \\(x=\\tfrac{1}{2}\\) è <strong>massimo relativo</strong> con \\(f(\\tfrac{1}{2})=\\tfrac{5}{4}\\); \\(x=1\\) è <strong>minimo relativo</strong> con \\(f(1)=1\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Determinare gli intervalli di concavità di \\(f(x)=x^4-6x^2\\).",
+    a: "\\(f'(x)=4x^3-12x\\); \\(f''(x)=12x^2-12=12(x^2-1)\\). \\(f''=0\\) per \\(x=\\pm1\\). Segno di \\(f''\\): positivo per \\(x<-1\\), negativo per \\(-1<x<1\\), positivo per \\(x>1\\). Concavità verso l'alto su \\((-\\infty,-1)\\) e \\((1,+\\infty)\\); concavità verso il basso su \\((-1,1)\\). Flessi obliqui in \\(x=\\pm1\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Trovare massimi e minimi di \\(f(x)=|x^2-1|\\) senza derivata.",
+    a: "Per \\(x\\leq-1\\) o \\(x\\geq1\\): \\(f(x)=x^2-1\\), con \\(f'=2x\\). Per \\(-1<x<1\\): \\(f(x)=1-x^2\\), con \\(f'=-2x\\). Punti non derivabili: \\(x=\\pm1\\) (punti angolosi dove \\(f=0\\)). Punto stazionario interno: \\(x=0\\) con \\(f(0)=1\\) (<strong>massimo relativo</strong>). \\(x=\\pm1\\) sono <strong>minimi assoluti</strong> (\\(f=0\\))."
+  },
+  {
+    cat: "esercizio",
+    q: "Applicare il criterio della derivata seconda per classificare i punti stazionari di \\(f(x)=x^4-2x^2\\).",
+    a: "\\(f'(x)=4x^3-4x=4x(x^2-1)\\). Zeri: \\(x=0,\\pm1\\). \\(f''(x)=12x^2-4\\). \\(f''(0)=-4<0\\): <strong>massimo relativo</strong> in \\(x=0\\), \\(f(0)=0\\). \\(f''(\\pm1)=12-4=8>0\\): <strong>minimo relativo</strong> in \\(x=\\pm1\\), \\(f(\\pm1)=-1\\). I minimi sono anche minimi assoluti."
+  },
+  {
+    cat: "esercizio",
+    q: "Trovare il punto di flesso di \\(g(x)=\\dfrac{2x}{1-x^2}\\) e verificarne il tipo.",
+    a: "\\(g'(x)=\\dfrac{2(1+x^2)}{(1-x^2)^2}\\); \\(g''(x)=\\dfrac{4x(3+x^2)}{(1-x^2)^3}\\) (con \\(x\\neq\\pm1\\)). \\(g''=0\\Rightarrow x=0\\) (poiché \\(3+x^2>0\\) sempre). Il segno di \\(g''\\) cambia in \\(x=0\\) (da negativo a positivo). Poiché \\(g'(0)=2\\neq0\\), il punto \\((0,0)\\) è un <strong>flesso obliquo ascendente</strong>."
+  },
+  {
+    cat: "esercizio",
+    q: "Trovare massimo assoluto e minimo assoluto di \\(f(x)=\\sin x+\\cos x\\) su \\([0;2\\pi]\\).",
+    a: "\\(f'(x)=\\cos x-\\sin x\\). \\(f'=0\\Rightarrow \\cos x=\\sin x\\Rightarrow x=\\tfrac{\\pi}{4}\\) e \\(x=\\tfrac{5\\pi}{4}\\). Valori: \\(f(0)=1\\), \\(f(\\tfrac{\\pi}{4})=\\sqrt{2}\\) (<strong>massimo assoluto</strong>), \\(f(\\tfrac{5\\pi}{4})=-\\sqrt{2}\\) (<strong>minimo assoluto</strong>), \\(f(2\\pi)=1\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Problema di ottimizzazione: dividere il segmento \\(\\overline{AB}\\) di misura \\(a\\) in due parti tali che la somma dei quadrati sia minima.",
+    a: "Sia \\(\\overline{AP}=x\\), con \\(0\\leq x\\leq a\\). La funzione obiettivo è \\(y=x^2+(a-x)^2=2x^2-2ax+a^2\\). \\(y'=4x-2a=0\\Rightarrow x=\\tfrac{a}{2}\\). Poiché \\(y''>0\\), è un <strong>minimo assoluto</strong>: il segmento va diviso a metà. Il valore minimo è \\(y=\\tfrac{a^2}{2}\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Trovare i punti di flesso di \\(f(x)=3x^5+1\\) con le derivate successive.",
+    a: "\\(f'(x)=15x^4\\); \\(f''(x)=60x^3\\); \\(f'''(x)=180x^2\\). \\(f'(0)=f''(0)=0\\) ma \\(f'''(0)=0\\) ancora. \\(f^{(4)}(x)=360x\\), \\(f^{(4)}(0)=0\\). \\(f^{(5)}(x)=360>0\\). La prima derivata non nulla in \\(x=0\\) è la quinta (dispari) e positiva: \\(x=0\\) è un <strong>flesso orizzontale ascendente</strong>."
+  },
+  {
+    cat: "esercizio",
+    q: "Determinare massimo relativo di \\(f(x)=-3x^4+4x^3\\) con la derivata seconda.",
+    a: "\\(f'(x)=-12x^3+12x^2=12x^2(1-x)\\). Zeri: \\(x=0\\) e \\(x=1\\). \\(f''(x)=-36x^2+24x\\). \\(f''(0)=0\\): test inconcludente; esaminando \\(f'\\): non cambia segno in \\(x=0\\) (positiva da entrambi i lati per \\(x\\neq0\\)), quindi \\(x=0\\) è <strong>flesso orizzontale</strong>. \\(f''(1)=-36+24=-12<0\\): \\(x=1\\) è <strong>massimo relativo</strong> con \\(f(1)=1\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Trovare flessi e concavità di \\(f(x)=x-\\ln(x^2+1)\\).",
+    a: "\\(f'(x)=1-\\dfrac{2x}{x^2+1}=\\dfrac{x^2-2x+1}{x^2+1}=\\dfrac{(x-1)^2}{x^2+1}\\geq0\\). \\(f''(x)=\\dfrac{2(x-1)(x^2+1)-2x(x-1)^2}{(x^2+1)^2}=\\dfrac{2(x-1)(1-x^2+1-x+1)}{...}\\). Semplificando: \\(f''(x)=\\dfrac{2(1-x^2+x-1)}{(x^2+1)^2}\\cdot(x-1)\\). Il cambio di concavità avviene in \\(x=\\tfrac{2}{3}\\) (flesso obliquo, poiché \\(f'>0\\))."
+  },
+  {
+    cat: "esercizio",
+    q: "Problema: costruire una scatola senza coperchio da un quadrato di cartone 1m×1m tagliando quadratini agli angoli. Trovare la dimensione del taglio che massimizza il volume.",
+    a: "Sia \\(x\\) il lato del quadratino tagliato (\\(0<x<\\tfrac{1}{2}\\)). Volume: \\(V(x)=x(1-2x)^2\\). \\(V'(x)=(1-2x)^2+x\\cdot2(1-2x)(-2)=(1-2x)(1-2x-4x)=(1-2x)(1-6x)\\). \\(V'=0\\Rightarrow x=\\tfrac{1}{2}\\) (escluso) o \\(x=\\tfrac{1}{6}\\). \\(V''<0\\) in \\(x=\\tfrac{1}{6}\\): <strong>massimo</strong> con \\(V=\\tfrac{1}{6}\\left(\\tfrac{2}{3}\\right)^2=\\tfrac{2}{27}\\) m³."
+  },
+  {
+    cat: "esercizio",
+    q: "Trovare massimi, minimi e flessi di \\(f(x)=\\dfrac{3x^2}{3+x^2}\\).",
+    a: "Dom: \\(\\mathbb{R}\\). \\(f'(x)=\\dfrac{18x}{(3+x^2)^2}\\). \\(f'=0\\Rightarrow x=0\\): <strong>minimo assoluto</strong> con \\(f(0)=0\\) (\\(f'\\) da negativa a positiva). \\(f''(x)=\\dfrac{18(3-3x^2)}{(3+x^2)^3}=\\dfrac{54(1-x^2)}{(3+x^2)^3}\\). \\(f''=0\\Rightarrow x=\\pm1\\): flessi (la concavità cambia). \\(f(\\pm1)=\\tfrac{3}{4}\\). Flessi obliqui in \\(x=\\pm1\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Classificare il punto stazionario \\(x=0\\) di \\(f(x)=e^x-x-1\\).",
+    a: "\\(f'(x)=e^x-1\\). \\(f'(0)=0\\): punto stazionario. \\(f''(x)=e^x\\), \\(f''(0)=1>0\\): \\(x=0\\) è un <strong>minimo relativo</strong> (e assoluto, poiché \\(f\\geq0\\) per ogni \\(x\\) con uguaglianza solo in \\(x=0\\))."
+  },
+  {
+    cat: "esercizio",
+    q: "Trovare i punti estremanti di \\(f(x)=x^2e^{-x}\\).",
+    a: "\\(f'(x)=2xe^{-x}-x^2e^{-x}=xe^{-x}(2-x)\\). Zeri: \\(x=0\\) e \\(x=2\\). Segno di \\(f'\\): negativo per \\(x<0\\), positivo per \\(0<x<2\\), negativo per \\(x>2\\). Quindi: \\(x=0\\) è <strong>minimo relativo</strong> con \\(f(0)=0\\); \\(x=2\\) è <strong>massimo relativo</strong> con \\(f(2)=4e^{-2}\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Trovare il punto di flesso di \\(f(x)=\\ln(1+x^2)\\).",
+    a: "\\(f'(x)=\\dfrac{2x}{1+x^2}\\); \\(f''(x)=\\dfrac{2(1-x^2)}{(1+x^2)^2}\\). \\(f''=0\\Rightarrow x=\\pm1\\). Segno di \\(f''\\): positivo per \\(-1<x<1\\), negativo fuori. Concavità verso l'alto per \\(x\\in(-1,1)\\), verso il basso altrove. Flessi in \\(x=\\pm1\\): poiché \\(f'(\\pm1)=\\pm1\\neq0\\), sono <strong>flessi obliqui</strong>."
+  },
+  {
+    cat: "esercizio",
+    q: "Problema: trovare il rettangolo di area massima inscrivibile in un semicerchio di raggio \\(r\\).",
+    a: "Sia \\(x\\) il semilato orizzontale (\\(0<x<r\\)): la base è \\(2x\\) e l'altezza \\(y=\\sqrt{r^2-x^2}\\). Area: \\(A=2x\\sqrt{r^2-x^2}\\). \\(A'=\\dfrac{2(r^2-2x^2)}{\\sqrt{r^2-x^2}}\\). \\(A'=0\\Rightarrow x=\\dfrac{r}{\\sqrt{2}}\\). Rettangolo ottimale: base \\(r\\sqrt{2}\\), altezza \\(\\dfrac{r}{\\sqrt{2}}\\), area massima \\(r^2\\)."
+  },
+
+  // ── RAGIONAMENTO (15) ─────────────────────────────────────────────────────
+  {
+    cat: "ragionamento",
+    q: "Perché la condizione \\(f'(x_0)=0\\) non è sufficiente per concludere che \\(x_0\\) è un estremo relativo?",
+    a: "La funzione \\(f(x)=x^3\\) ha \\(f'(0)=0\\) ma \\(x=0\\) è un <strong>flesso orizzontale</strong>, non un estremo: il segno di \\(f'\\) non cambia intorno a \\(x=0\\) (positivo da entrambi i lati). Il Teorema di Fermat dice solo che se esiste un estremo interno con \\(f\\) derivabile, allora \\(f'=0\\): la condizione è necessaria ma non sufficiente."
+  },
+  {
+    cat: "ragionamento",
+    q: "È possibile che una funzione abbia un estremo relativo in un punto in cui la derivata non è zero?",
+    a: "Sì: il Teorema di Fermat si applica solo ai punti interni in cui \\(f\\) è <em>derivabile</em>. Agli estremi dell'intervallo e nei punti di <strong>non derivabilità</strong> possono esserci estremi senza che valga \\(f'=0\\). Esempio: \\(f(x)=|x|\\) ha un minimo assoluto in \\(x=0\\) dove non è derivabile."
+  },
+  {
+    cat: "ragionamento",
+    q: "Se \\(f''(x_0)=0\\) e \\(f'(x_0)=0\\), cosa possiamo concludere su \\(x_0\\)?",
+    a: "Non possiamo concludere nulla di definitivo con il solo test della derivata seconda. Occorre studiare il segno di \\(f'\\) intorno a \\(x_0\\): se cambia da \\(+\\) a \\(-\\) è un massimo, da \\(-\\) a \\(+\\) è un minimo, se non cambia è un flesso orizzontale. In alternativa si può usare il metodo delle derivate successive: si cerca la prima derivata non nulla e si guarda se l'ordine è pari o dispari."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché il Teorema di Weierstrass richiede che l'intervallo sia chiuso e limitato?",
+    a: "Se l'intervallo è <em>aperto</em> la funzione potrebbe 'avvicinarsi' arbitrariamente a un valore senza raggiungerlo (il sup non è un max). Se è <em>illimitato</em>, la funzione potrebbe crescere (o decrescere) senza limite. Esempio: \\(f(x)=x\\) su \\((0,1)\\) non ha né massimo né minimo; \\(f(x)=x\\) su \\([0,+\\infty)\\) non ha massimo. Su \\([a,b]\\) chiuso e limitato con \\(f\\) continua, i valori sono raggiunti."
+  },
+  {
+    cat: "ragionamento",
+    q: "Qual è la differenza tra massimo relativo e massimo assoluto? Può un massimo relativo non essere massimo assoluto?",
+    a: "Il <strong>massimo assoluto</strong> è il valore più grande che \\(f\\) assume su tutto il dominio. Un <strong>massimo relativo</strong> è il valore più grande in un intorno del punto. Ogni massimo assoluto è anche relativo, ma non viceversa. Esempio: \\(f(x)=\\sin x\\) su \\([0,3\\pi]\\) ha massimi relativi in \\(x=\\pi/2\\) e \\(x=5\\pi/2\\), ma il massimo assoluto è 1, raggiunto in entrambi."
+  },
+  {
+    cat: "ragionamento",
+    q: "Una funzione strettamente crescente può avere massimi o minimi relativi?",
+    a: "No: se \\(f\\) è strettamente crescente su \\([a,b]\\), per ogni \\(x_0\\) interno esiste sempre un intorno in cui \\(f(x)<f(x_0)\\) per \\(x<x_0\\) e \\(f(x)>f(x_0)\\) per \\(x>x_0\\), quindi \\(x_0\\) non è né un massimo né un minimo relativo. I soli candidati sono gli estremi dell'intervallo: \\(a\\) (minimo assoluto) e \\(b\\) (massimo assoluto)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Come si riconosce graficamente un punto di flesso? Cosa succede alla tangente?",
+    a: "In un punto di flesso il grafico della funzione <strong>attraversa la tangente</strong>: prima si trova su un lato della tangente, poi sull'altro. La tangente in quel punto si chiama <em>tangente inflessionale</em>. La concavità del grafico cambia: se prima puntava verso l'alto, dopo punta verso il basso (o viceversa). In un flesso orizzontale la tangente è parallela all'asse \\(x\\)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Può una funzione non derivabile in \\(x_0\\) avere un flesso in \\(x_0\\)?",
+    a: "Sì: la definizione di flesso richiede solo il cambio di concavità, non la derivabilità. Se \\(f\\) non è derivabile in \\(x_0\\) ma la concavità cambia, si ha un <strong>flesso verticale</strong> (tangente verticale). Esempio: \\(f(x)=\\sqrt[3]{x}\\) ha flesso verticale in \\(x=0\\) con \\(f'(0)=+\\infty\\) (da entrambi i lati con segno diverso della derivata seconda)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché per un problema di ottimizzazione su un intervallo aperto o illimitato non basta trovare il punto stazionario?",
+    a: "Su intervalli non chiusi/limitati il massimo o minimo assoluto potrebbe non esistere o coincidere con il limite della funzione agli estremi. Occorre sempre confrontare il valore nel punto stazionario con il comportamento della funzione agli estremi dell'intervallo (che potrebbero essere \\(\\pm\\infty\\)). Solo se il valore nel punto stazionario è strettamente minore/maggiore di tutti i limiti agli estremi, esso è effettivamente il minimo/massimo assoluto."
+  },
+  {
+    cat: "ragionamento",
+    q: "Se \\(f\\) è pari, cosa si può dire sui punti stazionari in \\(x=0\\)?",
+    a: "Se \\(f\\) è pari e derivabile, allora \\(f'\\) è <em>dispari</em>, quindi \\(f'(0)=-f'(0)\\Rightarrow f'(0)=0\\). Dunque \\(x=0\\) è sempre un punto stazionario per una funzione pari derivabile. Non è detto che sia un estremo: dipende dal segno di \\(f'\\) intorno a 0 (o dal segno di \\(f''(0)\\))."
+  },
+  {
+    cat: "ragionamento",
+    q: "Può una funzione avere infiniti massimi e minimi relativi?",
+    a: "Sì: la funzione \\(f(x)=\\sin x\\) ha infiniti massimi relativi (in \\(x=\\tfrac{\\pi}{2}+2k\\pi\\)) e infiniti minimi relativi (in \\(x=-\\tfrac{\\pi}{2}+2k\\pi\\)). Su un intervallo <em>chiuso e limitato</em>, una funzione continua può avere solo un numero finito di estremi relativi se è anche derivabile, ma su tutto \\(\\mathbb{R}\\) possono essere infiniti."
+  },
+  {
+    cat: "ragionamento",
+    q: "Se \\(f''(x)>0\\) per ogni \\(x\\in(a,b)\\), cosa si può dire sul grafico di \\(f\\)?",
+    a: "Il grafico di \\(f\\) è <strong>convesso</strong> (concavità rivolta verso l'alto) su tutto \\((a,b)\\): il grafico si trova al di sopra di ogni sua tangente in quell'intervallo. Inoltre, per una funzione convessa, ogni punto stazionario è necessariamente un <strong>minimo relativo</strong>. La funzione stessa è strettamente convessa, il che implica anche che il minimo (se esiste) è unico."
+  },
+  {
+    cat: "ragionamento",
+    q: "Come si usa il segno della derivata seconda per capire se un punto stazionario è un massimo o un minimo?",
+    a: "La derivata seconda misura la 'curvatura': se \\(f'(x_0)=0\\) e \\(f''(x_0)>0\\), la curva è <em>concava verso l'alto</em> come una tazza — il punto è un <strong>minimo</strong>. Se \\(f''(x_0)<0\\), la curva è concava verso il basso come una collina — il punto è un <strong>massimo</strong>. Intuitivamente: il segno di \\(f''\\) dice se la derivata prima sta crescendo (passando da negativa a positiva ⇒ min) o decrescendo (⇒ max)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché nei problemi di ottimizzazione con vincoli geometrici è fondamentale ridurre a una sola variabile?",
+    a: "I teoremi su massimi e minimi (Weierstrass, derivata prima) si applicano a funzioni di <em>una variabile</em>. Quando il problema ha più variabili legate da un vincolo (es. area = costante), si usa il vincolo per esprimere una variabile in funzione dell'altra, riducendo la <strong>funzione obiettivo</strong> a una funzione di una sola variabile. Solo così si possono applicare le tecniche del calcolo differenziale monodimensionale."
+  },
+  {
+    cat: "ragionamento",
+    q: "Qual è il legame tra convessità di una funzione e la disuguaglianza di Jensen?",
+    a: "Una funzione \\(f\\) è convessa su \\([a,b]\\) se e solo se per ogni \\(x_1,x_2\\in[a,b]\\) e ogni \\(\\lambda\\in[0,1]\\): \\[f(\\lambda x_1+(1-\\lambda)x_2)\\leq\\lambda f(x_1)+(1-\\lambda)f(x_2)\\] Geometricamente: il segmento che unisce due punti del grafico sta <em>sopra</em> (o su) il grafico. Questa è la <strong>disuguaglianza di Jensen</strong>, che generalizza al caso di più punti e ha importanti applicazioni in analisi e probabilità."
+  }
+];
+
+// ─── STATE ─────────────────────────────────────────────────────────────────
+let filtered = [...cards];
+let deck = [...filtered];
+let idx = 0;
+let currentFilter = "all";
+let currentMode = "quiz";
+
+// ─── FILTER & MODE TABS ─────────────────────────────────────────────────────
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentFilter = btn.dataset.filter;
+    applyFilter();
+  });
+});
+
+document.querySelectorAll(".mode-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".mode-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentMode = btn.dataset.mode;
+    switchMode();
+  });
+});
+
+function applyFilter() {
+  filtered = currentFilter === "all" ? [...cards] : cards.filter(c => c.cat === currentFilter);
+  deck = [...filtered];
+  idx = 0;
+  document.getElementById("stat-pill").textContent = filtered.length + " carte";
+  if (currentMode === "quiz") {
+    document.getElementById("score-panel").classList.remove("visible");
+    document.getElementById("flip-scene").style.display = "";
+    document.querySelectorAll(".quiz-nav button").forEach(b => b.disabled = false);
+    renderCard();
+  } else {
+    renderBrowse();
+  }
+}
+
+function switchMode() {
+  if (currentMode === "quiz") {
+    document.getElementById("browse-view").style.display = "none";
+    document.getElementById("quiz-view").style.display = "flex";
+    deck = [...filtered];
+    idx = 0;
+    document.getElementById("score-panel").classList.remove("visible");
+    document.getElementById("flip-scene").style.display = "";
+    document.querySelectorAll(".quiz-nav").forEach(n => n.style.display = "");
+    renderCard();
+  } else {
+    document.getElementById("quiz-view").style.display = "none";
+    document.getElementById("browse-view").style.display = "grid";
+    renderBrowse();
+  }
+}
+
+// ─── QUIZ ───────────────────────────────────────────────────────────────────
+function renderCard() {
+  if (!deck.length) return;
+  const c = deck[idx];
+  const fc = document.getElementById("flip-card");
+  fc.classList.remove("flipped");
+  fc.dataset.cat = c.cat;
+  document.getElementById("fc-tag").textContent = c.cat.charAt(0).toUpperCase() + c.cat.slice(1);
+  document.getElementById("fc-q").innerHTML = c.q;
+  document.getElementById("fc-a").innerHTML = c.a;
+  document.getElementById("qcounter").textContent = (idx + 1) + " / " + deck.length;
+  document.getElementById("qpf").style.width = ((idx + 1) / deck.length * 100) + "%";
+  document.getElementById("btn-prev").disabled = idx === 0;
+  document.getElementById("btn-next").textContent = idx === deck.length - 1 ? "Fine ✓" : "Avanti →";
+  if (window.MathJax) MathJax.typesetPromise([document.getElementById("flip-card")]);
+}
+
+function flipCard() {
+  document.getElementById("flip-card").classList.toggle("flipped");
+}
+
+function nextCard() {
+  if (idx < deck.length - 1) {
+    idx++;
+    renderCard();
+  } else {
+    document.getElementById("flip-scene").style.display = "none";
+    document.querySelector(".quiz-nav").style.display = "none";
+    document.getElementById("score-num").textContent = deck.length;
+    document.getElementById("score-panel").classList.add("visible");
+  }
+}
+
+function prevCard() {
+  if (idx > 0) { idx--; renderCard(); }
+}
+
+function shuffle() {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  idx = 0;
+  document.getElementById("score-panel").classList.remove("visible");
+  document.getElementById("flip-scene").style.display = "";
+  document.querySelector(".quiz-nav").style.display = "";
+  renderCard();
+}
+
+function restart() {
+  deck = [...filtered];
+  idx = 0;
+  document.getElementById("score-panel").classList.remove("visible");
+  document.getElementById("flip-scene").style.display = "";
+  document.querySelector(".quiz-nav").style.display = "";
+  renderCard();
+}
+
+// ─── BROWSE ─────────────────────────────────────────────────────────────────
+function renderBrowse() {
+  const container = document.getElementById("browse-view");
+  container.innerHTML = "";
+  filtered.forEach((c, i) => {
+    const tagClass = "tag-" + c.cat;
+    const tagLabel = c.cat.charAt(0).toUpperCase() + c.cat.slice(1);
+    const div = document.createElement("div");
+    div.className = "browse-card";
+    div.dataset.cat = c.cat;
+    div.innerHTML = `
+      <div class="bc-header">
+        <span class="bc-num">#${i + 1}</span>
+        <span class="bc-tag ${tagClass}">${tagLabel}</span>
+      </div>
+      <div class="bc-q">${c.q}</div>
+      <div class="bc-divider"></div>
+      <div class="bc-a-label">Risposta</div>
+      <div class="bc-a">${c.a}</div>
+    `;
+    container.appendChild(div);
+  });
+  if (window.MathJax) MathJax.typesetPromise([container]);
+}
+
+// ─── INIT ───────────────────────────────────────────────────────────────────
+renderCard();
+</script>
+</body>
+</html>
