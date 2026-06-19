@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equazioni Differenziali — Flashcards</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1008; --paper: #f5f0e8; --paper-dark: #ebe4d4;
+    --gold: #c8963e; --gold-light: #e8b55a;
+    --red: #8b2020; --blue: #1a3a5c; --green: #1a4a2e;
+    --shadow: rgba(26,16,8,0.18); --card-w: min(560px, 94vw);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--paper); color: var(--ink); font-family: 'Source Serif 4', Georgia, serif; min-height: 100vh; background-image: radial-gradient(ellipse at 10% 20%, rgba(200,150,62,0.07) 0%, transparent 60%), radial-gradient(ellipse at 90% 80%, rgba(26,58,92,0.06) 0%, transparent 60%); }
+  header { text-align: center; padding: 2.5rem 1rem 1.5rem; border-bottom: 2px solid var(--gold); background: linear-gradient(180deg, rgba(200,150,62,0.08) 0%, transparent 100%); position: relative; }
+  header::before { content: "y'"; position: absolute; left: 50%; top: .6rem; transform: translateX(-50%); font-size: 4.5rem; opacity: .04; font-family: 'Playfair Display', serif; pointer-events: none; user-select: none; font-style: italic; }
+  header h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.4rem, 4vw, 2.2rem); font-weight: 700; letter-spacing: .04em; color: var(--ink); }
+  header p { margin-top: .4rem; font-size: .9rem; color: #6b5a3e; font-style: italic; letter-spacing: .06em; }
+  .home-link { display: inline-block; margin-bottom: .8rem; font-size: .8rem; color: #8a7458; text-decoration: none; letter-spacing: .06em; border: 1px solid rgba(200,150,62,.35); padding: .28rem .7rem; border-radius: 4px; transition: all .18s; }
+  .home-link:hover { color: var(--gold); border-color: var(--gold); background: rgba(200,150,62,.07); }
+  .controls { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; padding: 1.2rem 1rem .8rem; border-bottom: 1px solid rgba(200,150,62,.3); background: rgba(245,240,232,.8); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(6px); }
+  .tab-group { display: flex; gap: 0; border: 1.5px solid var(--gold); border-radius: 6px; overflow: hidden; }
+  .tab-btn { padding: .42rem .9rem; font-family: 'Source Serif 4', serif; font-size: .82rem; border: none; background: transparent; cursor: pointer; color: #6b5a3e; transition: all .2s; letter-spacing: .03em; }
+  .tab-btn.active { background: var(--gold); color: #fff; font-weight: 600; }
+  .tab-btn:not(.active):hover { background: rgba(200,150,62,.15); }
+  .mode-group { display: flex; gap: 0; border: 1.5px solid var(--blue); border-radius: 6px; overflow: hidden; }
+  .mode-btn { padding: .42rem .9rem; font-family: 'Source Serif 4', serif; font-size: .82rem; border: none; background: transparent; cursor: pointer; color: var(--blue); transition: all .2s; letter-spacing: .03em; }
+  .mode-btn.active { background: var(--blue); color: #fff; font-weight: 600; }
+  .mode-btn:not(.active):hover { background: rgba(26,58,92,.1); }
+  .stat-pill { padding: .38rem .75rem; background: rgba(26,16,8,.06); border-radius: 20px; font-size: .78rem; color: #6b5a3e; letter-spacing: .04em; align-self: center; }
+  main { padding: 1.5rem 1rem 3rem; }
+  #browse-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px,94vw), 1fr)); gap: 1.2rem; max-width: 1200px; margin: 0 auto; }
+  .browse-card { background: #fff; border-radius: 10px; padding: 1.2rem 1.4rem; box-shadow: 0 2px 8px var(--shadow); border-left: 4px solid var(--gold); transition: transform .15s, box-shadow .15s; }
+  .browse-card:hover { transform: translateY(-2px); box-shadow: 0 5px 16px var(--shadow); }
+  .browse-card[data-cat="esercizio"] { border-left-color: var(--red); }
+  .browse-card[data-cat="ragionamento"] { border-left-color: var(--green); }
+  .bc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: .7rem; }
+  .bc-num { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; color: var(--gold); }
+  .browse-card[data-cat="esercizio"] .bc-num { color: var(--red); }
+  .browse-card[data-cat="ragionamento"] .bc-num { color: var(--green); }
+  .bc-tag { font-size: .67rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; padding: .2rem .5rem; border-radius: 3px; }
+  .tag-teoria { background: rgba(200,150,62,.15); color: var(--gold); }
+  .tag-esercizio { background: rgba(139,32,32,.12); color: var(--red); }
+  .tag-ragionamento { background: rgba(26,74,46,.12); color: var(--green); }
+  .bc-q { font-size: .92rem; line-height: 1.55; color: #2a1f0d; font-weight: 600; margin-bottom: .6rem; }
+  .bc-divider { height: 1px; background: rgba(200,150,62,.25); margin: .6rem 0; }
+  .bc-a { font-size: .88rem; line-height: 1.6; color: #3a2f1d; font-style: italic; }
+  .bc-a-label { font-size: .7rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #8a7458; margin-bottom: .3rem; font-style: normal; }
+  #quiz-view { display: flex; flex-direction: column; align-items: center; gap: 1.2rem; }
+  .quiz-progress-bar { width: var(--card-w); height: 4px; background: rgba(200,150,62,.2); border-radius: 2px; overflow: hidden; }
+  .quiz-progress-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width .4s ease; }
+  .quiz-counter { font-size: .82rem; color: #6b5a3e; letter-spacing: .05em; font-style: italic; width: var(--card-w); text-align: right; }
+  .flip-scene { width: var(--card-w); height: min(340px, 60vw); cursor: pointer; position: relative; }
+  .flip-card { width: 100%; height: 100%; position: relative; }
+  .flip-face { position: absolute; inset: 0; border-radius: 14px; padding: 1.8rem; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; box-shadow: 0 6px 24px var(--shadow); overflow: auto; transition: opacity .35s ease, transform .35s ease; }
+  .flip-front { background: #fff; border: 2px solid var(--gold); opacity: 1; transform: scale(1); z-index: 2; }
+  .flip-front::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 30%, rgba(200,150,62,.05) 0%, transparent 70%); pointer-events: none; }
+  .flip-back { background: linear-gradient(135deg, #1a3a5c 0%, #0f2236 100%); color: #e8d9c0; opacity: 0; transform: scale(.96); z-index: 1; }
+  .flip-card.flipped .flip-front { opacity: 0; transform: scale(.96); z-index: 1; pointer-events: none; }
+  .flip-card.flipped .flip-back { opacity: 1; transform: scale(1); z-index: 2; }
+  .flip-card[data-cat="esercizio"] .flip-front { border-color: var(--red); }
+  .flip-card[data-cat="esercizio"] .flip-back { background: linear-gradient(135deg, #5c1a1a 0%, #380f0f 100%); }
+  .flip-card[data-cat="ragionamento"] .flip-front { border-color: var(--green); }
+  .flip-card[data-cat="ragionamento"] .flip-back { background: linear-gradient(135deg, #1a4a2e 0%, #0f2e1c 100%); }
+  .face-label { font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .5; margin-bottom: .8rem; font-style: normal; }
+  .flip-back .face-label { color: #e8d9c0; }
+  .face-q { font-size: clamp(.9rem, 2.5vw, 1.05rem); line-height: 1.55; font-weight: 600; color: var(--ink); z-index: 1; }
+  .flip-back .face-a { font-size: clamp(.82rem, 2.3vw, .97rem); line-height: 1.65; color: #e8d9c0; font-style: italic; }
+  .face-hint { position: absolute; bottom: .8rem; font-size: .68rem; opacity: .35; letter-spacing: .05em; font-style: italic; }
+  .quiz-nav { display: flex; gap: .8rem; align-items: center; flex-wrap: wrap; justify-content: center; }
+  .nav-btn { font-family: 'Source Serif 4', serif; font-size: .88rem; padding: .55rem 1.4rem; border-radius: 6px; cursor: pointer; border: 1.5px solid transparent; transition: all .18s; letter-spacing: .03em; }
+  .nav-btn.primary { background: var(--gold); color: #fff; border-color: var(--gold); }
+  .nav-btn.primary:hover { background: var(--gold-light); }
+  .nav-btn.secondary { background: transparent; color: var(--ink); border-color: rgba(26,16,8,.25); }
+  .nav-btn.secondary:hover { background: rgba(26,16,8,.06); }
+  .nav-btn:disabled { opacity: .35; cursor: default; }
+  .shuffle-btn { padding: .5rem; border: none; background: none; cursor: pointer; color: #8a7458; font-size: 1.1rem; transition: transform .2s; line-height: 1; }
+  .shuffle-btn:hover { transform: rotate(180deg); color: var(--gold); }
+  .score-panel { display: none; flex-direction: column; align-items: center; gap: .8rem; width: var(--card-w); background: #fff; border-radius: 12px; padding: 1.8rem; box-shadow: 0 4px 20px var(--shadow); text-align: center; }
+  .score-panel.visible { display: flex; }
+  .score-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--ink); }
+  .score-num { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--gold); font-weight: 700; line-height: 1; }
+  .score-sub { font-size: .88rem; color: #6b5a3e; font-style: italic; }
+  @media (max-width: 480px) { .flip-scene { height: min(280px, 72vw); } .flip-face { padding: 1.2rem; } .face-q, .flip-back .face-a { font-size: .88rem; } }
+  @media (min-width: 900px) { #browse-view { grid-template-columns: repeat(auto-fill, minmax(340px,1fr)); } }
+  .MJX-TEX { font-size: 1em !important; }
+  mjx-container { margin: .15em 0; max-width: 100%; overflow-x: auto; }
+  ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: var(--paper-dark); } ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="home-link">← Tutte le unità</a>
+  <h1>Equazioni Differenziali</h1>
+  <p>Unità 10 — Analisi Matematica &nbsp;·&nbsp; 60 Flashcards</p>
+</header>
+
+<div class="controls">
+  <div class="tab-group">
+    <button class="tab-btn active" data-filter="all">Tutte</button>
+    <button class="tab-btn" data-filter="teoria">Teoria</button>
+    <button class="tab-btn" data-filter="esercizio">Esercizi</button>
+    <button class="tab-btn" data-filter="ragionamento">Ragionamento</button>
+  </div>
+  <div class="mode-group">
+    <button class="mode-btn active" data-mode="quiz">Quiz</button>
+    <button class="mode-btn" data-mode="browse">Consultazione</button>
+  </div>
+  <span class="stat-pill" id="stat-pill">60 carte</span>
+</div>
+
+<main>
+  <div id="browse-view" style="display:none"></div>
+  <div id="quiz-view">
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="qpf" style="width:0%"></div></div>
+    <div class="quiz-counter" id="qcounter">1 / 60</div>
+    <div class="flip-scene" id="flip-scene" onclick="flipCard()">
+      <div class="flip-card" id="flip-card">
+        <div class="flip-face flip-front">
+          <div class="face-label" id="fc-tag">Teoria</div>
+          <div class="face-q" id="fc-q"></div>
+          <span class="face-hint">tocca per vedere la risposta</span>
+        </div>
+        <div class="flip-face flip-back">
+          <div class="face-label">Risposta</div>
+          <div id="fc-a" style="font-style:italic;font-size:clamp(.82rem,2.3vw,.97rem);line-height:1.65;color:#e8d9c0;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="quiz-nav">
+      <button class="nav-btn secondary" id="btn-prev" onclick="prevCard()" disabled>← Indietro</button>
+      <button class="nav-btn primary" id="btn-next" onclick="nextCard()">Avanti →</button>
+      <button class="shuffle-btn" title="Mischia le carte" onclick="shuffle()">⇄</button>
+    </div>
+    <div class="score-panel" id="score-panel">
+      <div class="score-title">Sessione completata!</div>
+      <div class="score-num" id="score-num">60</div>
+      <div class="score-sub">carte studiate</div>
+      <button class="nav-btn primary" onclick="restart()">Ricomincia</button>
+    </div>
+  </div>
+</main>
+
+<script>
+const cards = [
+  // ── TEORIA (25) ──────────────────────────────────────────────────────────
+  {
+    cat: "teoria",
+    q: "Definizione di equazione differenziale e di ordine.",
+    a: "Un'<strong>equazione differenziale</strong> è un'equazione che ha per incognita una funzione \\(y\\) della variabile \\(x\\) e stabilisce una relazione tra \\(x\\), \\(y\\) e almeno una delle sue derivate: \\(F(x;y;y';\\ldots;y^{(n)})=0\\). L'<strong>ordine</strong> è il massimo ordine di derivazione che compare nell'equazione. Es: \\(y''-2y'+y=0\\) è del secondo ordine; \\(y'-4x^2+1=0\\) è del primo ordine."
+  },
+  {
+    cat: "teoria",
+    q: "Cos'è l'integrale generale e l'integrale particolare di una EDO?",
+    a: "L'<strong>integrale generale</strong> è l'insieme di tutte le infinite soluzioni dell'equazione differenziale, dipendente da uno o più parametri \\(c_1, c_2, \\ldots, c_n\\) (tanti quanti è l'ordine). Geometricamente è una famiglia di <em>curve integrali</em>. L'<strong>integrale (o soluzione) particolare</strong> si ottiene attribuendo ai parametri valori specifici, determinati da condizioni aggiuntive (es. il problema di Cauchy)."
+  },
+  {
+    cat: "teoria",
+    q: "Cos'è il problema di Cauchy?",
+    a: "Il <strong>problema di Cauchy</strong> consiste nel trovare una soluzione particolare \\(y=f(x)\\) di un'equazione differenziale che soddisfi determinate <em>condizioni iniziali</em>. Per un'equazione di ordine \\(n\\), le condizioni sono: \\[F(x;y;y'\\ldots;y^{(n)})=0,\\quad y(x_0)=y_0,\\quad y'(x_0)=y_1,\\ldots,y^{(n-1)}(x_0)=y_{n-1}\\] Un'equazione di ordine \\(n\\) dipende da \\(n\\) parametri, quindi occorrono \\(n+1\\) condizioni per determinarlo."
+  },
+  {
+    cat: "teoria",
+    q: "Come si risolvono le equazioni differenziali del tipo \\(y'=f(x)\\)?",
+    a: "Si isola \\(y'\\) e si integrano entrambi i membri rispetto a \\(x\\): \\[\\int y'\\,dx = \\int f(x)\\,dx \\quad\\Rightarrow\\quad y = \\int f(x)\\,dx\\] L'integrale generale è \\(y=F(x)+c\\), dove \\(F(x)\\) è una primitiva di \\(f(x)\\) e \\(c\\in\\mathbb{R}\\) è il parametro libero. Si tratta del caso più semplice: l'equazione si riduce a trovare una primitiva."
+  },
+  {
+    cat: "teoria",
+    q: "Definizione di equazione differenziale a variabili separabili e procedura di risoluzione.",
+    a: "Un'EDO del primo ordine è <strong>a variabili separabili</strong> se può essere scritta nella forma \\(y'=g(x)\\cdot h(y)\\). Procedura: (1) si scrive \\(y'=\\frac{dy}{dx}\\) e si separa: \\(\\frac{dy}{h(y)}=g(x)\\,dx\\), supponendo \\(h(y)\\neq0\\); (2) si integrano entrambi i membri: \\(\\int\\frac{dy}{h(y)}=\\int g(x)\\,dx\\); (3) si ricava \\(y\\) in funzione di \\(x\\); (4) si esaminano separatamente i casi derivanti da \\(h(y)=0\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Come si riconosce se un'equazione differenziale è a variabili separabili?",
+    a: "Un'equazione \\(y'=f(x,y)\\) è a variabili separabili se \\(f\\) si scrive come <em>prodotto</em> di una funzione solo di \\(x\\) per una funzione solo di \\(y\\): \\(f(x,y)=g(x)\\cdot h(y)\\). Es: \\(y'=2x(y-1)^2\\) è separabile (\\(g=2x\\), \\(h=(y-1)^2\\)). Invece \\(y'=2x+(y-1)^2\\) non è separabile perché \\(f\\) è una <em>somma</em>, non un prodotto."
+  },
+  {
+    cat: "teoria",
+    q: "Definizione di equazione differenziale lineare del primo ordine.",
+    a: "Un'EDO del primo ordine è <strong>lineare</strong> se può essere scritta nella forma: \\[y'=a(x)\\cdot y+b(x)\\] dove \\(a(x)\\) e \\(b(x)\\) sono funzioni continue in un opportuno intervallo. Se \\(b(x)=0\\): equazione <strong>omogenea</strong>. Se \\(b(x)\\neq0\\): equazione <strong>completa</strong>. La linearità significa che \\(y\\) e \\(y'\\) compaiono solo al primo grado (non \\(y^2\\), \\((y')^2\\), ecc.)."
+  },
+  {
+    cat: "teoria",
+    q: "Risoluzione dell'equazione lineare del primo ordine omogenea \\(y'=a(x)\\cdot y\\).",
+    a: "L'equazione omogenea \\(y'=a(x)\\cdot y\\) è a variabili separabili. Separando (\\(y\\neq0\\)): \\(\\frac{dy}{y}=a(x)\\,dx\\). Integrando: \\(\\ln|y|=A(x)+k\\), dove \\(A(x)=\\int a(x)\\,dx\\). Quindi: \\[y=e^{A(x)+k}=ke^{A(x)}\\quad (k\\in\\mathbb{R})\\] L'integrale generale è \\(y=ke^{\\int a(x)\\,dx}\\), con \\(k\\in\\mathbb{R}\\). Nota: \\(y=0\\) è anch'essa soluzione (caso \\(k=0\\))."
+  },
+  {
+    cat: "teoria",
+    q: "Formula risolutiva per l'equazione lineare del primo ordine completa \\(y'=a(x)y+b(x)\\).",
+    a: "Si calcola la primitiva \\(A(x)=\\int a(x)\\,dx\\). La soluzione generale è: \\[y=e^{A(x)}\\left[\\int b(x)e^{-A(x)}\\,dx+c\\right]\\] Il termine \\(e^{A(x)}\\) è il <em>fattore integrante</em>. La formula si ottiene moltiplicando entrambi i membri per \\(e^{-A(x)}\\), riconoscendo nel primo membro la derivata di \\(ye^{-A(x)}\\), e poi integrando."
+  },
+  {
+    cat: "teoria",
+    q: "Come si ottiene la formula risolutiva per l'equazione lineare completa?",
+    a: "Si porta \\(a(x)y\\) al primo membro: \\(y'-a(x)y=b(x)\\). Si moltiplica per \\(e^{-A(x)}\\): \\(y'e^{-A(x)}-a(x)ye^{-A(x)}=b(x)e^{-A(x)}\\). Il primo membro è \\(\\mathrm{D}[ye^{-A(x)}]\\). Integrando: \\(ye^{-A(x)}=\\int b(x)e^{-A(x)}\\,dx+c\\). Moltiplicando per \\(e^{A(x)}\\): \\(y=e^{A(x)}\\left[\\int b(x)e^{-A(x)}\\,dx+c\\right]\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Struttura dell'equazione differenziale lineare del secondo ordine a coefficienti costanti.",
+    a: "La forma generale è: \\[y''+by'+cy=r(x)\\] dove \\(b,c\\in\\mathbb{R}\\) sono costanti e \\(r(x)\\) è una funzione continua. Se \\(r(x)=0\\): <strong>omogenea</strong>. Se \\(r(x)\\neq0\\): <strong>completa</strong>. L'integrale generale dell'omogenea dipende da 2 parametri; quello della completa si ottiene sommando l'integrale dell'omogenea e una soluzione particolare della completa."
+  },
+  {
+    cat: "teoria",
+    q: "Equazione caratteristica di un'EDO lineare del 2° ordine omogenea e come si usa.",
+    a: "Data \\(y''+by'+cy=0\\), si cerca la soluzione nella forma \\(y=e^{zx}\\). Sostituendo: \\(z^2e^{zx}+bze^{zx}+ce^{zx}=0\\), e dividendo per \\(e^{zx}\\neq0\\): \\[z^2+bz+c=0\\] Questa è l'<strong>equazione caratteristica</strong>. Le sue radici \\(z_1, z_2\\) determinano la forma dell'integrale generale, che dipende dal segno del discriminante \\(\\Delta=b^2-4c\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Caso \\(\\Delta>0\\) per l'EDO omogenea del 2° ordine: soluzione generale.",
+    a: "Se \\(\\Delta=b^2-4c>0\\), l'equazione caratteristica \\(z^2+bz+c=0\\) ha due radici reali distinte \\(z_1\\neq z_2\\). Le due soluzioni particolari indipendenti sono \\(y_1=e^{z_1 x}\\) e \\(y_2=e^{z_2 x}\\). L'integrale generale è: \\[y=c_1 e^{z_1 x}+c_2 e^{z_2 x}, \\quad c_1,c_2\\in\\mathbb{R}\\]"
+  },
+  {
+    cat: "teoria",
+    q: "Caso \\(\\Delta=0\\) per l'EDO omogenea del 2° ordine: soluzione generale.",
+    a: "Se \\(\\Delta=b^2-4c=0\\), l'equazione caratteristica ha una radice reale doppia \\(z_1=z_2=z=-\\frac{b}{2}\\). Le due soluzioni particolari indipendenti sono \\(y_1=e^{zx}\\) e \\(y_2=xe^{zx}\\). L'integrale generale è: \\[y=c_1 e^{zx}+c_2 xe^{zx}=e^{zx}(c_1+c_2 x), \\quad c_1,c_2\\in\\mathbb{R}\\]"
+  },
+  {
+    cat: "teoria",
+    q: "Caso \\(\\Delta<0\\) per l'EDO omogenea del 2° ordine: soluzione generale.",
+    a: "Se \\(\\Delta=b^2-4c<0\\), le radici dell'equazione caratteristica sono complesse coniugate: \\(z_{1,2}=\\alpha\\pm i\\beta\\), con \\(\\alpha=-\\frac{b}{2}\\) e \\(\\beta=\\frac{\\sqrt{4c-b^2}}{2}\\). L'integrale generale è: \\[y=e^{\\alpha x}(c_1\\cos\\beta x+c_2\\sin\\beta x), \\quad c_1,c_2\\in\\mathbb{R}\\]"
+  },
+  {
+    cat: "teoria",
+    q: "Come si risolve un'EDO lineare del 2° ordine completa \\(y''+by'+cy=r(x)\\)?",
+    a: "L'integrale generale della completa è: \\[y=y_g+y_p\\] dove \\(y_g=c_1 y_1+c_2 y_2\\) è l'integrale generale dell'omogenea associata e \\(y_p\\) è <em>una</em> soluzione particolare della completa. Si trova \\(y_p\\) cercandola della stessa forma di \\(r(x)\\) (metodo di somiglianza): se \\(r(x)\\) è un polinomio, si cerca \\(y_p\\) polinomio; se \\(r(x)=Ae^{\\mu x}\\), si cerca \\(y_p=Be^{\\mu x}\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Come si trova la soluzione particolare \\(y_p\\) dell'equazione completa col metodo di somiglianza?",
+    a: "Si ipotizza \\(y_p\\) della stessa forma di \\(r(x)\\): se \\(r(x)=ax+b\\) si pone \\(y_p=Ax+B\\); se \\(r(x)=ae^{\\mu x}\\) si pone \\(y_p=Ae^{\\mu x}\\); se \\(r(x)=a\\sin\\omega x+b\\cos\\omega x\\) si pone \\(y_p=A\\sin\\omega x+B\\cos\\omega x\\). Si sostituisce nell'equazione e si identificano i coefficienti incogniti \\(A\\), \\(B\\) uguagliando i coefficienti dei termini simili. Eccezione: se \\(r(x)\\) è soluzione dell'omogenea, si moltiplica \\(y_p\\) per \\(x\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Tavola riepilogativa delle soluzioni dell'EDO omogenea del 2° ordine.",
+    a: "<strong>\\(\\Delta>0\\):</strong> radici reali distinte \\(z_1\\neq z_2\\) → \\(y=c_1e^{z_1 x}+c_2e^{z_2 x}\\). <strong>\\(\\Delta=0\\):</strong> radice reale doppia \\(z\\) → \\(y=e^{zx}(c_1+c_2 x)\\). <strong>\\(\\Delta<0\\):</strong> radici complesse \\(\\alpha\\pm i\\beta\\) → \\(y=e^{\\alpha x}(c_1\\cos\\beta x+c_2\\sin\\beta x)\\). In tutti i casi, \\(c_1,c_2\\in\\mathbb{R}\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Legge di raffreddamento di Newton: modello con EDO.",
+    a: "La velocità di variazione della temperatura \\(T(t)\\) di un corpo è proporzionale alla differenza tra la temperatura del corpo e quella dell'ambiente \\(T_a\\): \\[T'=-k(T-T_a)\\] con \\(k>0\\). È un'EDO lineare del primo ordine (o a variabili separabili). La soluzione è: \\(T(t)=T_a+(T_0-T_a)e^{-kt}\\), dove \\(T_0=T(0)\\) è la temperatura iniziale. La temperatura si avvicina esponenzialmente a \\(T_a\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Modello preda-predatore: che tipo di EDO genera?",
+    a: "Il modello di Lotka-Volterra descrive la dinamica di due popolazioni (prede \\(x\\) e predatori \\(y\\)) con un <em>sistema</em> di EDO del primo ordine: \\(x'=ax-bxy\\) e \\(y'=-cy+dxy\\). Ogni equazione è non lineare (contiene il prodotto \\(xy\\)). La variabile \\(t\\) è il tempo; \\(a,b,c,d>0\\) sono costanti. Le soluzioni sono periodiche: le popolazioni oscillano in cicli."
+  },
+  {
+    cat: "teoria",
+    q: "Decadimento radioattivo: EDO e soluzione.",
+    a: "La massa \\(m(t)\\) di una sostanza radioattiva decade a velocità proporzionale alla massa presente: \\[m'=-\\lambda m\\] con \\(\\lambda>0\\) costante di decadimento. È un'EDO a variabili separabili (omogenea lineare). La soluzione è: \\(m(t)=m_0 e^{-\\lambda t}\\), dove \\(m_0=m(0)\\). Il <strong>tempo di dimezzamento</strong> \\(t_{1/2}=\\frac{\\ln 2}{\\lambda}\\) è il tempo in cui la massa si dimezza."
+  },
+  {
+    cat: "teoria",
+    q: "Oscillatore armonico smorzato: modello EDO.",
+    a: "Un corpo attaccato a una molla e immerso in un fluido viscoso è descritto dall'equazione del secondo ordine: \\[y''+by'+cy=0\\] dove \\(y(t)\\) è la posizione, \\(b>0\\) è il coefficiente di smorzamento e \\(c>0\\) la costante elastica. Se \\(\\Delta=b^2-4c>0\\): sovrasmorzato (nessuna oscillazione). Se \\(\\Delta=0\\): smorzamento critico. Se \\(\\Delta<0\\): sottosmorzato (oscillazioni smorzate), con soluzione \\(y=e^{\\alpha t}(c_1\\cos\\beta t+c_2\\sin\\beta t)\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Cosa si intende per 'soluzione di un'equazione differenziale' in senso rigoroso?",
+    a: "Una funzione \\(y=f(x)\\) è soluzione di \\(F(x;y;y';\\ldots;y^{(n)})=0\\) in un intervallo \\(I\\) se: (1) \\(f\\) è derivabile \\(n\\) volte in \\(I\\); (2) sostituendo \\(y=f(x)\\) e le sue derivate nell'equazione si ottiene un'identità vera per ogni \\(x\\in I\\). Il grafico di una soluzione si chiama <em>curva integrale</em>. Verificare una soluzione significa solo fare questa sostituzione."
+  },
+  {
+    cat: "teoria",
+    q: "Perché l'integrale generale di un'EDO di ordine \\(n\\) dipende da \\(n\\) costanti?",
+    a: "Ogni integrazione introduce una costante arbitraria. Per risolvere un'EDO di ordine \\(n\\) occorre integrare (in senso generalizzato) \\(n\\) volte, introducendo \\(n\\) costanti \\(c_1,\\ldots,c_n\\). Geometricamente, ci sono infinite curve integrali (una per ogni scelta dei parametri). Per selezionarne una unica occorrono \\(n\\) condizioni aggiuntive (il problema di Cauchy), che fissano i valori di \\(y\\) e delle sue prime \\(n-1\\) derivate in un punto \\(x_0\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Crescita logistica: modello EDO e soluzione.",
+    a: "Una popolazione \\(P(t)\\) con capacità portante \\(K\\) soddisfa: \\[P'=rP\\left(1-\\frac{P}{K}\\right)\\] con \\(r>0\\) tasso di crescita. È a variabili separabili. La soluzione è la <em>curva logistica</em>: \\(P(t)=\\frac{K}{1+Ae^{-rt}}\\), con \\(A=\\frac{K-P_0}{P_0}\\). Per \\(P\\ll K\\): crescita quasi esponenziale. Per \\(P\\to K\\): rallentamento. Il modello descrive la crescita in presenza di risorse limitate."
+  },
+
+  // ── ESERCIZI (20) ─────────────────────────────────────────────────────────
+  {
+    cat: "esercizio",
+    q: "Risolvere \\(y'-2\\cos x=0\\).",
+    a: "Si isola \\(y'=2\\cos x\\) e si integra: \\[y=\\int 2\\cos x\\,dx=2\\sin x+c, \\quad c\\in\\mathbb{R}\\] L'integrale generale è la famiglia di curve \\(y=2\\sin x+c\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Risolvere il problema di Cauchy: \\(y'=2t\\), \\(y(1)=3\\), \\(y'(1)=4\\).",
+    a: "Integriamo \\(y''=2t\\): \\(y'=t^2+c_1\\). Integriamo: \\(y=\\frac{t^3}{3}+c_1t+c_2\\). Condizioni: \\(y'(1)=1+c_1=4\\Rightarrow c_1=3\\); \\(y(1)=\\frac{1}{3}+3+c_2=3\\Rightarrow c_2=-\\frac{1}{3}\\). Soluzione: \\(y=\\frac{t^3}{3}+3t-\\frac{1}{3}\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Risolvere l'equazione a variabili separabili \\(y'=4xy^2\\).",
+    a: "Per \\(y\\neq0\\): \\(\\frac{dy}{y^2}=4x\\,dx\\). Integriamo: \\(-\\frac{1}{y}=2x^2+c\\), quindi \\(y=-\\frac{1}{2x^2+c}\\). Per \\(y=0\\): è soluzione singolare (verifica: \\(0=4x\\cdot0=0\\) ✓). L'integrale generale è \\(y=-\\frac{1}{2x^2+c}\\), \\(c\\in\\mathbb{R}\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Risolvere il problema di Cauchy: \\(y'=4xy^2\\), \\(y(0)=-2\\).",
+    a: "Dall'integrale generale \\(y=-\\frac{1}{2x^2+c}\\), imponiamo \\(y(0)=-2\\): \\(-\\frac{1}{c}=-2\\Rightarrow c=\\frac{1}{2}\\). Soluzione: \\[y=-\\frac{1}{2x^2+\\frac{1}{2}}=-\\frac{2}{4x^2+1}\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Risolvere \\(y'=\\dfrac{3\\sin x}{y}\\) con condizione iniziale \\(f(0)=-2\\).",
+    a: "Separando: \\(y\\,dy=3\\sin x\\,dx\\). Integrando: \\(\\frac{y^2}{2}=-3\\cos x+c\\), cioè \\(y^2=-6\\cos x+k\\). Condizione \\(y(0)=-2\\): \\(4=-6+k\\Rightarrow k=10\\). Quindi \\(y^2=-6\\cos x+10\\), e poiché \\(y(0)=-2<0\\): \\(y=-\\sqrt{-6\\cos x+10}\\) (ramo negativo)."
+  },
+  {
+    cat: "esercizio",
+    q: "Risolvere l'equazione lineare omogenea \\(y'=(2x-1)y\\).",
+    a: "\\(a(x)=2x-1\\), \\(A(x)=\\int(2x-1)\\,dx=x^2-x\\). Integrale generale: \\[y=ke^{x^2-x}, \\quad k\\in\\mathbb{R}\\] (includendo \\(k=0\\), che dà la soluzione \\(y=0\\))."
+  },
+  {
+    cat: "esercizio",
+    q: "Risolvere l'equazione lineare completa \\(y'+2xy=2x\\).",
+    a: "Forma standard: \\(y'=-2xy+2x\\), quindi \\(a(x)=-2x\\), \\(b(x)=2x\\). \\(A(x)=\\int(-2x)\\,dx=-x^2\\). Formula: \\(y=e^{-x^2}\\left[\\int 2xe^{x^2}\\,dx+c\\right]=e^{-x^2}[e^{x^2}+c]=1+ce^{-x^2}\\). Verifica: \\(y'=-2cxe^{-x^2}\\); \\(-2xy+2x=-2x(1+ce^{-x^2})+2x=-2cxe^{-x^2}\\). ✓"
+  },
+  {
+    cat: "esercizio",
+    q: "Risolvere \\(y'+\\dfrac{y}{x}=x\\) con \\(x>0\\).",
+    a: "\\(a(x)=-\\frac{1}{x}\\), \\(b(x)=x\\). \\(A(x)=\\int(-\\frac{1}{x})\\,dx=-\\ln x\\). \\(e^{A(x)}=e^{-\\ln x}=\\frac{1}{x}\\), \\(e^{-A(x)}=x\\). Formula: \\(y=x\\left[\\int x\\cdot\\frac{1}{x}\\,dx+c\\right]=x\\left[\\int 1\\,dx+c\\right]=x(x+c)=x^2+cx\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Risolvere l'EDO lineare del 2° ordine omogenea \\(y''-5y'+6y=0\\).",
+    a: "Equazione caratteristica: \\(z^2-5z+6=0\\). \\(\\Delta=25-24=1>0\\). Radici: \\(z_1=2\\), \\(z_2=3\\). Integrale generale: \\[y=c_1e^{2x}+c_2e^{3x}, \\quad c_1,c_2\\in\\mathbb{R}\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Risolvere \\(y''-2y'+y=0\\).",
+    a: "Equazione caratteristica: \\(z^2-2z+1=0=(z-1)^2\\). \\(\\Delta=4-4=0\\). Radice doppia: \\(z_1=z_2=1\\). Integrale generale: \\[y=e^x(c_1+c_2 x), \\quad c_1,c_2\\in\\mathbb{R}\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Risolvere \\(y''-4y'+13y=0\\).",
+    a: "Equazione caratteristica: \\(z^2-4z+13=0\\). \\(\\Delta=16-52=-36<0\\). Radici: \\(z_{1,2}=\\frac{4\\pm6i}{2}=2\\pm3i\\). Quindi \\(\\alpha=2\\), \\(\\beta=3\\). Integrale generale: \\[y=e^{2x}(c_1\\cos3x+c_2\\sin3x), \\quad c_1,c_2\\in\\mathbb{R}\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Risolvere il problema di Cauchy: \\(y''+4y'+4y=0\\), \\(y(0)=1\\), \\(y'(0)=0\\).",
+    a: "Caratteristica: \\(z^2+4z+4=(z+2)^2=0\\). Radice doppia \\(z=-2\\). Integrale generale: \\(y=e^{-2x}(c_1+c_2 x)\\). Condizioni: \\(y(0)=c_1=1\\). \\(y'(x)=e^{-2x}(c_2-2c_1-2c_2 x)\\); \\(y'(0)=c_2-2c_1=0\\Rightarrow c_2=2\\). Soluzione: \\(y=e^{-2x}(1+2x)\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Risolvere l'equazione completa \\(y''-5y'+6y=2x+1\\).",
+    a: "Omogenea: \\(y_g=c_1e^{2x}+c_2e^{3x}\\) (dall'esercizio precedente). Soluzione particolare: \\(y_p=Ax+B\\). \\(y_p'=A\\), \\(y_p''=0\\). Sostituendo: \\(0-5A+6(Ax+B)=2x+1\\Rightarrow6Ax+(-5A+6B)=2x+1\\). Quindi \\(6A=2\\Rightarrow A=\\frac{1}{3}\\) e \\(-5A+6B=1\\Rightarrow B=\\frac{8}{18}=\\frac{4}{9}\\). Integrale generale: \\(y=c_1e^{2x}+c_2e^{3x}+\\frac{x}{3}+\\frac{4}{9}\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Modellare e risolvere: una pinza metallica a 80°C si raffredda in un ambiente a 25°C. Dopo quanto tempo raggiunge 40°C se \\(k=\\frac{2}{25}\\)?",
+    a: "\\(T'=-\\frac{2}{25}(T-25)\\). Soluzione: \\(T(t)=25+ce^{-\\frac{2}{25}t}\\). Condizione \\(T(0)=80\\): \\(c=55\\). Quindi \\(T(t)=25+55e^{-\\frac{2}{25}t}\\). Per \\(T=40\\): \\(25+55e^{-\\frac{2}{25}t}=40\\Rightarrow e^{-\\frac{2}{25}t}=\\frac{15}{55}=\\frac{3}{11}\\Rightarrow t=-\\frac{25}{2}\\ln\\frac{3}{11}=\\frac{25}{2}\\ln\\frac{11}{3}\\approx16\\) minuti."
+  },
+  {
+    cat: "esercizio",
+    q: "Verificare che \\(y=e^{x^2}-\\frac{1}{2}\\) è soluzione di \\(y'=2xy+x\\).",
+    a: "Calcoliamo \\(y'=2xe^{x^2}\\). Calcoliamo il secondo membro: \\(2xy+x=2x\\left(e^{x^2}-\\frac{1}{2}\\right)+x=2xe^{x^2}-x+x=2xe^{x^2}\\). Poiché \\(y'=2xe^{x^2}=2xy+x\\), l'equazione è verificata. ✓"
+  },
+  {
+    cat: "esercizio",
+    q: "Risolvere \\(y''+2y'+y=e^{-x}\\).",
+    a: "Omogenea: \\(z^2+2z+1=(z+1)^2=0\\), radice doppia \\(z=-1\\). \\(y_g=e^{-x}(c_1+c_2 x)\\). Poiché \\(r(x)=e^{-x}\\) è soluzione dell'omogenea (con radice doppia), si cerca \\(y_p=Ax^2e^{-x}\\). \\(y_p'=e^{-x}(2Ax-Ax^2)\\), \\(y_p''=e^{-x}(2A-4Ax+Ax^2)\\). Sostituendo: \\(e^{-x}(2A-4Ax+Ax^2+4Ax-2Ax^2+Ax^2)=e^{-x}\\Rightarrow2A=1\\Rightarrow A=\\frac{1}{2}\\). Integrale generale: \\(y=e^{-x}\\left(c_1+c_2 x+\\frac{x^2}{2}\\right)\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Risolvere il problema di Cauchy: \\(y'-6x^2=0\\), \\(y(2)=1\\).",
+    a: "\\(y=\\int 6x^2\\,dx=2x^3+c\\). Condizione \\(y(2)=1\\): \\(2\\cdot8+c=1\\Rightarrow c=1-16=-15\\). Soluzione: \\(y=2x^3-15\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Risolvere \\(y'=2xy-2x\\) (equazione lineare).",
+    a: "Si riscrive: \\(y'=2x(y-1)\\). Si vede come lineare: \\(y'=2xy-2x\\), con \\(a(x)=2x\\), \\(b(x)=-2x\\). \\(A(x)=x^2\\). Formula: \\(y=e^{x^2}\\left[\\int(-2x)e^{-x^2}\\,dx+c\\right]=e^{x^2}[e^{-x^2}+c]=1+ce^{x^2}\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Trovare l'integrale generale di \\(y''-y'+\\frac{1}{4}y=0\\) (\\(\\Delta=0\\)).",
+    a: "Equazione caratteristica: \\(z^2-z+\\frac{1}{4}=0=\\left(z-\\frac{1}{2}\\right)^2\\). Radice doppia \\(z=\\frac{1}{2}\\). Integrale generale: \\[y=e^{x/2}(c_1+c_2 x), \\quad c_1,c_2\\in\\mathbb{R}\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Risolvere l'EDO del decadimento radioattivo: \\(m'=-0{,}1m\\) con \\(m(0)=50\\) g. Trovare \\(m(10)\\) e il tempo di dimezzamento.",
+    a: "Soluzione: \\(m(t)=50e^{-0{,}1t}\\). A \\(t=10\\): \\(m(10)=50e^{-1}\\approx18{,}4\\) g. Tempo di dimezzamento: \\(t_{1/2}=\\frac{\\ln2}{0{,}1}=10\\ln2\\approx6{,}93\\) s."
+  },
+
+  // ── RAGIONAMENTO (15) ─────────────────────────────────────────────────────
+  {
+    cat: "ragionamento",
+    q: "Perché l'integrale generale di un'EDO del primo ordine è una famiglia di curve, non una singola curva?",
+    a: "Perché risolvere un'EDO del primo ordine richiede un'integrazione, che introduce una costante arbitraria \\(c\\in\\mathbb{R}\\). Ogni valore di \\(c\\) dà una curva diversa: le curve integrali formano una <em>famiglia uniparametrica</em>. Geometricamente, le infinite curve 'coprono' il piano cartesiano senza intersecarsi (per il teorema di esistenza e unicità). Solo imponendo un punto di passaggio (Cauchy) si isola una singola curva."
+  },
+  {
+    cat: "ragionamento",
+    q: "Qual è la differenza tra un'equazione a variabili separabili e una lineare del primo ordine? Possono coincidere?",
+    a: "Un'equazione è <strong>separabile</strong> se si scrive \\(y'=g(x)h(y)\\); è <strong>lineare</strong> se si scrive \\(y'=a(x)y+b(x)\\). Possono coincidere: l'equazione lineare omogenea \\(y'=a(x)y\\) è anche separabile (\\(g=a(x)\\), \\(h=y\\)). L'equazione lineare completa \\(y'=a(x)y+b(x)\\) invece in generale non è separabile (a meno che \\(b(x)=a(x)k\\) per qualche costante \\(k\\))."
+  },
+  {
+    cat: "ragionamento",
+    q: "Cosa succede se si 'dimentica' di esaminare il caso \\(h(y)=0\\) nella separazione delle variabili?",
+    a: "Si perdono le <em>soluzioni singolari</em>: quelle che annullano \\(h(y)\\). Ad esempio, in \\(y'=4xy^2\\), dividendo per \\(y^2\\) si esclude \\(y=0\\); ma \\(y\\equiv0\\) soddisfa l'equazione (\\(0=4x\\cdot0\\)). È una soluzione singolare non contenuta nell'integrale generale \\(y=-\\frac{1}{2x^2+c}\\) (che non si annulla mai). Ignorarla porta a una descrizione incompleta dell'insieme di tutte le soluzioni."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché per un'EDO del secondo ordine occorrono due condizioni iniziali (problema di Cauchy)?",
+    a: "L'EDO del secondo ordine ha un integrale generale che dipende da due costanti \\(c_1, c_2\\) (perché si integra due volte). Per determinare univocamente una soluzione, occorre fissare il 'punto iniziale' della curva e la sua 'direzione': cioè il valore di \\(y(x_0)\\) e di \\(y'(x_0)\\). Con una sola condizione rimane un parametro libero e si ottiene ancora una famiglia di soluzioni, non una sola."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché l'equazione caratteristica di un'EDO del 2° ordine è un polinomio di grado 2 in \\(z\\)?",
+    a: "Perché si cerca la soluzione nella forma \\(y=e^{zx}\\): sostituendo \\(y''=z^2e^{zx}\\), \\(y'=ze^{zx}\\), \\(y=e^{zx}\\) nell'equazione \\(y''+by'+cy=0\\), si raccoglie \\(e^{zx}\\neq0\\) e si ottiene \\(z^2+bz+c=0\\), che è appunto un polinomio di grado 2 in \\(z\\). Il grado corrisponde all'ordine dell'EDO: per un'EDO di ordine \\(n\\), l'equazione caratteristica ha grado \\(n\\)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Nel caso \\(\\Delta=0\\), perché la soluzione generale è \\(y=e^{zx}(c_1+c_2 x)\\) e non \\(y=c_1 e^{zx}+c_2 e^{zx}=(c_1+c_2)e^{zx}\\)?",
+    a: "Con radice doppia \\(z\\), la funzione \\(e^{zx}\\) è solo una soluzione. Se si usasse \\(c_1 e^{zx}+c_2 e^{zx}\\), si otterrebbe \\((c_1+c_2)e^{zx}\\) con un solo parametro effettivo \\(c_1+c_2\\): non è l'integrale generale, che ne richiede due. La seconda soluzione indipendente è \\(xe^{zx}\\) (si verifica sostituendo nell'equazione). Il Wronskiano di \\(e^{zx}\\) e \\(xe^{zx}\\) è non nullo, confermando l'indipendenza lineare."
+  },
+  {
+    cat: "ragionamento",
+    q: "Come si passa da un problema fisico a un'EDO? Qual è la logica generale?",
+    a: "Si identifica la grandezza che varia (es. temperatura, massa, posizione) e si esprime la sua <em>legge di variazione</em> (derivata) in funzione della grandezza stessa e del tempo/spazio. Questo porta naturalmente a un'equazione che contiene la grandezza e la sua derivata, cioè un'EDO. La chiave è: <em>cosa determina la velocità di variazione?</em> Se è proporzionale alla grandezza: EDO lineare omogenea. Se dipende dal prodotto con un'altra variabile: spesso separabile o non lineare."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché la soluzione della legge di raffreddamento di Newton tende asintoticamente alla temperatura ambiente?",
+    a: "La soluzione è \\(T(t)=T_a+(T_0-T_a)e^{-kt}\\). Poiché \\(k>0\\), il termine \\(e^{-kt}\\to0\\) per \\(t\\to+\\infty\\), quindi \\(T(t)\\to T_a\\). Fisicamente: la forza trainante del raffreddamento è la differenza di temperatura \\(T-T_a\\); man mano che il corpo si avvicina alla temperatura ambiente, la differenza diminuisce, rallentando il raffreddamento. Il sistema 'si autoregola' verso l'equilibrio."
+  },
+  {
+    cat: "ragionamento",
+    q: "Nel metodo di somiglianza per la soluzione particolare, cosa succede se \\(r(x)\\) è già soluzione dell'omogenea?",
+    a: "Se si tenta \\(y_p\\) della stessa forma di \\(r(x)\\), sostituendo nell'equazione si ottiene \\(0=r(x)\\), cioè un sistema impossibile. Il motivo è che \\(r(x)\\) appartiene già al nucleo dell'operatore differenziale. In questo caso si moltiplica l'ipotesi per \\(x\\) (una volta se è radice semplice, due volte se doppia). Esempio: per \\(y''+y=\\cos x\\), poiché \\(\\cos x\\) risolve l'omogenea, si cerca \\(y_p=x(A\\cos x+B\\sin x)\\)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Qual è la differenza concettuale tra un'EDO lineare e una non lineare? Dare un esempio di ciascuna.",
+    a: "Un'EDO è <strong>lineare</strong> se \\(y\\), \\(y'\\), \\(y''\\), ecc. compaiono solo al primo grado, senza prodotti fra loro: \\(y''+p(x)y'+q(x)y=r(x)\\). Esempio lineare: \\(y''-3y'+2y=e^x\\). Un'EDO è <strong>non lineare</strong> se contiene \\(y^2\\), \\((y')^2\\), \\(y\\cdot y'\\), ecc. Esempi non lineari: \\(y'=y^2\\) (separabile ma non lineare); \\(y''+\\sin y=0\\) (pendolo). Le EDO non lineari sono in generale molto più difficili da risolvere analiticamente."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché l'oscillatore armonico non smorzato (\\(b=0\\)) ha soluzioni oscillatorie illimitate?",
+    a: "L'equazione \\(y''+cy=0\\) con \\(c>0\\) ha equazione caratteristica \\(z^2+c=0\\), con radici immaginarie pure \\(z=\\pm i\\sqrt{c}\\). La soluzione \\(y=c_1\\cos(\\sqrt{c}\\,x)+c_2\\sin(\\sqrt{c}\\,x)\\) è sinusoidale: oscilla indefinitamente con ampiezza costante. Senza smorzamento (\\(b=0\\)) non c'è dissipazione di energia: il sistema oscilla per sempre. Con \\(b>0\\) il fattore \\(e^{-\\frac{b}{2}x}\\) fa decadere l'ampiezza nel tempo."
+  },
+  {
+    cat: "ragionamento",
+    q: "Come si verifica se una funzione data è soluzione di un'EDO senza risolvere l'equazione da capo?",
+    a: "Si derivano la funzione proposta tante volte quante è l'ordine dell'equazione, poi si sostituiscono \\(y\\), \\(y'\\), \\(y''\\), ecc. nell'EDO e si controlla se si ottiene un'identità vera per ogni \\(x\\) nell'intervallo considerato. È un metodo diretto: nessuna integrazione, solo derivazione e sostituzione algebrica. Esempio: per verificare che \\(y=e^{x^2}-\\frac{1}{2}\\) risolve \\(y'=2xy+x\\): si calcola \\(y'=2xe^{x^2}\\) e si verifica \\(2x(e^{x^2}-\\frac{1}{2})+x=2xe^{x^2}\\). ✓"
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché il modello di crescita logistica è più realistico di quello esponenziale?",
+    a: "Il modello esponenziale \\(P'=rP\\) prevede crescita illimitata: \\(P(t)=P_0e^{rt}\\to+\\infty\\). In natura le risorse sono finite: la capacità portante \\(K\\) limita la crescita. Il modello logistico \\(P'=rP(1-P/K)\\) incorpora questo: quando \\(P\\ll K\\) la crescita è quasi esponenziale; quando \\(P\\to K\\) la crescita rallenta e si annulla. La soluzione converge a \\(K\\) (equilibrio stabile), mentre \\(P=0\\) è equilibrio instabile. Descrive meglio la realtà biologica ed ecologica."
+  },
+  {
+    cat: "ragionamento",
+    q: "Il Teorema di esistenza e unicità per il problema di Cauchy: cosa garantisce?",
+    a: "Il teorema di Cauchy-Lipschitz (o Picard) garantisce che, se \\(f(x,y)\\) e \\(\\frac{\\partial f}{\\partial y}\\) sono continue in un intorno di \\((x_0,y_0)\\), allora il problema di Cauchy \\(y'=f(x,y)\\), \\(y(x_0)=y_0\\) ha <strong>un'unica</strong> soluzione in un intorno di \\(x_0\\). Questo ha due implicazioni: (1) esiste sempre (almeno localmente) una soluzione; (2) le curve integrali non si intersecano. Se le ipotesi non valgono, possono esserci più soluzioni o nessuna."
+  },
+  {
+    cat: "ragionamento",
+    q: "Come si collega il decadimento radioattivo all'integrale indefinito? Qual è il fil rouge con tutto il corso?",
+    a: "Il decadimento \\(m'=-\\lambda m\\) si risolve trovando una funzione la cui derivata sia \\(-\\lambda\\) volte se stessa: \\(m=m_0e^{-\\lambda t}\\). Questo è esattamente il problema dell'integrale indefinito: trovare la primitiva di \\(-\\lambda m\\). Il fil rouge del corso è il rapporto tra derivata e primitiva: si parte dalle derivate (Unità 4–5), si studia come usarle per analizzare funzioni (Unità 6–7), si inverte l'operazione con gli integrali (Unità 8–9), e infine si usa la derivata per descrivere leggi di variazione (Unità 10). Le EDO chiudono il cerchio: la matematica del cambiamento."
+  }
+];
+
+// ─── STATE & LOGIC ───────────────────────────────────────────────────────────
+let filtered=[...cards],deck=[...cards],idx=0,currentFilter="all",currentMode="quiz";
+
+document.querySelectorAll(".tab-btn").forEach(btn=>btn.addEventListener("click",()=>{
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");currentFilter=btn.dataset.filter;applyFilter();
+}));
+document.querySelectorAll(".mode-btn").forEach(btn=>btn.addEventListener("click",()=>{
+  document.querySelectorAll(".mode-btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");currentMode=btn.dataset.mode;switchMode();
+}));
+
+function applyFilter(){
+  filtered=currentFilter==="all"?[...cards]:cards.filter(c=>c.cat===currentFilter);
+  deck=[...filtered];idx=0;
+  document.getElementById("stat-pill").textContent=filtered.length+" carte";
+  if(currentMode==="quiz"){
+    document.getElementById("score-panel").classList.remove("visible");
+    document.getElementById("flip-scene").style.display="";
+    document.querySelectorAll(".quiz-nav button").forEach(b=>b.disabled=false);
+    renderCard();
+  } else renderBrowse();
+}
+
+function switchMode(){
+  if(currentMode==="quiz"){
+    document.getElementById("browse-view").style.display="none";
+    document.getElementById("quiz-view").style.display="flex";
+    deck=[...filtered];idx=0;
+    document.getElementById("score-panel").classList.remove("visible");
+    document.getElementById("flip-scene").style.display="";
+    document.querySelector(".quiz-nav").style.display="";
+    renderCard();
+  } else {
+    document.getElementById("quiz-view").style.display="none";
+    document.getElementById("browse-view").style.display="grid";
+    renderBrowse();
+  }
+}
+
+function renderCard(){
+  if(!deck.length)return;
+  const c=deck[idx];
+  const fc=document.getElementById("flip-card");
+  fc.classList.remove("flipped");fc.dataset.cat=c.cat;
+  document.getElementById("fc-tag").textContent=c.cat.charAt(0).toUpperCase()+c.cat.slice(1);
+  document.getElementById("fc-q").innerHTML=c.q;
+  document.getElementById("fc-a").innerHTML=c.a;
+  document.getElementById("qcounter").textContent=(idx+1)+" / "+deck.length;
+  document.getElementById("qpf").style.width=((idx+1)/deck.length*100)+"%";
+  document.getElementById("btn-prev").disabled=idx===0;
+  document.getElementById("btn-next").textContent=idx===deck.length-1?"Fine ✓":"Avanti →";
+  if(window.MathJax)MathJax.typesetPromise([document.getElementById("flip-card")]);
+}
+
+function flipCard(){document.getElementById("flip-card").classList.toggle("flipped");}
+function nextCard(){
+  if(idx<deck.length-1){idx++;renderCard();}
+  else{
+    document.getElementById("flip-scene").style.display="none";
+    document.querySelector(".quiz-nav").style.display="none";
+    document.getElementById("score-num").textContent=deck.length;
+    document.getElementById("score-panel").classList.add("visible");
+  }
+}
+function prevCard(){if(idx>0){idx--;renderCard();}}
+function shuffle(){
+  for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
+  idx=0;document.getElementById("score-panel").classList.remove("visible");
+  document.getElementById("flip-scene").style.display="";document.querySelector(".quiz-nav").style.display="";renderCard();
+}
+function restart(){
+  deck=[...filtered];idx=0;
+  document.getElementById("score-panel").classList.remove("visible");
+  document.getElementById("flip-scene").style.display="";document.querySelector(".quiz-nav").style.display="";renderCard();
+}
+function renderBrowse(){
+  const container=document.getElementById("browse-view");container.innerHTML="";
+  filtered.forEach((c,i)=>{
+    const div=document.createElement("div");div.className="browse-card";div.dataset.cat=c.cat;
+    div.innerHTML=`<div class="bc-header"><span class="bc-num">#${i+1}</span><span class="bc-tag tag-${c.cat}">${c.cat.charAt(0).toUpperCase()+c.cat.slice(1)}</span></div><div class="bc-q">${c.q}</div><div class="bc-divider"></div><div class="bc-a-label">Risposta</div><div class="bc-a">${c.a}</div>`;
+    container.appendChild(div);
+  });
+  if(window.MathJax)MathJax.typesetPromise([container]);
+}
+renderCard();
+</script>
+</body>
+</html>
