@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Integrali Definiti — Flashcards</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1008;
+    --paper: #f5f0e8;
+    --paper-dark: #ebe4d4;
+    --gold: #c8963e;
+    --gold-light: #e8b55a;
+    --red: #8b2020;
+    --blue: #1a3a5c;
+    --green: #1a4a2e;
+    --shadow: rgba(26,16,8,0.18);
+    --card-w: min(560px, 94vw);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif; min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(200,150,62,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 80%, rgba(26,58,92,0.06) 0%, transparent 60%);
+  }
+  header { text-align: center; padding: 2.5rem 1rem 1.5rem; border-bottom: 2px solid var(--gold); background: linear-gradient(180deg, rgba(200,150,62,0.08) 0%, transparent 100%); position: relative; }
+  header::before { content: "∫"; position: absolute; left: 50%; top: .6rem; transform: translateX(-50%); font-size: 5rem; opacity: .04; font-family: 'Playfair Display', serif; pointer-events: none; user-select: none; }
+  header h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.4rem, 4vw, 2.2rem); font-weight: 700; letter-spacing: .04em; color: var(--ink); }
+  header p { margin-top: .4rem; font-size: .9rem; color: #6b5a3e; font-style: italic; letter-spacing: .06em; }
+  .home-link { display: inline-block; margin-bottom: .8rem; font-size: .8rem; color: #8a7458; text-decoration: none; letter-spacing: .06em; border: 1px solid rgba(200,150,62,.35); padding: .28rem .7rem; border-radius: 4px; transition: all .18s; }
+  .home-link:hover { color: var(--gold); border-color: var(--gold); background: rgba(200,150,62,.07); }
+  .controls { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; padding: 1.2rem 1rem .8rem; border-bottom: 1px solid rgba(200,150,62,.3); background: rgba(245,240,232,.8); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(6px); }
+  .tab-group { display: flex; gap: 0; border: 1.5px solid var(--gold); border-radius: 6px; overflow: hidden; }
+  .tab-btn { padding: .42rem .9rem; font-family: 'Source Serif 4', serif; font-size: .82rem; border: none; background: transparent; cursor: pointer; color: #6b5a3e; transition: all .2s; letter-spacing: .03em; }
+  .tab-btn.active { background: var(--gold); color: #fff; font-weight: 600; }
+  .tab-btn:not(.active):hover { background: rgba(200,150,62,.15); }
+  .mode-group { display: flex; gap: 0; border: 1.5px solid var(--blue); border-radius: 6px; overflow: hidden; }
+  .mode-btn { padding: .42rem .9rem; font-family: 'Source Serif 4', serif; font-size: .82rem; border: none; background: transparent; cursor: pointer; color: var(--blue); transition: all .2s; letter-spacing: .03em; }
+  .mode-btn.active { background: var(--blue); color: #fff; font-weight: 600; }
+  .mode-btn:not(.active):hover { background: rgba(26,58,92,.1); }
+  .stat-pill { padding: .38rem .75rem; background: rgba(26,16,8,.06); border-radius: 20px; font-size: .78rem; color: #6b5a3e; letter-spacing: .04em; align-self: center; }
+  main { padding: 1.5rem 1rem 3rem; }
+  #browse-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px,94vw), 1fr)); gap: 1.2rem; max-width: 1200px; margin: 0 auto; }
+  .browse-card { background: #fff; border-radius: 10px; padding: 1.2rem 1.4rem; box-shadow: 0 2px 8px var(--shadow); border-left: 4px solid var(--gold); transition: transform .15s, box-shadow .15s; }
+  .browse-card:hover { transform: translateY(-2px); box-shadow: 0 5px 16px var(--shadow); }
+  .browse-card[data-cat="esercizio"] { border-left-color: var(--red); }
+  .browse-card[data-cat="ragionamento"] { border-left-color: var(--green); }
+  .bc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: .7rem; }
+  .bc-num { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; color: var(--gold); }
+  .browse-card[data-cat="esercizio"] .bc-num { color: var(--red); }
+  .browse-card[data-cat="ragionamento"] .bc-num { color: var(--green); }
+  .bc-tag { font-size: .67rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; padding: .2rem .5rem; border-radius: 3px; }
+  .tag-teoria { background: rgba(200,150,62,.15); color: var(--gold); }
+  .tag-esercizio { background: rgba(139,32,32,.12); color: var(--red); }
+  .tag-ragionamento { background: rgba(26,74,46,.12); color: var(--green); }
+  .bc-q { font-size: .92rem; line-height: 1.55; color: #2a1f0d; font-weight: 600; margin-bottom: .6rem; }
+  .bc-divider { height: 1px; background: rgba(200,150,62,.25); margin: .6rem 0; }
+  .bc-a { font-size: .88rem; line-height: 1.6; color: #3a2f1d; font-style: italic; }
+  .bc-a-label { font-size: .7rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #8a7458; margin-bottom: .3rem; font-style: normal; }
+  #quiz-view { display: flex; flex-direction: column; align-items: center; gap: 1.2rem; }
+  .quiz-progress-bar { width: var(--card-w); height: 4px; background: rgba(200,150,62,.2); border-radius: 2px; overflow: hidden; }
+  .quiz-progress-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width .4s ease; }
+  .quiz-counter { font-size: .82rem; color: #6b5a3e; letter-spacing: .05em; font-style: italic; width: var(--card-w); text-align: right; }
+  .flip-scene { width: var(--card-w); height: min(340px, 60vw); cursor: pointer; position: relative; }
+  .flip-card { width: 100%; height: 100%; position: relative; }
+  .flip-face { position: absolute; inset: 0; border-radius: 14px; padding: 1.8rem; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; box-shadow: 0 6px 24px var(--shadow); overflow: auto; transition: opacity .35s ease, transform .35s ease; }
+  .flip-front { background: #fff; border: 2px solid var(--gold); opacity: 1; transform: scale(1); z-index: 2; }
+  .flip-front::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 30%, rgba(200,150,62,.05) 0%, transparent 70%); pointer-events: none; }
+  .flip-back { background: linear-gradient(135deg, #1a3a5c 0%, #0f2236 100%); color: #e8d9c0; opacity: 0; transform: scale(.96); z-index: 1; }
+  .flip-card.flipped .flip-front { opacity: 0; transform: scale(.96); z-index: 1; pointer-events: none; }
+  .flip-card.flipped .flip-back { opacity: 1; transform: scale(1); z-index: 2; }
+  .flip-card[data-cat="esercizio"] .flip-front { border-color: var(--red); }
+  .flip-card[data-cat="esercizio"] .flip-back { background: linear-gradient(135deg, #5c1a1a 0%, #380f0f 100%); }
+  .flip-card[data-cat="ragionamento"] .flip-front { border-color: var(--green); }
+  .flip-card[data-cat="ragionamento"] .flip-back { background: linear-gradient(135deg, #1a4a2e 0%, #0f2e1c 100%); }
+  .face-label { font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .5; margin-bottom: .8rem; font-style: normal; }
+  .flip-back .face-label { color: #e8d9c0; }
+  .face-q { font-size: clamp(.9rem, 2.5vw, 1.05rem); line-height: 1.55; font-weight: 600; color: var(--ink); z-index: 1; }
+  .flip-back .face-a { font-size: clamp(.82rem, 2.3vw, .97rem); line-height: 1.65; color: #e8d9c0; font-style: italic; }
+  .face-hint { position: absolute; bottom: .8rem; font-size: .68rem; opacity: .35; letter-spacing: .05em; font-style: italic; }
+  .quiz-nav { display: flex; gap: .8rem; align-items: center; flex-wrap: wrap; justify-content: center; }
+  .nav-btn { font-family: 'Source Serif 4', serif; font-size: .88rem; padding: .55rem 1.4rem; border-radius: 6px; cursor: pointer; border: 1.5px solid transparent; transition: all .18s; letter-spacing: .03em; }
+  .nav-btn.primary { background: var(--gold); color: #fff; border-color: var(--gold); }
+  .nav-btn.primary:hover { background: var(--gold-light); }
+  .nav-btn.secondary { background: transparent; color: var(--ink); border-color: rgba(26,16,8,.25); }
+  .nav-btn.secondary:hover { background: rgba(26,16,8,.06); }
+  .nav-btn:disabled { opacity: .35; cursor: default; }
+  .shuffle-btn { padding: .5rem; border: none; background: none; cursor: pointer; color: #8a7458; font-size: 1.1rem; transition: transform .2s; line-height: 1; }
+  .shuffle-btn:hover { transform: rotate(180deg); color: var(--gold); }
+  .score-panel { display: none; flex-direction: column; align-items: center; gap: .8rem; width: var(--card-w); background: #fff; border-radius: 12px; padding: 1.8rem; box-shadow: 0 4px 20px var(--shadow); text-align: center; }
+  .score-panel.visible { display: flex; }
+  .score-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--ink); }
+  .score-num { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--gold); font-weight: 700; line-height: 1; }
+  .score-sub { font-size: .88rem; color: #6b5a3e; font-style: italic; }
+  @media (max-width: 480px) { .flip-scene { height: min(280px, 72vw); } .flip-face { padding: 1.2rem; } .face-q, .flip-back .face-a { font-size: .88rem; } }
+  @media (min-width: 900px) { #browse-view { grid-template-columns: repeat(auto-fill, minmax(340px,1fr)); } }
+  .MJX-TEX { font-size: 1em !important; }
+  mjx-container { margin: .15em 0; max-width: 100%; overflow-x: auto; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--paper-dark); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="home-link">← Tutte le unità</a>
+  <h1>Integrali Definiti</h1>
+  <p>Unità 9 — Analisi Matematica &nbsp;·&nbsp; 60 Flashcards</p>
+</header>
+
+<div class="controls">
+  <div class="tab-group">
+    <button class="tab-btn active" data-filter="all">Tutte</button>
+    <button class="tab-btn" data-filter="teoria">Teoria</button>
+    <button class="tab-btn" data-filter="esercizio">Esercizi</button>
+    <button class="tab-btn" data-filter="ragionamento">Ragionamento</button>
+  </div>
+  <div class="mode-group">
+    <button class="mode-btn active" data-mode="quiz">Quiz</button>
+    <button class="mode-btn" data-mode="browse">Consultazione</button>
+  </div>
+  <span class="stat-pill" id="stat-pill">60 carte</span>
+</div>
+
+<main>
+  <div id="browse-view" style="display:none"></div>
+  <div id="quiz-view">
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="qpf" style="width:0%"></div></div>
+    <div class="quiz-counter" id="qcounter">1 / 60</div>
+    <div class="flip-scene" id="flip-scene" onclick="flipCard()">
+      <div class="flip-card" id="flip-card">
+        <div class="flip-face flip-front">
+          <div class="face-label" id="fc-tag">Teoria</div>
+          <div class="face-q" id="fc-q"></div>
+          <span class="face-hint">tocca per vedere la risposta</span>
+        </div>
+        <div class="flip-face flip-back">
+          <div class="face-label">Risposta</div>
+          <div id="fc-a" style="font-style:italic;font-size:clamp(.82rem,2.3vw,.97rem);line-height:1.65;color:#e8d9c0;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="quiz-nav">
+      <button class="nav-btn secondary" id="btn-prev" onclick="prevCard()" disabled>← Indietro</button>
+      <button class="nav-btn primary" id="btn-next" onclick="nextCard()">Avanti →</button>
+      <button class="shuffle-btn" title="Mischia le carte" onclick="shuffle()">⇄</button>
+    </div>
+    <div class="score-panel" id="score-panel">
+      <div class="score-title">Sessione completata!</div>
+      <div class="score-num" id="score-num">60</div>
+      <div class="score-sub">carte studiate</div>
+      <button class="nav-btn primary" onclick="restart()">Ricomincia</button>
+    </div>
+  </div>
+</main>
+
+<script>
+const cards = [
+  // ── TEORIA (25) ──────────────────────────────────────────────────────────
+  {
+    cat: "teoria",
+    q: "Cos'è il trapezoide e come si approssima la sua area?",
+    a: "Il <strong>trapezoide</strong> è la figura piana delimitata dall'asse \\(x\\), dal grafico di \\(f(x)\\) continua e positiva (o nulla), e dalle rette \\(x=a\\) e \\(x=b\\). Si divide \\([a;b]\\) in \\(n\\) parti uguali di ampiezza \\(h=\\frac{b-a}{n}\\). La somma integrale inferiore \\(s_n=\\sum_{i=1}^n m_i h\\) approssima l'area per difetto, quella superiore \\(S_n=\\sum_{i=1}^n M_i h\\) per eccesso, con \\(s_n\\leq S\\leq S_n\\). All'aumentare di \\(n\\) le due successioni convergono allo stesso limite."
+  },
+  {
+    cat: "teoria",
+    q: "Definizione formale di integrale definito.",
+    a: "Data \\(f\\) continua in \\([a;b]\\), si divide \\([a;b]\\) in \\(n\\) sottointervalli, si fissano punti \\(c_i\\) in ciascuno e si forma la somma \\(\\bar{S}=\\sum_{i=1}^n f(c_i)\\Delta x_i\\). Quando \\(\\Delta x_{\\max}\\to0\\) questa somma tende sempre allo stesso valore, detto <strong>integrale definito</strong>: \\[\\int_a^b f(x)\\,dx=\\lim_{\\Delta x_{\\max}\\to0}\\bar{S}\\] \\(a\\) è l'estremo inferiore, \\(b\\) il superiore, \\(f(x)\\) la funzione integranda. A differenza dell'integrale indefinito, il definito è un <em>numero</em>."
+  },
+  {
+    cat: "teoria",
+    q: "Proprietà di additività dell'integrale definito rispetto all'intervallo.",
+    a: "Se \\(f\\) è continua in un intervallo contenente i punti \\(a\\), \\(b\\), \\(c\\) (in qualsiasi ordine): \\[\\int_a^b f(x)\\,dx = \\int_a^c f(x)\\,dx + \\int_c^b f(x)\\,dx\\] Per convenzione: \\(\\int_a^a f(x)\\,dx=0\\) e \\(\\int_a^b f(x)\\,dx=-\\int_b^a f(x)\\,dx\\) se \\(a>b\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Proprietà di linearità dell'integrale definito.",
+    a: "\\[\\int_a^b [f(x)+g(x)]\\,dx = \\int_a^b f(x)\\,dx + \\int_a^b g(x)\\,dx\\] \\[\\int_a^b k\\cdot f(x)\\,dx = k\\int_a^b f(x)\\,dx\\] In forma compatta: \\(\\int_a^b[c_1 f+c_2 g]\\,dx=c_1\\int_a^b f\\,dx+c_2\\int_a^b g\\,dx\\). L'integrale definito è dunque un operatore lineare."
+  },
+  {
+    cat: "teoria",
+    q: "Proprietà di confronto tra integrali: se \\(f\\leq g\\) e integrale del valore assoluto.",
+    a: "Se \\(f(x)\\leq g(x)\\) per ogni \\(x\\in[a;b]\\): \\[\\int_a^b f(x)\\,dx \\leq \\int_a^b g(x)\\,dx\\] Caso particolare: \\(\\int_a^b k\\,dx=k(b-a)\\) (integrale di una funzione costante \\(=k\\)). Per il valore assoluto: \\[\\left|\\int_a^b f(x)\\,dx\\right|\\leq\\int_a^b |f(x)|\\,dx\\]"
+  },
+  {
+    cat: "teoria",
+    q: "Segno dell'integrale definito in relazione al segno della funzione.",
+    a: "Se \\(f(x)>0\\) in \\([a;b]\\): \\(\\int_a^b f(x)\\,dx>0\\) e rappresenta l'<em>area</em> del trapezoide. Se \\(f(x)<0\\): \\(\\int_a^b f(x)\\,dx<0\\) (l'integrale è negativo, l'area geometrica è \\(\\left|\\int_a^b f\\,dx\\right|\\)). Se \\(f\\) cambia segno: si suddivide \\([a;b]\\) nei sottointervalli in cui \\(f\\) mantiene segno costante e si calcola \\(\\int_a^b|f(x)|\\,dx\\) per l'area complessiva."
+  },
+  {
+    cat: "teoria",
+    q: "Teorema della media: enunciato e interpretazione geometrica.",
+    a: "Se \\(f\\) è continua in \\([a;b]\\), esiste almeno un punto \\(z\\in[a;b]\\) tale che: \\[\\int_a^b f(x)\\,dx=(b-a)\\cdot f(z)\\] Il <strong>valore medio</strong> di \\(f\\) in \\([a;b]\\) è: \\[\\bar{f}=\\frac{\\int_a^b f(x)\\,dx}{b-a}=f(z)\\] Geometricamente: esiste un rettangolo di base \\((b-a)\\) e altezza \\(f(z)\\) con area uguale a quella del trapezoide."
+  },
+  {
+    cat: "teoria",
+    q: "Definizione di funzione integrale.",
+    a: "Sia \\(f\\) continua in \\([a;b]\\). La <strong>funzione integrale</strong> di \\(f\\) in \\([a;b]\\) è: \\[F(x)=\\int_a^x f(t)\\,dt, \\quad x\\in[a;b]\\] Associa ad ogni \\(x\\) il numero reale \\(\\int_a^x f(t)\\,dt\\). Valori estremi: \\(F(a)=0\\) e \\(F(b)=\\int_a^b f(t)\\,dt\\). Se \\(f(t)>0\\), \\(F(x)\\) rappresenta l'area del trapezoide limitato da \\(a\\) a \\(x\\), che dipende da \\(x\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Teorema fondamentale del calcolo integrale (Torricelli-Barrow): enunciato.",
+    a: "Se \\(f\\) è continua in \\([a;b]\\), la sua funzione integrale \\(F(x)=\\int_a^x f(t)\\,dt\\) è derivabile in \\([a;b]\\) e: \\[F'(x)=f(x)\\] Ovvero, \\(F(x)\\) è una <em>primitiva</em> di \\(f(x)\\). Il teorema stabilisce che integrazione e derivazione sono operazioni inverse."
+  },
+  {
+    cat: "teoria",
+    q: "Formula di Leibniz-Newton per il calcolo dell'integrale definito.",
+    a: "Sia \\(\\varphi(x)\\) una primitiva qualsiasi di \\(f(x)\\) continua in \\([a;b]\\). Allora: \\[\\int_a^b f(x)\\,dx = \\varphi(b)-\\varphi(a)=\\big[\\varphi(x)\\big]_a^b\\] L'integrale definito è uguale alla differenza tra i valori di una qualunque primitiva agli estremi. La costante arbitraria si annulla nella differenza, quindi si sceglie di solito \\(c=0\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Come si calcola l'area tra il grafico di \\(f\\) e l'asse \\(x\\) quando \\(f\\) cambia segno?",
+    a: "Si individua il punto \\(c\\in]a;b[\\) in cui \\(f(c)=0\\) e \\(f\\) cambia segno. L'area totale è: \\[S=\\int_a^b|f(x)|\\,dx=\\left|\\int_a^c f(x)\\,dx\\right|+\\left|\\int_c^b f(x)\\,dx\\right|\\] In pratica: si calcola ogni integrale separatamente e si sommano i valori assoluti. Non si può usare direttamente \\(\\int_a^b f\\,dx\\) perché le parti positive e negative si cancellano parzialmente."
+  },
+  {
+    cat: "teoria",
+    q: "Integrale definito e funzioni pari o dispari su \\([-a;a]\\).",
+    a: "Se \\(f\\) è <strong>pari</strong>: \\[\\int_{-a}^a f(x)\\,dx = 2\\int_0^a f(x)\\,dx\\] Se \\(f\\) è <strong>dispari</strong>: \\[\\int_{-a}^a f(x)\\,dx = 0\\] Questo semplifica notevolmente i calcoli: per una funzione dispari l'integrale sull'intervallo simmetrico è sempre nullo (le aree si cancellano), per una pari si raddoppia l'integrale sulla metà positiva."
+  },
+  {
+    cat: "teoria",
+    q: "Area della superficie compresa tra due curve \\(f(x)\\geq g(x)\\) in \\([a;b]\\).",
+    a: "Se \\(f(x)\\geq g(x)\\) per ogni \\(x\\in[a;b]\\): \\[S=\\int_a^b[f(x)-g(x)]\\,dx\\] La formula vale anche se entrambe le funzioni sono negative: si può traslare verso l'alto di \\(h\\) senza modificare \\(f(x)+h-(g(x)+h)=f(x)-g(x)\\). Per trovare gli estremi \\(a\\) e \\(b\\) si risolvono le equazioni \\(f(x)=g(x)\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Area compresa tra la curva \\(x=f(y)\\) e l'asse \\(y\\).",
+    a: "Se \\(f(y)\\geq0\\) in \\([a;b]\\), l'area tra la curva \\(x=f(y)\\) e l'asse \\(y\\) è: \\[S=\\int_a^b f(y)\\,dy\\] Se \\(f(y)<0\\), l'area è \\(\\int_a^b|f(y)|\\,dy\\). Per due curve \\(x=f(y)\\geq x=g(y)\\): \\(S=\\int_a^b[f(y)-g(y)]\\,dy\\). Utile quando le curve si esprimono più facilmente come funzione di \\(y\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Volume del solido di rotazione attorno all'asse \\(x\\): formula.",
+    a: "Dato il trapezoide delimitato da \\(y=f(x)\\geq0\\), dall'asse \\(x\\) e dalle rette \\(x=a\\) e \\(x=b\\), il volume del solido ottenuto ruotando il trapezoide intorno all'asse \\(x\\) di 360° è: \\[V=\\pi\\int_a^b[f(x)]^2\\,dx\\] Ogni sezione perpendicolare all'asse \\(x\\) in \\(x_i\\) è un cerchio di raggio \\(f(x_i)\\) e area \\(\\pi[f(x_i)]^2\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Volume del solido di rotazione attorno all'asse \\(y\\): formula.",
+    a: "Dato il trapezoide delimitato da \\(x=f(y)\\geq0\\), dall'asse \\(y\\) e dalle rette \\(y=a\\) e \\(y=b\\), il volume del solido ottenuto ruotando intorno all'asse \\(y\\) è: \\[V=\\pi\\int_a^b[f(y)]^2\\,dy\\] Per applicarla, si esprime la curva nella forma \\(x=f(y)\\) (inversione della funzione)."
+  },
+  {
+    cat: "teoria",
+    q: "Metodo dei gusci cilindrici per il calcolo dei volumi.",
+    a: "Per calcolare il volume del solido ottenuto ruotando il trapezoide delimitato da \\(y=f(x)\\) intorno all'asse \\(y\\): ogni rettangolino di base \\(h\\) centrato in \\(x_i\\) genera un guscio cilindrico di volume \\(\\approx2\\pi x_i f(x_i)h\\). Quindi: \\[V=2\\pi\\int_a^b x\\cdot f(x)\\,dx\\] Il metodo è utile quando è difficile esprimere la curva come funzione di \\(y\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Volume di un solido con il metodo delle sezioni.",
+    a: "Dato un solido \\(T\\) delimitato da due piani perpendicolari all'asse \\(x\\) in \\(x=a\\) e \\(x=b\\), se \\(S(x)\\) è l'area della sezione del solido con il piano perpendicolare all'asse \\(x\\) nell'ascissa \\(x\\), il volume è: \\[V=\\int_a^b S(x)\\,dx\\] Per i solidi di rotazione, \\(S(x)=\\pi[f(x)]^2\\), che ritrova la formula precedente."
+  },
+  {
+    cat: "teoria",
+    q: "Integrale improprio di una funzione con una singolarità in \\(b\\): definizione.",
+    a: "Se \\(f\\) è continua in \\([a;b[\\) ma ha una singolarità in \\(b\\) (es. \\(\\lim_{x\\to b^-}f(x)=\\pm\\infty\\)), si definisce: \\[\\int_a^b f(x)\\,dx=\\lim_{z\\to b^-}\\int_a^z f(x)\\,dx\\] Se il limite esiste finito: l'integrale è <strong>convergente</strong>. Se il limite è \\(\\pm\\infty\\): <strong>divergente</strong>. Se non esiste: <strong>indeterminato</strong>. Analogamente per singolarità in \\(a\\) o in un punto interno \\(c\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Integrale improprio su un intervallo illimitato \\([a;+\\infty[\\): definizione.",
+    a: "\\[\\int_a^{+\\infty} f(x)\\,dx=\\lim_{z\\to+\\infty}\\int_a^z f(x)\\,dx\\] Se il limite è finito: convergente. Se è infinito: divergente. Analogamente per \\(]-\\infty;b]\\): \\(\\int_{-\\infty}^b f(x)\\,dx=\\lim_{z\\to-\\infty}\\int_z^b f(x)\\,dx\\). Per \\(]-\\infty;+\\infty[\\): si sceglie un punto \\(c\\) e si definisce come somma dei due integrali \\(\\int_{-\\infty}^c+\\int_c^{+\\infty}\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Applicazioni fisiche: posizione, velocità e accelerazione tramite integrale.",
+    a: "In un moto rettilineo, \\(s(t)\\) è la posizione, \\(v(t)=s'(t)\\) la velocità, \\(a(t)=v'(t)\\) l'accelerazione. La velocità è primitiva dell'accelerazione: \\[v(t)=v(t_0)+\\int_{t_0}^t a(z)\\,dz\\] La posizione è primitiva della velocità: \\[s(t)=s(t_0)+\\int_{t_0}^t v(z)\\,dz\\] Lo spostamento tra \\(t_0\\) e \\(t_1\\) è \\(\\int_{t_0}^{t_1}v(t)\\,dt\\), la distanza percorsa è \\(\\int_{t_0}^{t_1}|v(t)|\\,dt\\)."
+  },
+  {
+    cat: "teoria",
+    q: "Lavoro di una forza variabile tramite integrale.",
+    a: "Se una forza \\(F(x)\\) ha direzione costante e intensità variabile (es. molla elastica), il lavoro compiuto per spostare un punto da \\(a\\) a \\(b\\) è: \\[L=\\int_a^b F(x)\\,dx\\] Per una molla con legge \\(F(x)=-kx\\) (forza elastica): \\(L=\\int_0^d(-kx)\\,dx=-\\frac{kd^2}{2}\\). La quantità di carica elettrica è \\(Q=\\int_{t_0}^{t_1}i(t)\\,dt\\) dove \\(i(t)\\) è l'intensità di corrente."
+  },
+  {
+    cat: "teoria",
+    q: "Integrazione numerica: metodo dei rettangoli e metodo dei trapezi.",
+    a: "<strong>Metodo dei rettangoli (punto medio):</strong> si approssima l'integrale con la somma \\(h\\cdot\\sum_{i=1}^n f(m_i)\\) dove \\(m_i\\) è il punto medio dell'\\(i\\)-esimo sottointervallo e \\(h=\\frac{b-a}{n}\\). <strong>Metodo dei trapezi:</strong> \\(\\int_a^b f\\approx h\\left[\\frac{f(x_0)+f(x_n)}{2}+\\sum_{i=1}^{n-1}f(x_i)\\right]\\). All'aumentare di \\(n\\) entrambi convergono al valore esatto."
+  },
+  {
+    cat: "teoria",
+    q: "Cosa afferma il Teorema fondamentale nella direzione 'inversa': dall'integrale indefinito a quello definito?",
+    a: "Dal Teorema fondamentale, poiché \\(F(x)=\\int_a^x f(t)\\,dt\\) è una primitiva di \\(f\\), e tutte le primitive differiscono per una costante, ogni primitiva \\(\\varphi(x)\\) soddisfa \\(\\varphi(x)=F(x)+c=\\int_a^x f(t)\\,dt+c\\). Quindi l'integrale indefinito si scrive: \\[\\int f(x)\\,dx=\\int_a^x f(t)\\,dt+c\\] collegando i due concetti: l'integrale indefinito è una famiglia di funzioni integrali traslate verticalmente."
+  },
+  {
+    cat: "teoria",
+    q: "Integrale improprio di \\(\\frac{1}{x^\\alpha}\\) in \\([1;+\\infty[\\): convergenza.",
+    a: "\\[\\int_1^{+\\infty}\\frac{1}{x^\\alpha}\\,dx\\] Si calcola: per \\(\\alpha\\neq1\\), \\(\\int_1^z x^{-\\alpha}\\,dx=\\left[\\frac{x^{-\\alpha+1}}{-\\alpha+1}\\right]_1^z\\). Per \\(z\\to+\\infty\\): se \\(\\alpha>1\\) la potenza \\(z^{1-\\alpha}\\to0\\), quindi l'integrale <strong>converge</strong> a \\(\\frac{1}{\\alpha-1}\\). Se \\(\\alpha\\leq1\\) il limite è \\(+\\infty\\): <strong>diverge</strong>. Per \\(\\alpha=1\\): \\(\\int_1^z\\frac{1}{x}dx=\\ln z\\to+\\infty\\), diverge."
+  },
+
+  // ── ESERCIZI (20) ─────────────────────────────────────────────────────────
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int_2^3 2x\\,dx\\) con la formula di Leibniz-Newton.",
+    a: "La primitiva di \\(2x\\) è \\(x^2\\). Applicando la formula: \\[\\int_2^3 2x\\,dx=\\big[x^2\\big]_2^3=3^2-2^2=9-4=5\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int_0^\\pi\\sin x\\,dx\\).",
+    a: "La primitiva di \\(\\sin x\\) è \\(-\\cos x\\): \\[\\int_0^\\pi\\sin x\\,dx=\\big[-\\cos x\\big]_0^\\pi=-\\cos\\pi-(-\\cos 0)=-(-1)+1=1+1=2\\] Il risultato \\(2\\) è l'area del semiperiodo positivo della sinusoide."
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare l'area della superficie compresa tra \\(y=x^3\\) e l'asse \\(x\\) nell'intervallo \\([-1;1]\\).",
+    a: "\\(f(x)=x^3\\) è dispari, quindi \\(\\int_{-1}^1 x^3\\,dx=0\\) (le aree si cancellano). Per l'area geometrica: \\[S=\\int_{-1}^1|x^3|\\,dx=-\\int_{-1}^0 x^3\\,dx+\\int_0^1 x^3\\,dx=\\left[-\\frac{x^4}{4}\\right]_{-1}^0+\\left[\\frac{x^4}{4}\\right]_0^1=\\frac{1}{4}+\\frac{1}{4}=\\frac{1}{2}\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Trovare il valore medio della funzione \\(f(x)=x^2\\) nell'intervallo \\([0;3]\\).",
+    a: "\\[\\bar{f}=\\frac{1}{3-0}\\int_0^3 x^2\\,dx=\\frac{1}{3}\\left[\\frac{x^3}{3}\\right]_0^3=\\frac{1}{3}\\cdot\\frac{27}{3}=\\frac{1}{3}\\cdot9=3\\] Il punto \\(z\\) in cui \\(f(z)=\\bar{f}=3\\): \\(z^2=3\\Rightarrow z=\\sqrt{3}\\approx1{,}73\\in[0;3]\\). ✓"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare l'area compresa tra la parabola \\(y=x^2-4\\) e l'asse \\(x\\).",
+    a: "Zeri: \\(x^2-4=0\\Rightarrow x=\\pm2\\). La parabola è negativa in \\([-2;2]\\): \\[S=\\int_{-2}^2|x^2-4|\\,dx=-\\int_{-2}^2(x^2-4)\\,dx=-\\left[\\frac{x^3}{3}-4x\\right]_{-2}^2\\] \\(=-\\left[\\left(\\frac{8}{3}-8\\right)-\\left(-\\frac{8}{3}+8\\right)\\right]=-\\left[-\\frac{16}{3}-\\frac{16}{3}+... \\right]\\). Semplificando: \\(S=\\frac{32}{3}\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare l'area racchiusa dalle curve \\(y=x^2\\) e \\(y=x+2\\).",
+    a: "Intersezioni: \\(x^2=x+2\\Rightarrow x^2-x-2=0\\Rightarrow x=-1\\) e \\(x=2\\). In \\([-1;2]\\): \\(x+2\\geq x^2\\). \\[S=\\int_{-1}^2(x+2-x^2)\\,dx=\\left[\\frac{x^2}{2}+2x-\\frac{x^3}{3}\\right]_{-1}^2\\] \\(=\\left(2+4-\\frac{8}{3}\\right)-\\left(\\frac{1}{2}-2+\\frac{1}{3}\\right)=\\frac{10}{3}-\\left(-\\frac{7}{6}\\right)=\\frac{20}{6}+\\frac{7}{6}=\\frac{27}{6}=\\frac{9}{2}\\)"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare il volume del solido ottenuto ruotando \\(y=\\sqrt{x}\\) attorno all'asse \\(x\\) per \\(x\\in[0;4]\\).",
+    a: "\\[V=\\pi\\int_0^4(\\sqrt{x})^2\\,dx=\\pi\\int_0^4 x\\,dx=\\pi\\left[\\frac{x^2}{2}\\right]_0^4=\\pi\\cdot\\frac{16}{2}=8\\pi\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare il volume del solido ottenuto ruotando \\(y=e^x\\) attorno all'asse \\(x\\) per \\(x\\in[-1;1]\\).",
+    a: "\\[V=\\pi\\int_{-1}^1(e^x)^2\\,dx=\\pi\\int_{-1}^1 e^{2x}\\,dx=\\pi\\left[\\frac{e^{2x}}{2}\\right]_{-1}^1=\\frac{\\pi}{2}(e^2-e^{-2})\\] Numericamente: \\(\\frac{\\pi}{2}(7{,}389-0{,}135)\\approx\\frac{\\pi}{2}\\cdot7{,}254\\approx11{,}39\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare l'integrale improprio \\(\\displaystyle\\int_0^1\\frac{1}{\\sqrt{x}}\\,dx\\).",
+    a: "La funzione ha singolarità in \\(x=0\\) (\\(f(0^+)=+\\infty\\)). Si calcola: \\[\\int_0^1\\frac{1}{\\sqrt{x}}\\,dx=\\lim_{z\\to0^+}\\int_z^1 x^{-1/2}\\,dx=\\lim_{z\\to0^+}\\big[2\\sqrt{x}\\big]_z^1=\\lim_{z\\to0^+}(2-2\\sqrt{z})=2\\] L'integrale <strong>converge</strong> a 2."
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare l'integrale improprio \\(\\displaystyle\\int_1^{+\\infty}\\frac{1}{x^2}\\,dx\\).",
+    a: "\\[\\int_1^{+\\infty}\\frac{1}{x^2}\\,dx=\\lim_{z\\to+\\infty}\\int_1^z x^{-2}\\,dx=\\lim_{z\\to+\\infty}\\left[-\\frac{1}{x}\\right]_1^z=\\lim_{z\\to+\\infty}\\left(-\\frac{1}{z}+1\\right)=1\\] L'integrale <strong>converge</strong> a 1 (\\(\\alpha=2>1\\))."
+  },
+  {
+    cat: "esercizio",
+    q: "Un punto materiale si muove con accelerazione \\(a(t)=-3t^2+1\\) m/s². Sapendo che \\(v(2)=2\\) m/s e \\(s(2)=4\\) m, trovare \\(v(t)\\) e \\(s(t)\\).",
+    a: "\\(v(t)=v(2)+\\int_2^t(-3z^2+1)\\,dz=2+\\big[-z^3+z\\big]_2^t=2+(-t^3+t)-(-8+2)=-t^3+t+8\\). \\(s(t)=s(2)+\\int_2^t(-z^3+z+8)\\,dz=4+\\left[-\\frac{z^4}{4}+\\frac{z^2}{2}+8z\\right]_2^t\\). Sostituendo: \\(s(t)=-\\frac{t^4}{4}+\\frac{t^2}{2}+8t-10\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare l'area della superficie racchiusa dalle due parabole \\(y=x^2-4x+4\\) e \\(y=-4x^2+16x-11\\).",
+    a: "Intersezioni: \\(x^2-4x+4=-4x^2+16x-11\\Rightarrow5x^2-20x+15=0\\Rightarrow x^2-4x+3=0\\Rightarrow x=1,\\,x=3\\). In \\([1;3]\\) la seconda è sopra: \\[S=\\int_1^3[(-4x^2+16x-11)-(x^2-4x+4)]\\,dx=\\int_1^3(-5x^2+20x-15)\\,dx\\] \\(=\\left[-\\frac{5x^3}{3}+10x^2-15x\\right]_1^3=(-45+90-45)-(-\\frac{5}{3}+10-15)=0-(-\\frac{20}{3})=\\frac{20}{3}\\)."
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare il volume del solido ottenuto dalla rotazione attorno all'asse \\(y\\) della regione delimitata da \\(y=x^2\\) e \\(y=4\\).",
+    a: "Esprimiamo in funzione di \\(y\\): \\(x=\\sqrt{y}\\) per \\(y\\in[0;4]\\). \\[V=\\pi\\int_0^4(\\sqrt{y})^2\\,dy=\\pi\\int_0^4 y\\,dy=\\pi\\left[\\frac{y^2}{2}\\right]_0^4=\\pi\\cdot8=8\\pi\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare il lavoro compiuto dalla forza elastica \\(F(x)=-40x\\) N per comprimere una molla da \\(0\\) a \\(2\\) m.",
+    a: "\\[L=\\int_0^2(-40x)\\,dx=-40\\left[\\frac{x^2}{2}\\right]_0^2=-40\\cdot2=-80\\text{ J}\\] Il segno negativo indica che la forza è opposta allo spostamento (forza di richiamo). Il lavoro fatto dall'agente esterno è \\(+80\\) J."
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int_0^{\\pi/2}\\sin^2 x\\,dx\\) usando l'identità \\(\\sin^2 x=\\frac{1-\\cos2x}{2}\\).",
+    a: "\\[\\int_0^{\\pi/2}\\sin^2 x\\,dx=\\int_0^{\\pi/2}\\frac{1-\\cos2x}{2}\\,dx=\\frac{1}{2}\\left[x-\\frac{\\sin2x}{2}\\right]_0^{\\pi/2}\\] \\(=\\frac{1}{2}\\left[\\left(\\frac{\\pi}{2}-\\frac{\\sin\\pi}{2}\\right)-(0-0)\\right]=\\frac{1}{2}\\cdot\\frac{\\pi}{2}=\\frac{\\pi}{4}\\)"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare la distanza percorsa da un punto con \\(v(t)=3-t\\) m/s tra \\(t_0=0\\) e \\(t_1=6\\) s.",
+    a: "\\(v(t)=0\\) per \\(t=3\\): cambia segno. Distanza: \\[d=\\int_0^6|3-t|\\,dt=\\int_0^3(3-t)\\,dt+\\int_3^6(t-3)\\,dt\\] \\(=\\left[3t-\\frac{t^2}{2}\\right]_0^3+\\left[\\frac{t^2}{2}-3t\\right]_3^6=\\left(9-\\frac{9}{2}\\right)+\\left[(18-18)-\\left(\\frac{9}{2}-9\\right)\\right]=\\frac{9}{2}+\\frac{9}{2}=9\\text{ m}\\). Spostamento: \\(\\int_0^6(3-t)dt=0\\) (torna al punto di partenza)."
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare \\(\\displaystyle\\int_0^2 xe^x\\,dx\\) con l'integrazione per parti.",
+    a: "\\(f=x\\), \\(g'=e^x\\), \\(f'=1\\), \\(g=e^x\\): \\[\\int_0^2 xe^x\\,dx=\\big[xe^x\\big]_0^2-\\int_0^2 e^x\\,dx=(2e^2-0)-\\big[e^x\\big]_0^2=2e^2-(e^2-1)=e^2+1\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Determinare se \\(\\displaystyle\\int_0^1\\frac{1}{x}\\,dx\\) converge o diverge.",
+    a: "\\(f(x)=\\frac{1}{x}\\) ha singolarità in \\(x=0\\): \\[\\int_0^1\\frac{1}{x}\\,dx=\\lim_{z\\to0^+}\\int_z^1\\frac{1}{x}\\,dx=\\lim_{z\\to0^+}[\\ln x]_z^1=\\lim_{z\\to0^+}(0-\\ln z)=+\\infty\\] L'integrale <strong>diverge</strong> (\\(\\alpha=1\\): caso limite, non converge)."
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare il volume del solido con base \\(\\mathcal{A}=\\{(x,y):-x^2+3x\\geq0\\}\\) e sezioni quadrate perpendicolari all'asse \\(x\\).",
+    a: "La base è la regione tra \\(y=0\\) e \\(y=-x^2+3x\\), con \\(x\\in[0;3]\\). La sezione in \\(x\\) è un quadrato di lato \\(-x^2+3x\\), area \\(S(x)=(-x^2+3x)^2=x^4-6x^3+9x^2\\). \\[V=\\int_0^3(x^4-6x^3+9x^2)\\,dx=\\left[\\frac{x^5}{5}-\\frac{3x^4}{2}+3x^3\\right]_0^3=\\frac{243}{5}-\\frac{243}{2}+81=\\frac{81}{10}\\]"
+  },
+  {
+    cat: "esercizio",
+    q: "Calcolare la quantità di carica \\(Q\\) che attraversa un circuito nel primo secondo con \\(i(t)=k(1-e^{-ht})\\) A.",
+    a: "\\[Q=\\int_0^1 k(1-e^{-ht})\\,dt=k\\left[t+\\frac{e^{-ht}}{h}\\right]_0^1=k\\left[\\left(1+\\frac{e^{-h}}{h}\\right)-\\left(0+\\frac{1}{h}\\right)\\right]=k\\left[1+\\frac{e^{-h}-1}{h}\\right]=k\\left(1-\\frac{1-e^{-h}}{h}\\right)\\approx k\\left(1+\\frac{e^{-h}}{h}-\\frac{1}{h}\\right)\\] Risultato compatto: \\(Q=k+\\frac{k}{h}(e^{-h}-1)\\) coulomb."
+  },
+
+  // ── RAGIONAMENTO (15) ─────────────────────────────────────────────────────
+  {
+    cat: "ragionamento",
+    q: "Qual è la differenza fondamentale tra integrale indefinito e integrale definito?",
+    a: "L'<strong>integrale indefinito</strong> \\(\\int f(x)\\,dx=F(x)+c\\) è un insieme di funzioni (le primitive di \\(f\\)), con una costante arbitraria. L'<strong>integrale definito</strong> \\(\\int_a^b f(x)\\,dx\\) è un numero reale (l'area con segno del trapezoide). Il Teorema fondamentale li collega: il definito si calcola tramite l'indefinito applicando la formula di Leibniz-Newton. Uno è una famiglia di curve, l'altro è un'area."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché \\(\\int_{-1}^1 x^3\\,dx=0\\) ma l'area tra il grafico e l'asse \\(x\\) non è zero?",
+    a: "\\(x^3\\) è una funzione dispari: \\(\\int_{-1}^1 x^3\\,dx=0\\) perché l'area positiva (\\(x>0\\)) e quella negativa (\\(x<0\\)) si cancellano esattamente. Ma l'<em>area geometrica</em>, cioè la misura della superficie, è \\(\\int_{-1}^1|x^3|\\,dx=\\frac{1}{2}\\neq0\\). L'integrale definito misura l'area <em>con segno</em>: sotto l'asse contribuisce negativamente. Per l'area bisogna sempre usare il valore assoluto."
+  },
+  {
+    cat: "ragionamento",
+    q: "Il Teorema della media afferma che \\(f\\) assume il suo valore medio almeno una volta. Perché è necessaria la continuità?",
+    a: "Il teorema usa il Teorema dei valori intermedi: \\(f\\) continua su \\([a;b]\\) assume tutti i valori tra il suo minimo \\(m\\) e massimo \\(M\\). Poiché il valore medio \\(\\bar{f}=\\frac{\\int_a^b f}{b-a}\\) soddisfa \\(m\\leq\\bar{f}\\leq M\\), per il T.V.I. esiste \\(z\\) con \\(f(z)=\\bar{f}\\). Senza continuità, \\(f\\) potrebbe avere valori tra \\(m\\) e \\(M\\) non raggiunti (discontinuità), e il valore medio potrebbe non essere raggiunto."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché l'integrale definito di \\(f(x)<0\\) è negativo, e come si calcola l'area 'vera' sotto l'asse?",
+    a: "L'integrale definito misura l'area <em>con segno</em>: i rettangolini \\(f(c_i)\\Delta x_i\\) hanno altezza \\(f(c_i)<0\\), quindi la somma è negativa. L'area geometrica (sempre positiva) si ottiene con \\(\\int_a^b|f(x)|\\,dx=-\\int_a^b f(x)\\,dx\\). Quando \\(f\\) cambia segno bisogna suddividere l'intervallo nei sottointeravlli di segno costante e sommare i valori assoluti di ogni pezzo."
+  },
+  {
+    cat: "ragionamento",
+    q: "Come mai la formula del volume di rotazione attorno all'asse \\(x\\) usa \\([f(x)]^2\\) e non \\(f(x)\\)?",
+    a: "Perché ogni sezione perpendicolare all'asse \\(x\\) è un <em>disco</em> (cerchio) di raggio \\(f(x)\\), la cui area è \\(\\pi r^2=\\pi[f(x)]^2\\). Il volume è la somma (integrale) di tali dischi infinitesimi di spessore \\(dx\\): \\(V=\\int_a^b\\pi[f(x)]^2\\,dx\\). Se si usasse \\(f(x)\\) al posto di \\([f(x)]^2\\) si calcolerebbe non un volume ma qualcosa proporzionale all'area della superficie (non il volume)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Un integrale improprio convergente ha area finita anche se la funzione è illimitata. Come è possibile?",
+    a: "La funzione può divergere ma in modo 'abbastanza rapido' da avere area finita. Esempio: \\(\\int_0^1\\frac{1}{\\sqrt{x}}\\,dx=2\\): \\(f(x)=x^{-1/2}\\to+\\infty\\) per \\(x\\to0\\), ma converge perché \\(-\\frac{1}{2}>-1\\) (l'esponente negativo è maggiore di \\(-1\\)). La regola generale: \\(\\int_0^1 x^{-\\alpha}\\,dx\\) converge se e solo se \\(\\alpha<1\\). La 'velocità' di divergenza non è sufficiente a 'distruggere' la finitezza dell'area."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché lo spostamento di un punto può essere zero anche se la distanza percorsa è positiva?",
+    a: "Lo spostamento \\(\\int_{t_0}^{t_1}v(t)\\,dt\\) è un integrale con segno: se la velocità cambia segno, le parti positive (moto in avanti) e negative (moto all'indietro) si cancellano, e il punto può tornare alla posizione iniziale. La distanza \\(\\int_{t_0}^{t_1}|v(t)|\\,dt\\) conta ogni tratto percorso senza segno. Esempio: un punto che va avanti 3 m e poi torna indietro 3 m ha spostamento 0 ma distanza 6 m."
+  },
+  {
+    cat: "ragionamento",
+    q: "Qual è il legame concettuale tra il Teorema fondamentale del calcolo e l'operazione inversa?",
+    a: "Il Teorema fondamentale stabilisce che derivazione e integrazione sono operazioni inverse l'una dell'altra in due sensi: (1) \\(\\frac{d}{dx}\\int_a^x f(t)\\,dt=f(x)\\): derivare una funzione integrale restituisce l'integranda; (2) \\(\\int_a^b F'(x)\\,dx=F(b)-F(a)\\): integrare una derivata dà la variazione della funzione. È l'analogo del fatto che somma e differenza, o moltiplicazione e divisione, sono inverse: applicare prima una poi l'altra riporta alla funzione di partenza."
+  },
+  {
+    cat: "ragionamento",
+    q: "Quando conviene calcolare un'area usando l'integrazione rispetto a \\(y\\) invece che rispetto a \\(x\\)?",
+    a: "Conviene integrare rispetto a \\(y\\) quando: (1) la curva si esprime più facilmente come \\(x=f(y)\\) che come \\(y=f(x)\\) (es. parabole orizzontali \\(x=y^2\\)); (2) la regione è delimitata a sinistra e a destra da due curve di \\(y\\), non sopra e sotto; (3) l'integrazione rispetto a \\(x\\) richiederebbe di spezzare in più sottointervalli a causa di intersezioni complesse. La logica è la stessa: \\(S=\\int_a^b[x_{\\text{destra}}(y)-x_{\\text{sinistra}}(y)]\\,dy\\)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Come differisce la formula del volume con il 'metodo dei gusci' rispetto al 'metodo dei dischi'?",
+    a: "Il <strong>metodo dei dischi</strong> (sezioni) ruota attorno all'asse dell'integrazione: \\(V=\\pi\\int_a^b[f(x)]^2\\,dx\\). Ogni sezione è un disco. Il <strong>metodo dei gusci</strong> ruota attorno all'asse perpendicolare: \\(V=2\\pi\\int_a^b x\\cdot f(x)\\,dx\\). Ogni 'fettina' verticale genera un cilindro cavo (guscio). I due metodi danno lo stesso risultato ma uno può essere più semplice dell'altro a seconda di come è espressa la curva e di quale asse si ruota intorno."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché per calcolare l'area tra due curve serve che \\(f(x)\\geq g(x)\\) su tutto l'intervallo?",
+    a: "La formula \\(S=\\int_a^b[f(x)-g(x)]\\,dx\\) funziona solo se \\(f\\geq g\\) ovunque, altrimenti \\(f-g\\) cambia segno e l'integrale sottrae anziché sommare parte dell'area. Se le curve si incrociano in \\([a;b]\\), bisogna trovare i punti di intersezione, suddividere l'intervallo, e in ciascun sottointervallo sottrarre la curva inferiore da quella superiore (con il segno giusto). Non farlo porta a risultati errati (sottostima dell'area)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Il Teorema fondamentale richiede la continuità di \\(f\\). Cosa succede se \\(f\\) ha una discontinuità?",
+    a: "Se \\(f\\) ha una discontinuità eliminabile o di salto in \\([a;b]\\), il Teorema fondamentale non si applica direttamente e la funzione integrale \\(F(x)=\\int_a^x f(t)\\,dt\\) potrebbe non essere derivabile nel punto di discontinuità. Per funzioni con discontinuità di prima specie (salto), \\(F\\) è comunque continua ma non differenziabile nel punto. Per discontinuità di seconda specie (es. singolarità infinite), si entra nel dominio degli integrali impropri."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché \\(\\int_1^{+\\infty}\\frac{1}{x}\\,dx\\) diverge ma \\(\\int_1^{+\\infty}\\frac{1}{x^2}\\,dx\\) converge? Qual è la logica intuitiva?",
+    a: "\\(\\frac{1}{x}\\) decade troppo lentamente: la serie armonica \\(1+\\frac{1}{2}+\\frac{1}{3}+\\ldots\\) diverge, e l'integrale è il suo analogo continuo. \\(\\frac{1}{x^2}\\) decade più velocemente: l'area tra la curva e l'asse, pur infinita come intervallo, si 'restringe' abbastanza rapidamente da avere misura finita (pari a 1). Intuitivamente: \\(\\frac{1}{x}\\) è proporzionale al logaritmo (che cresce senza limite), mentre \\(\\frac{1}{x^2}\\) è proporzionale a \\(-\frac{1}{x}\\) (che tende a 0)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Come si usa l'integrale definito per calcolare la variazione di una grandezza fisica?",
+    a: "Se \\(f'(t)\\) è la derivata (tasso di variazione) di una grandezza \\(f(t)\\), allora l'integrale \\(\\int_{t_0}^{t_1}f'(t)\\,dt=f(t_1)-f(t_0)\\) dà la variazione totale di \\(f\\) nell'intervallo \\([t_0;t_1]\\). Esempi: \\(\\int a(t)\\,dt\\) = variazione di velocità; \\(\\int v(t)\\,dt\\) = spostamento; \\(\\int i(t)\\,dt\\) = carica trasferita; \\(\\int P(t)\\,dt\\) = energia. L'integrale 'somma' tutti i contributi infinitesimi \\(f'(t)\\,dt\\)."
+  },
+  {
+    cat: "ragionamento",
+    q: "Perché l'integrazione numerica è necessaria anche avendo a disposizione tutti i metodi analitici?",
+    a: "Perché non tutte le funzioni hanno una primitiva esprimibile in forma chiusa mediante funzioni elementari. Esempi classici: \\(e^{-x^2}\\), \\(\\frac{\\sin x}{x}\\), \\(\\sqrt{1-k^2\\sin^2 x}\\) (integrale ellittico). In questi casi i metodi analitici non bastano. Inoltre, in molte applicazioni fisiche e ingegneristiche la funzione non è nota analiticamente ma solo attraverso misurazioni discrete, rendendo l'integrazione numerica l'unico approccio praticabile."
+  }
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────
+let filtered = [...cards], deck = [...cards], idx = 0;
+let currentFilter = "all", currentMode = "quiz";
+
+document.querySelectorAll(".tab-btn").forEach(btn => btn.addEventListener("click", () => {
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active"); currentFilter = btn.dataset.filter; applyFilter();
+}));
+document.querySelectorAll(".mode-btn").forEach(btn => btn.addEventListener("click", () => {
+  document.querySelectorAll(".mode-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active"); currentMode = btn.dataset.mode; switchMode();
+}));
+
+function applyFilter() {
+  filtered = currentFilter === "all" ? [...cards] : cards.filter(c => c.cat === currentFilter);
+  deck = [...filtered]; idx = 0;
+  document.getElementById("stat-pill").textContent = filtered.length + " carte";
+  if (currentMode === "quiz") {
+    document.getElementById("score-panel").classList.remove("visible");
+    document.getElementById("flip-scene").style.display = "";
+    document.querySelectorAll(".quiz-nav button").forEach(b => b.disabled = false);
+    renderCard();
+  } else renderBrowse();
+}
+
+function switchMode() {
+  if (currentMode === "quiz") {
+    document.getElementById("browse-view").style.display = "none";
+    document.getElementById("quiz-view").style.display = "flex";
+    deck = [...filtered]; idx = 0;
+    document.getElementById("score-panel").classList.remove("visible");
+    document.getElementById("flip-scene").style.display = "";
+    document.querySelector(".quiz-nav").style.display = "";
+    renderCard();
+  } else {
+    document.getElementById("quiz-view").style.display = "none";
+    document.getElementById("browse-view").style.display = "grid";
+    renderBrowse();
+  }
+}
+
+function renderCard() {
+  if (!deck.length) return;
+  const c = deck[idx];
+  const fc = document.getElementById("flip-card");
+  fc.classList.remove("flipped"); fc.dataset.cat = c.cat;
+  document.getElementById("fc-tag").textContent = c.cat.charAt(0).toUpperCase()+c.cat.slice(1);
+  document.getElementById("fc-q").innerHTML = c.q;
+  document.getElementById("fc-a").innerHTML = c.a;
+  document.getElementById("qcounter").textContent = (idx+1)+" / "+deck.length;
+  document.getElementById("qpf").style.width = ((idx+1)/deck.length*100)+"%";
+  document.getElementById("btn-prev").disabled = idx === 0;
+  document.getElementById("btn-next").textContent = idx === deck.length-1 ? "Fine ✓" : "Avanti →";
+  if (window.MathJax) MathJax.typesetPromise([document.getElementById("flip-card")]);
+}
+
+function flipCard() { document.getElementById("flip-card").classList.toggle("flipped"); }
+function nextCard() {
+  if (idx < deck.length-1) { idx++; renderCard(); }
+  else {
+    document.getElementById("flip-scene").style.display = "none";
+    document.querySelector(".quiz-nav").style.display = "none";
+    document.getElementById("score-num").textContent = deck.length;
+    document.getElementById("score-panel").classList.add("visible");
+  }
+}
+function prevCard() { if (idx > 0) { idx--; renderCard(); } }
+function shuffle() {
+  for (let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
+  idx=0; document.getElementById("score-panel").classList.remove("visible");
+  document.getElementById("flip-scene").style.display=""; document.querySelector(".quiz-nav").style.display=""; renderCard();
+}
+function restart() {
+  deck=[...filtered]; idx=0;
+  document.getElementById("score-panel").classList.remove("visible");
+  document.getElementById("flip-scene").style.display=""; document.querySelector(".quiz-nav").style.display=""; renderCard();
+}
+function renderBrowse() {
+  const container = document.getElementById("browse-view"); container.innerHTML="";
+  filtered.forEach((c,i) => {
+    const div=document.createElement("div"); div.className="browse-card"; div.dataset.cat=c.cat;
+    div.innerHTML=`<div class="bc-header"><span class="bc-num">#${i+1}</span><span class="bc-tag tag-${c.cat}">${c.cat.charAt(0).toUpperCase()+c.cat.slice(1)}</span></div><div class="bc-q">${c.q}</div><div class="bc-divider"></div><div class="bc-a-label">Risposta</div><div class="bc-a">${c.a}</div>`;
+    container.appendChild(div);
+  });
+  if (window.MathJax) MathJax.typesetPromise([container]);
+}
+renderCard();
+</script>
+</body>
+</html>
