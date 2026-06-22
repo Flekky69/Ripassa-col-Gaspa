@@ -216,7 +216,7 @@ const cards = [
   {
     cat: "teoria",
     q: "Teorema di unicità del limite: enunciato.",
-    a: "Se \\(f\\) ha limite finito \\(\\ell\\) per \\(x\\to x_0\\), allora tale limite è <strong>unico</strong>. Dimostrazione per assurdo: se esistessero due limiti \\(\\ell\\) e \\(\\ell'\\) con \\(\\ell<\\ell'\\), scegliendo \\(\\varepsilon=\\frac{\\ell'-\\ell}{2}>0\\) le definizioni di limite fornirebbero due intorni di \\(x_0\\) per cui \\(|f(x)-\\ell|<\\varepsilon\\) e \\(|f(x)-\\ell'|<\\varepsilon\\). Nell'intersezione, entrambe le disuguaglianze varrebbero, contraddicendo \\(\\ell'-\\ell=2\\varepsilon\\)."
+    a: "Se \\(f\\) ha limite finito \\(\\ell\\) per \\(x\\to x_0\\), allora tale limite è <strong>unico</strong>."
   },
   {
     cat: "teoria",
@@ -230,23 +230,13 @@ const cards = [
   },
   {
     cat: "teoria",
-    q: "Cosa si intende per estremo superiore e inferiore di un insieme?",
-    a: "L'<strong>estremo superiore</strong> (\\(\\sup E\\)) di \\(E\\subseteq\\mathbb{R}\\) superiormente limitato è il più piccolo maggiorante di \\(E\\): \\(M\\) è maggiorante di \\(E\\) e per ogni \\(\\varepsilon>0\\) esiste \\(x\\in E\\) con \\(x>M-\\varepsilon\\). L'<strong>estremo inferiore</strong> (\\(\\inf E\\)) è il più grande minorante. Se \\(E\\) è illimitato superiormente, \\(\\sup E=+\\infty\\). L'estremo superiore/inferiore esiste sempre ed è unico (per ogni \\(E\\) non vuoto). Se appartiene a \\(E\\) si chiama anche <em>massimo</em> (o <em>minimo</em>)."
-  },
-  {
-    cat: "teoria",
     q: "Limite per eccesso \\(\\ell^+\\) e per difetto \\(\\ell^-\\): definizioni.",
-    a: "\\(\\lim_{x\\to x_0}f(x)=\\ell^+\\) (<strong>per eccesso</strong>) se \\(f\\) ha limite \\(\\ell\\) e assume sempre valori <em>maggiori</em> di \\(\\ell\\) in un intorno di \\(x_0\\). \\(\\lim_{x\\to x_0}f(x)=\\ell^-\\) (<strong>per difetto</strong>) se \\(f\\) ha limite \\(\\ell\\) e assume sempre valori <em>minori</em> di \\(\\ell\\). Formalmente si aggiunge alla definizione \\(\\varepsilon\\text{-}\\delta\\) la condizione \\(f(x)>\\ell\\) (o \\(f(x)<\\ell\\)) nell'intorno. Questi limiti si usano per caratterizzare asintoti verticali destri/sinistri."
-  },
-  {
-    cat: "teoria",
-    q: "Definizione unitaria di limite che unifica tutti i casi.",
-    a: "Sia \\(y=f(x)\\) con dominio \\(D\\) e sia \\(x_0\\) un punto di accumulazione di \\(D\\). \\(\\ell\\) è il limite di \\(f(x)\\) per \\(x\\to x_0\\) se per ogni intorno \\(I(\\ell)\\) di \\(\\ell\\) (che può essere intorno di un numero reale, di \\(+\\infty\\) o di \\(-\\infty\\)), in corrispondenza esiste un intorno \\(I(x_0)\\) di \\(x_0\\) tale che per ogni \\(x\\in D\\cap I(x_0)\\), escluso al più \\(x_0\\), si ha \\(f(x)\\in I(\\ell)\\). Questa definizione unifica i casi \\(\\ell\\in\\mathbb{R}\\), \\(\\ell=+\\infty\\), \\(\\ell=-\\infty\\) e \\(x_0\\in\\mathbb{R}\\), \\(x_0=\\pm\\infty\\)."
+    a: "\\(\\lim_{x\\to x_0}f(x)=\\ell^+\\) (<strong>per eccesso</strong>) se \\(f\\) ha limite \\(\\ell\\) e assume sempre valori <em>maggiori</em> di \\(\\ell\\) in un intorno di \\(x_0\\). \\(\\lim_{x\\to x_0}f(x)=\\ell^-\\) (<strong>per difetto</strong>) se \\(f\\) ha limite \\(\\ell\\) e assume sempre valori <em>minori</em> di \\(\\ell\\). Formalmente si aggiunge alla definizione \\(\\varepsilon\\text{-}\\delta\\) la condizione \\(f(x)>\\ell\\) (o \\(f(x)<\\ell\\)) nell'intorno."
   },
   {
     cat: "teoria",
     q: "Limiti destro e sinistro infiniti: quando esiste il limite \\(\\pm\\infty\\)?",
-    a: "Il limite infinito \\(\\lim_{x\\to x_0}f(x)=+\\infty\\) esiste se e solo se esistono entrambi i limiti laterali e coincidono: \\[\\lim_{x\\to x_0^+}f(x)=+\\infty\\quad\\text{e}\\quad\\lim_{x\\to x_0^-}f(x)=+\\infty\\] Se i due limiti laterali sono entrambi infiniti ma di segno opposto (es. \\(+\\infty\\) da destra e \\(-\\infty\\) da sinistra, come per \\(y=\\frac{1}{x}\\) in \\(x=0\\)), il limite in \\(x_0\\) non esiste."
+    a: "Il limite infinito \\(\\lim_{x\\to x_0}f(x)=+\\infty\\) esiste se e solo se esistono entrambi i limiti destro e sinistro e coincidono: \\[\\lim_{x\\to x_0^+}f(x)=+\\infty\\quad\\text{e}\\quad\\lim_{x\\to x_0^-}f(x)=+\\infty\\] Se i due limiti laterali sono entrambi infiniti ma di segno opposto (es. \\(+\\infty\\) da destra e \\(-\\infty\\) da sinistra, come per \\(y=\\frac{1}{x}\\) in \\(x=0\\)), il limite in \\(x_0\\) non esiste."
   },
   {
     cat: "teoria",
@@ -257,11 +247,6 @@ const cards = [
     cat: "teoria",
     q: "Quando un insieme si dice limitato superiormente, inferiormente, limitato?",
     a: "Un insieme \\(F\\subseteq\\mathbb{R}\\) è <strong>limitato superiormente</strong> se esiste \\(m\\in\\mathbb{R}\\) tale che \\(x\\leq m\\) per ogni \\(x\\in F\\); \\(m\\) è un <em>maggiorante</em>. È <strong>limitato inferiormente</strong> se esiste \\(m\\) con \\(x\\geq m\\) per ogni \\(x\\in F\\); \\(m\\) è un <em>minorante</em>. È <strong>limitato</strong> se lo è sia superiormente che inferiormente, equivalentemente se esiste \\(k>0\\) con \\(|x|\\leq k\\) per ogni \\(x\\in F\\)."
-  },
-  {
-    cat: "teoria",
-    q: "Proprietà degli intorni: intersezione e unione.",
-    a: "L'intersezione e l'unione di due o più intorni completi di \\(x_0\\), in particolare circolari, sono ancora intorni completi (in particolare circolari) di \\(x_0\\). In particolare, l'<em>intersezione</em> di due intorni circolari di \\(x_0\\) di raggi \\(\\delta_1\\) e \\(\\delta_2\\) è un intorno circolare di raggio \\(\\min(\\delta_1,\\delta_2)\\). Questa proprietà è usata nella dimostrazione del teorema di unicità del limite."
   },
 
   // ── ESERCIZI (14) ─────────────────────────────────────────────────────────
