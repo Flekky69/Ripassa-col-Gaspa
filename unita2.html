@@ -170,12 +170,12 @@ const cards = [
   },
   {
     cat: "teoria",
-    q: "Interpretazione geometrica della definizione di limite.",
+    q: "Spiega da un punto di vista geometrico la definizione di limite finito.",
     a: "Fissato \\(\\varepsilon>0\\), si individua la striscia orizzontale \\(]\\ell-\\varepsilon;\\ell+\\varepsilon[\\). Se \\(\\lim_{x\\to x_0}f(x)=\\ell\\), deve esistere un intorno \\(I(x_0)\\) tale che il grafico di \\(f\\) per \\(x\\in I(x_0)\\setminus\\{x_0\\}\\) stia interamente dentro questa striscia. Più piccolo scegliamo \\(\\varepsilon\\), più ristretto (in generale) sarà l'intorno di \\(x_0\\) da prendere. Il comportamento di \\(f\\) in \\(x_0\\) stesso non conta."
   },
   {
     cat: "teoria",
-    q: "Definizione di funzione continua in un punto.",
+    q: "Qual è la definizione di funzione continua in un punto.",
     a: "La funzione \\(f\\) è <strong>continua nel punto \\(x_0\\)</strong> se: (1) \\(x_0\\) appartiene al dominio \\(D\\) di \\(f\\); (2) esiste \\(\\lim_{x\\to x_0}f(x)\\); (3) tale limite è uguale a \\(f(x_0)\\): \\[\\lim_{x\\to x_0}f(x)=f(x_0)\\] Equivalentemente: per ogni \\(\\varepsilon>0\\) esiste \\(\\delta>0\\) tale che \\(|x-x_0|<\\delta\\Rightarrow|f(x)-f(x_0)|<\\varepsilon\\). Una funzione è continua nel suo dominio se è continua in ogni punto."
   },
   {
@@ -185,13 +185,13 @@ const cards = [
   },
   {
     cat: "teoria",
-    q: "Definizione di limite destro e limite sinistro.",
+    q: "Cosa si intende per limite destro e limite sinistro?",
     a: "<strong>Limite destro:</strong> \\(\\lim_{x\\to x_0^+}f(x)=\\ell\\) se per ogni \\(\\varepsilon>0\\) esiste un intorno destro \\(I^+(x_0)=]x_0;x_0+\\delta[\\) tale che \\(|f(x)-\\ell|<\\varepsilon\\) per ogni \\(x\\in I^+\\cap D\\). \\(x\\to x_0^+\\) si legge «\\(x\\) tende a \\(x_0\\) da destra». <strong>Limite sinistro:</strong> analogo con intorno sinistro \\(I^-(x_0)\\). Il limite (bilatero) esiste se e solo se esistono e coincidono entrambi i limiti laterali: \\(\\lim_{x\\to x_0^+}f=\\lim_{x\\to x_0^-}f=\\ell\\)."
   },
   {
     cat: "teoria",
-    q: "Definizione di limite infinito \\(\\lim_{x\\to x_0}f(x)=+\\infty\\).",
-    a: "\\(\\lim_{x\\to x_0}f(x)=+\\infty\\) se per ogni numero reale positivo \\(M\\) si può determinare un intorno completo \\(I(x_0)\\) di \\(x_0\\) tale che \\(f(x)>M\\) per ogni \\(x\\in I(x_0)\\setminus\\{x_0\\}\\cap D\\). In simboli: \\(\\forall M>0\\;\\exists I(x_0):\\;f(x)>M,\\,\\forall x\\in I(x_0),\\,x\\neq x_0\\). Analogamente per \\(-\\infty\\): si chiede \\(f(x)<-M\\). La funzione si dice in questi casi <em>divergente</em>."
+    q: "Definisci il significato di limite infinito \\(\\lim_{x\\to x_0}f(x)=+\\infty\\) da un punto di vista intuitivo, a parole tue e poi formalmente.",
+    a: "Intuitivamente \\(\\lim_{x\\to x_0}f(x)=+\\infty\\) se comunque scegliamo una quota \\(M\\) allora avvicinandoci a \\(x_0\\) siamo sicuri che ad un certo punto oltrepasseremo questa quota; sarà \\(\\lim_{x\\to x_0}f(x)=-\\infty\\) se invece avvicinandoci a \\(x_0\\) la funzione scenderà al di sotto della quota \\(-M\\). Formalmente: se per ogni numero reale positivo \\(M\\) si può determinare un intorno completo \\(I(x_0)\\) di \\(x_0\\) tale che \\(f(x)>M\\) per ogni \\(x\\in I(x_0)\\setminus\\{x_0\\}\\cap D\\). In simboli: \\(\\forall M>0\\;\\exists I(x_0):\\;f(x)>M,\\,\\forall x\\in I(x_0),\\,x\\neq x_0\\). Analogamente per \\(-\\infty\\): si chiede \\(f(x)<-M\\). La funzione si dice in questi casi <em>divergente</em>."
   },
   {
     cat: "teoria",
